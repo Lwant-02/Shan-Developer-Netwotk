@@ -1,0 +1,287 @@
+# Shan Developer Network — Design
+
+## What this is
+
+Shan Developer Network exists to serve Shan-speaking developers in a way that global
+platforms structurally cannot: **language and locality**. Shan-script content is
+first-class, not an afterthought translation. Local developers are findable as a
+group. The material is relevant to actually building software from Shan State. This
+is the whole reason the project has a right to exist — GitHub, Stack Overflow, and
+Discord already do everything else better than we ever will, and they will never do
+this. Every feature in this document is justified against that sentence, and any
+feature that cannot be is out of scope.
+
+## The test
+
+Before building anything, it has to answer: **why would someone use this instead of
+the Facebook group, Telegram, Discord, or GitHub they already use?**
+
+If the answer is "because it's in Shan" or "because it's local," build it. If the
+answer is "because it's nicer than Discord," don't — that fight is unwinnable and
+it isn't the point.
+
+## Status legend
+
+Labels are load-bearing. Don't build against a 🟡 as though it were a 🟢.
+
+| | Meaning |
+| --- | --- |
+| 🟢 **Decided** | Ratified by the project owner. Build against it. |
+| 🟡 **Proposed** | A recommendation awaiting a decision. May change. |
+| 🔴 **Open** | Needs a decision before related work starts. |
+
+## Product 🟢
+
+A place where Shan developers **connect with each other** and share their work.
+
+- **Profiles** — who you are, what you build.
+- **Projects** — share what you've made.
+- **Posts** — share writing, questions, updates.
+- **Events** — members can host their own, including online sessions (e.g. someone
+  runs an online AI discussion). Online-first, not conference-first.
+
+### Permission model 🟢
+
+| Visitor | Can |
+| --- | --- |
+| **Not signed in** | **Read only** — browse posts, projects, profiles, events. No interaction. |
+| **Signed in** | Post, share projects, create events, interact. |
+
+"Verified" here means email-verified via OAuth — see below. There is no separate
+approval tier.
+
+Read-only-for-anonymous is a deliberate and correct fit for the thesis: the content
+must be public and indexable, or nothing pulls new people in. Value locked behind a
+login can't recruit.
+
+### Authentication 🟢
+
+**Better Auth**, with **Google and GitHub OAuth**.
+
+Google alongside GitHub is a better call than my earlier GitHub-only suggestion —
+GitHub-only would have quietly excluded students and less-established developers,
+which is a chunk of the intended audience.
+
+> **Supersedes:** an earlier draft of this doc proposed deferring posts and
+> discussion to a later phase on cold-start grounds. The owner has decided posts,
+> projects, and events ship together. That decision stands; the residual cold-start
+> risk is addressed under *Seeding* below rather than by delaying features.
+
+## Language and script
+
+This section is the product, not a localization checklist.
+
+### Font 🟢 (chosen) / 🔴 (open issues)
+
+**`public/fonts/aj06.ttf` — "A J Kunheing 06 Regular"**, added by the owner.
+
+Verified by inspecting the font binary:
+
+| Check | Result |
+| --- | --- |
+| Encoding | ✅ **True Unicode** — 0 private-use codepoints, so not a Zawgyi-style hack |
+| Shaping | ✅ Declares `mymr` + `latn` in GSUB, has GPOS mark positioning, has U+25CC |
+| Myanmar block | ✅ 59 codepoints (U+1004–U+109F) |
+| Myanmar Ext-A / Ext-B | ✅ 7 / 6 codepoints |
+| Shan tones & digits | ✅ U+1087–U+108A, U+1090–U+1099 present |
+| Embedding | ✅ `fsType = 0` (installable, no embedding restriction) |
+
+Four real issues, none fatal:
+
+1. **🔴 Regular only — no bold, no italic, not variable** (`usWeightClass 400`,
+   `macStyle 0`). For a text-heavy reading site this bites: headings and `<strong>`
+   in Shan will get synthesized faux-bold, which looks bad on Myanmar script and
+   can distort marks. Either source a bold weight of this family, or set a
+   deliberate typographic rule (weight via size/color, not bolding).
+2. **🔴 Missing some Shan characters**: U+1080 SHAN THA, U+108B–U+108D (Shan Council
+   tone marks), U+108F SHAN RR. Whether these matter depends on which orthography
+   the content uses — **needs a call from someone who writes Shan daily.** Missing
+   glyphs render as tofu.
+3. **🔴 License provenance unclear.** The copyright string is an unfilled
+   FontCreator template — `Typeface © (your company). 2022. All Rights Reserved` —
+   with no license name or URL. `fsType=0` technically permits embedding, but
+   "All Rights Reserved" with no identifiable licensor is a weak basis for shipping
+   a font on a public site. Worth tracking down the author.
+4. **Latin coverage is minimal** (95 Basic Latin glyphs). Fine — Montserrat handles
+   Latin. Pair them deliberately: **Montserrat for Latin, aj06 for Shan.**
+
+### Font loading 🔴
+
+The font sits in `public/fonts/`. Prefer **`next/font/local`**, which self-hosts,
+fingerprints, and preloads with no layout shift. Read
+`node_modules/next/dist/docs/01-app/01-getting-started/13-fonts.md` before wiring it.
+A `.ttf` is also large; **subset and convert to `.woff2`** — the audience is on
+mobile data, and this is one of the highest-leverage performance wins available.
+
+### Zawgyi vs. Unicode 🟡
+
+The chosen font is Unicode-only, which effectively decides this: **store Unicode,
+period.** Remaining question is whether to *detect* Zawgyi input and convert on
+paste, or just reject/ignore it. Recommendation: don't build conversion for v1;
+revisit if real users actually paste Zawgyi.
+
+### Locale routing 🔴
+
+Proposed: `next-intl`, Shan (`shn`) + English, probably Burmese (`my`).
+**Decide whether URLs are locale-prefixed before writing routes** — retrofitting
+locale routing touches everything.
+
+Also open: default locale for an anonymous visitor.
+
+### Per-content language tagging 🟡
+
+Distinct from UI locale, and more important. Each **post/project/event carries its
+own language tag**, because the community is genuinely multilingual and someone
+posting in Shan should reach Shan readers without the UI locale hiding it. Enables
+"show me Shan-language posts" — a direct expression of the thesis, and cheap.
+
+## What "verified" means 🟢
+
+**Verified = email-verified via OAuth. Signing in is enough to post.**
+
+Since Google and GitHub both return a provider-verified email, there is no separate
+verification tier and no approval queue. Anyone who signs in can post, share
+projects, create events, and interact.
+
+Consequences to build against:
+
+- **There is no `verificationState` on Member.** Don't add one. The gate is simply
+  "has a session."
+- **There is no spam defense from auth**, so it has to come from elsewhere. Ship
+  **rate limits** with the first write endpoint — per-user and per-IP, on posts,
+  projects, events, and comments. This is not optional; an open post box with OAuth
+  behind it will find spam.
+- **Moderation is the backstop**, not the gate. Report + hide + ban must ship
+  alongside posting, since nothing stops a bad post from being published first.
+- If quality becomes a problem later, a badge (display-only trust marker) can be
+  added without changing the permission model. An approval queue should be a last
+  resort — an unstaffed queue silently kills signups.
+
+## Additional recommendations 🟡
+
+Answering "what else should a Shan developer network have" — each justified against
+the thesis, roughly in order of value.
+
+### Safety and pseudonymity — treat as a requirement, not a setting
+
+A public, named, located directory of developers in Shan State carries real personal
+risk given the region's conflict and post-2021 conditions. A naive "developer
+network" design imports Western assumptions that don't hold here. Concretely:
+
+- Support **pseudonymous profiles** as a first-class option, not a workaround.
+- **Location granularity is opt-in and coarse** (state/region, never precise); allow
+  "not shown".
+- Let members be **unlisted** in the directory while still posting.
+- **Never** expose the OAuth email publicly.
+- Think hard before showing "who liked/attended this" publicly — attendance at a
+  political-adjacent event is not neutral metadata.
+
+This is cheap to build in now and near-impossible to retrofit after a leak.
+
+### Shan technical glossary
+
+Agreed Shan terms for *database*, *API*, *deploy*, and so on. Useful with zero other
+users, and it's the purest expression of the thesis — the thing no global platform
+will ever build. Small table, outsized value. **Check first whether a Shan technical
+vocabulary effort already exists to align with rather than fork.**
+
+### Telegram bridge — the cold-start answer
+
+Telegram is where Myanmar tech conversation already lives. A bot mirroring new
+posts/projects/events into a community channel meets people where they are and
+drives them back to permanent, indexable pages. This is the highest-leverage
+mitigation for launching with posts and events on day one: **don't wait for people
+to discover the site — push to where they already are.**
+
+### Mobile-first, low-bandwidth as a hard constraint
+
+Mid-range Android on mobile data, with intermittent connectivity. This should
+discipline every choice: keep the RSC-by-default posture, be ruthless about client
+JS, aggressive image optimization, and make pages readable before hydration.
+
+### Moderation tooling + rate limits
+
+Since anyone signed in can post, these are mandatory rather than optional, and they
+are the *only* line of defense: report, hide/remove, ban, plus per-user and per-IP
+rate limits on every write. Ship them *with* posts, not after the first incident.
+
+### Search — with a Myanmar-script caveat 🔴
+
+Search across people/posts/projects. **Warning:** Shan and Burmese are written
+**without spaces between words**, so Postgres's default full-text tokenizer will
+segment it badly or not at all. Naive `to_tsvector('simple', ...)` will disappoint.
+Needs real investigation (ICU segmentation, n-grams, or a dedicated engine) — do not
+assume standard FTS works.
+
+### Smaller, cheap wins
+
+- **RSS/Atom feeds** — developers still use them; near-free with App Router.
+- **Timezone care for events** — Myanmar is **UTC+06:30**, a half-hour offset that
+  naive timezone code routinely mangles. Store UTC, render local.
+- **Code of conduct** — needed the day strangers can post.
+- **Jobs board** — natural v2; makes the directory pay for itself.
+
+## Architecture
+
+### Current 🟢 (as built)
+
+Next.js 16.2 App Router · React 19.2 · TypeScript strict · Tailwind v4 (CSS-first) ·
+shadcn `base-nova` on **Base UI** (not Radix). Gotchas: [`AGENTS.md`](./AGENTS.md).
+
+### Proposed 🟡
+
+- **Database: Postgres** — Better Auth needs one anyway. Supabase or Neon; Supabase
+  if solo, since it bundles DB, storage, and image handling.
+- **Content:** posts/projects/events/profiles in Postgres. Curated resources and the
+  glossary can be MDX in-repo (free versioning and review via git).
+- **Hosting:** Vercel.
+
+### Data model sketch 🟡
+
+Thin on purpose — enough to start, not a schema.
+
+- **Member** — handle, display name (Shan + Latin), pronouns, bio (per-locale),
+  coarse location (optional), skills, links, OAuth identities, `listed`,
+  `pseudonymous`. *(No verification state — signing in is the gate.)*
+- **Project** — owner, title, description, language tag, repo/demo links, tags.
+- **Post** — author, body, **language tag**, tags, timestamps, moderation state.
+- **Event** — host, title, description, **start UTC**, timezone, online/physical,
+  join link, language tag.
+- **GlossaryTerm** — English term, Shan term, definition, notes.
+- **Report** — target, reporter, reason, state.
+
+## Design system
+
+Conventions live in [`AGENTS.md`](./AGENTS.md). Two decisions belong here:
+
+### Brand color 🔴
+
+The palette is **100% greyscale today**, chart tokens included. Pick the brand color
+and the dark palette **in one pass**, because:
+
+### Dark mode is declared but non-functional 🔴
+
+`globals.css` declares the `dark` variant and components carry `dark:` classes, but
+**no `.dark` token block exists**, so those classes are inert. Unfinished work, not
+a cleanup task.
+
+## Governance 🔴
+
+Who moderates, and how quickly? Who curates the glossary? Who writes the code of
+conduct?
+
+Moderation is now the *only* line of defense, since anyone signed in can post — which
+makes this more urgent, not less. It reads as a non-engineering concern and is in fact
+what determines whether the site is alive in a year. Answer it before launch.
+
+## Open questions
+
+1. Do the missing Shan glyphs (SHAN THA, Council tones, SHAN RR) matter for the
+   orthography you'll actually publish in? **Blocks committing to this font.**
+2. Who authored `aj06.ttf`, and under what license?
+3. Is there a bold weight of A J Kunheing available?
+4. Locale-prefixed URLs? Default locale for anonymous visitors? **Blocks routing.**
+5. Brand color and dark palette.
+6. Who moderates, and how fast?
+7. Does a Shan technical-vocabulary effort already exist to align the glossary with?
+8. Is there an existing community to seed from, or is this cold-start from zero?

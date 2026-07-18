@@ -49,7 +49,10 @@ here even when they compile.
   `components/`; `shadcn add` will overwrite `ui/`.
 - **`cn()` everywhere**, never template-string class concatenation.
 - **Semantic tokens only.** Any hex or raw palette colour (`bg-neutral-900`) opts out
-  of theming — flag it.
+  of theming — flag it. The palette is deliberately monochrome, so a colour appearing
+  at all is worth questioning.
+- **`rounded-lg` only**, outside registry-managed `components/ui/`. Any other
+  `rounded-*` or a pixel radius is a consistency break — flag it.
 - **Server Components by default.** Is `"use client"` on the smallest leaf that needs
   it, or did a whole page become client-side for one handler? The target user is on a
   mid-range Android phone on mobile data.

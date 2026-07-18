@@ -52,20 +52,21 @@ suggested-links features. Keep it to a clear message and a way back.
    locale.
 5. Renders **with no session** and is not indexable as real content.
 6. **Monochrome only** — semantic tokens (`bg-background`, `text-muted-foreground`),
-   no hardcoded colours. Per PBI-005 the palette is deliberately black and white, so
-   hierarchy comes from size, spacing, and borders.
-7. **No `font-bold` on Shan text.** The AJ fonts are Regular only; bold is synthesized
+   no hardcoded colours. The palette is deliberately black and white, so hierarchy
+   comes from size, spacing, and borders.
+7. **`rounded-lg` for any corner**, per the single-radius rule in `AGENTS.md`.
+8. **No `font-bold` on Shan text.** The AJ fonts are Regular only; bold is synthesized
    and distorts Myanmar marks. This is the constraint most likely to be broken by a
    generic "big bold 404" layout.
-8. Shan renders in the Shan font, via the existing `--font-sans` stack. Unchanged from
+9. Shan renders in the Shan font, via the existing `--font-sans` stack. Unchanged from
    PBI-002.
-9. **Server Component.** No `"use client"` — a 404 page needs no interactivity.
-10. Reuses existing components. The "go home" affordance should be `components/ui/button.tsx`
+10. **Server Component.** No `"use client"` — a 404 page needs no interactivity.
+11. Reuses existing components. The "go home" affordance should be `components/ui/button.tsx`
     (or its `link` variant), not a new one-off. See the reuse ladder in `AGENTS.md`.
-11. Readable on a narrow viewport — mid-range Android on mobile data.
-12. A test asserts the localised 404 renders and that Shan script survives, in the
+12. Readable on a narrow viewport — mid-range Android on mobile data.
+13. A test asserts the localised 404 renders and that Shan script survives, in the
     shape of the existing `__tests__/page.test.tsx`.
-13. `npm run lint`, `npm run build`, and `npm test` pass, and it is verified in the
+14. `npm run lint`, `npm run build`, and `npm test` pass, and it is verified in the
     running app at a real unknown URL.
 
 ## Notes

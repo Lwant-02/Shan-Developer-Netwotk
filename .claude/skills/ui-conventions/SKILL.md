@@ -75,7 +75,11 @@ alongside the component, props typed off the Base UI primitive.
   resolves conflicting utilities, template strings don't, and the bug only surfaces
   when a caller passes `className`.
 - **Accept and merge `className`** last on anything composable.
-- **Radii** come from `--radius`: use `rounded-md` / `rounded-lg`, not pixel values.
+- **Radii: `rounded-lg` only.** One radius everywhere — cards, inputs, dialogs,
+  images, buttons. Not `rounded-md`, not `rounded-xl`, not a pixel value. If a design
+  seems to want a different corner, it doesn't; use spacing or a border instead.
+  `components/ui/` is the exception — it's registry-managed, so leave the radii
+  `shadcn add` ships rather than forking those files.
 - **New design tokens** go in the `@theme inline` block in `app/globals.css`. There
   is no `tailwind.config.js` — Tailwind v4 is configured in CSS, deliberately.
 

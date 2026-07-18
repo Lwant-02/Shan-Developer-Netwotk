@@ -75,7 +75,7 @@ All routes live under `app/[locale]/`. Locales are **`shn` (default) and `en`**,
 - **Component variants** use `cva`, exported alongside the component (see `buttonVariants`).
 - **Colors** are always semantic tokens (`bg-background`, `text-muted-foreground`). Never hardcode a hex or a raw Tailwind palette color like `bg-neutral-900`; it will not respond to theming.
 - **Server Components by default** (`rsc: true`). Only add `"use client"` when a component genuinely needs state, effects, or event handlers.
-- **Radii** derive from a single `--radius`; use `rounded-md`/`rounded-lg` etc. rather than fixed pixel values.
+- **Radii: `rounded-lg` and nothing else.** One radius across the whole UI — cards, inputs, dialogs, images, buttons. Not `rounded-md`, not `rounded-xl`, not a pixel value. Mixed corner radii are the fastest way for a small design system to start looking accidental, and there is no visual justification for a second radius here. The exception is `components/ui/`, which is registry-managed: leave whatever `shadcn add` ships (`button.tsx` has two `rounded-[min(var(--radius-md),…)]` size variants) rather than forking those files from upstream.
 - **Comment sparingly.** Don't narrate what the code already says, and don't leave a running commentary explaining your reasoning. A comment earns its place only when it records something the reader cannot see — a non-obvious constraint, a deprecation, a workaround for an upstream limitation. Default to none.
 
 ## Building and refactoring UI

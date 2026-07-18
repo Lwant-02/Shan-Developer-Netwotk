@@ -42,13 +42,17 @@ every branch, so a PBI filed on an unmerged branch still holds its number.
 | [006](./006/prd.md) | Locale-prefixed routing with next-intl | Done | `/shn` and `/en`, `/` → `/shn`. Implements 004. Should land before any auth or home-page routes. |
 | [007](./007/prd.md) | Sitemap and robots.txt | Done | Neither file exists; nothing tells a crawler the routes exist. Indexability is the recruiting mechanism. |
 | [008](./008/prd.md) | Design the 404 page | Done | Next's unstyled English default is replaced by a localized page. Verified and completed with verified Shan script. |
-| [009](./009/prd.md) | Installable PWA (web manifest + icons) | Proposed | Home-screen install for mid-range Android; manifest + icons only, **no service worker** (offline deferred). Needs a ≥512 icon source — the current logo is 96×96. |
+| [009](./009/prd.md) | Installable PWA (web manifest + icons) | Done | `app/manifest.ts` + install icons; **no service worker** (offline deferred). Icons are placeholder upscales of the 96px logo — real ≥512 art is an Open Question below. |
 
 ## Open questions — not yet PBIs
 
 Known-open work. **File these with `create-pbi` when you actually want them built**,
 not before. The reasoning behind each lives in `design.md`.
 
+- **Replace the placeholder PWA icons.** PBI-009 ships `icon-192/512/maskable` upscaled
+  from the 96×96 logo, so the home-screen icon is soft. Swap in real ≥512 (ideally
+  vector) art — the same missing asset blocks a proper OG image and a 180 apple-touch
+  icon. One good source resolves all three.
 - **Subset the fonts to `.woff2`.** ~250 KB of unsubsetted `.ttf` ships today and the
   audience is on mobile data; `design.md` calls it the highest-leverage perf win.
   Consider dropping `aj00` — `aj12` supersedes its coverage.

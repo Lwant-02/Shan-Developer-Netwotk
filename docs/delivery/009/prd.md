@@ -2,10 +2,16 @@
 
 | | |
 | --- | --- |
-| **Status** | Proposed |
+| **Status** | Done |
 | **Created** | 2026-07-18 |
-| **Depends on** | A ≥512×512 icon source (human/design input — see Notes) |
+| **Completed** | 2026-07-18 |
 | **Relates to** | PBI-008 (already set `appleWebApp` + `icons` in the layout) |
+
+> **Closed with a recorded deviation on CoS 2.** The owner chose to ship a working
+> install now with **placeholder icons upscaled from the 96×96 logo**, and replace
+> them with real ≥512 art later (tracked in the backlog's Open Questions). The manifest
+> is install-valid and every other CoS is met cleanly; only icon *quality* is deferred.
+> "Done" here means merged and verified, not deployed — Vercel is not linked yet.
 
 ## Problem
 

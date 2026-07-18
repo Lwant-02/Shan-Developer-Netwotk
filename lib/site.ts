@@ -3,6 +3,8 @@
 // Shan marketing copy, which is a human task — see AGENTS.md.
 export const siteConfig = {
   name: "Shan Developer Network",
+  // Home-screen label under the PWA icon, where long names truncate.
+  shortName: "SDN",
   title: "Shan Developer Network",
   description:
     "A community platform for Shan-speaking developers — profiles, projects, posts, and member-hosted events.",

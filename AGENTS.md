@@ -20,6 +20,12 @@ justified against that thesis is out of scope.
 `design.md` marks items 🟢 decided / 🟡 proposed / 🔴 open. **Don't build against a
 🟡 or 🔴 without asking.**
 
+**This file is rules and policy only** — the constraints an agent must follow.
+Feature *status* (what's built, mocked, or still open) lives in `design.md`
+(decisions) and `docs/delivery/` (the backlog). Don't record state here: it goes
+stale and then misleads. A note earns its place in this file only if it changes what
+an agent is allowed to do.
+
 ## Rules that follow from the product
 
 - **Anonymous visitors get full read access.** Posts, projects, profiles, and events
@@ -147,6 +153,8 @@ re-derive this:
   on mobile data, and every client component is JS they download and execute. If you
   reach for `"use client"`, be able to name which of the four triggers forced it.
 - **Radii: `rounded-lg` and nothing else.** One radius across the whole UI — cards, inputs, dialogs, images, buttons. Not `rounded-md`, not `rounded-xl`, not a pixel value. Mixed corner radii are the fastest way for a small design system to start looking accidental, and there is no visual justification for a second radius here. The exception is `components/ui/`, which is registry-managed: leave whatever `shadcn add` ships (`button.tsx` has two `rounded-[min(var(--radius-md),…)]` size variants) rather than forking those files from upstream.
+- **No bold on Shan text.** The AJ fonts are Regular-only (`usWeightClass 400`), so `font-bold` / `font-semibold` / `font-medium` synthesize faux-bold that distorts Myanmar tone marks. Express emphasis with size, color, or spacing. This binds nearly all UI, since any string can contain Shan.
+- **Theme with CSS, never React state.** A `.dark` block in `globals.css` drives both (greyscale) palettes; swap themed content with `dark:` utilities. The server can't know the visitor's theme, so a state swap mismatches on hydration, and `react-hooks/set-state-in-effect` rejects the mounted-guard workaround. **`components/theme-provider.tsx` must not gain `"use client"`** — next-themes' provider carries it, so the wrapper stays a Server Component and its pre-paint `<script>` renders server-side only; a client wrapper makes React re-render the script on navigation, which React 19 rejects. The shadcn `dark:` classes are live — still don't edit `components/ui/*`.
 - **Comment sparingly.** Don't narrate what the code already says, and don't leave a running commentary explaining your reasoning. A comment earns its place only when it records something the reader cannot see — a non-obvious constraint, a deprecation, a workaround for an upstream limitation. Default to none.
 
 ## Building and refactoring UI
@@ -186,50 +194,25 @@ Styling rules, which are not negotiable because theming depends on them:
   above. A whole page marked `"use client"` because one button has an `onClick` is
   a bug, not a shortcut.
 
-## Known gaps — do not mistake these for finished work
+## Constraints from shipped features
 
-- **Dark mode is built** (PBI-011, reversing PBI-003's light-only call). `globals.css`
-  has a `.dark` block mirroring `:root`; both palettes are **greyscale** since brand
-  colour is still open. `next-themes` sets the class before first paint via
-  `components/theme-provider.tsx`, defaults to the OS preference, and persists an
-  explicit choice; the toggle is `components/shell/theme-toggle.tsx` in the left nav.
-  The shadcn `dark:` classes are **live now** — still don't edit `components/ui/*`.
-  **Swap themed content with CSS (`dark:`), never React state**: the server can't know
-  the visitor's theme, so a state swap either mismatches on hydration or needs a
-  mounted guard, and `react-hooks/set-state-in-effect` rejects the guard. See
-  `theme-toggle.tsx`. **`components/theme-provider.tsx` has no `"use client"`, and
-  must not gain one** — next-themes' own provider carries it, so the wrapper stays a
-  Server Component and its pre-paint `<script>` is server-rendered only. Marking the
-  wrapper client makes React re-render that script on every client navigation and
-  React 19 rejects it ("Encountered a script tag while rendering React component").
-  **The 404s stay light** — they render outside the locale layout, so they get no
-  provider and no pre-paint script.
-- **The home page is a Reddit-style shell over a *mock* feed (PBI-010).** `app/[locale]/page.tsx`
-  composes `components/shell/` (top nav, left nav, right rail) and `components/feed/`
-  (post card + feed) reading `lib/feed.ts` — a **typed mock**, not a database. Real
-  posts, auth, and the **voting mechanic** (the card has a display-only vote *slot*)
-  are still open. All chrome is **fully translated into Shan** (owner-written; verify
-  with `npm run i18n:prompt`, which reports clean). Locale-aware links/redirects use
-  `i18n/navigation.ts` (`Link`, `useRouter`,
-  `usePathname` from `createNavigation`) — the locale switcher swaps `/shn`↔`/en` there.
-  The shell is **full-bleed**: the sidebar is flush to the viewport edge with a
-  `border-r`, not a centred max-width container. **Create, notifications, and the
-  account avatar in the top nav are present but `disabled`** — the signed-in nav's
-  shape without a fabricated session; the avatar is a generic icon and must never
-  become an identity or presence indicator before auth gates it. Post `⋯` menus
-  (report/edit/delete) are likewise display-only: edit/delete must become
-  owner-only, and report needs moderation (PBI-005, deferred).
-- **`motion` and `lucide-react` are both in use now.** `components/motion/reveal.tsx`
-  (a `"use client"` leaf, honors reduced motion) animates the 404s — reuse it before
-  adding animation. `lucide-react` supplies the nav and post-card icons.
-- **The PWA is installable, but its icons are placeholders.** `app/manifest.ts` (PBI-009)
-  ships a real web manifest and the app installs to the home screen — but `icon-192`,
-  `icon-512`, and `icon-maskable` in `public/icons/` are **upscales of the 96×96 logo**,
-  so they're soft. There is **no service worker** (offline is a separate, later PBI), so
-  Chrome shows the manual install but not the automatic prompt. Replace the icons with
-  ≥512 art when it exists — the same asset also fixes the OG image and apple-touch icon.
-- **The palette is entirely greyscale** (neutral base, all chart colors are grey). Brand colors are not chosen yet.
-- **Fonts are wired; the files are not yet optimized.** `public/fonts/` holds **`aj12.ttf`** ("AJ 12" — the Shan font, 116 Myanmar codepoints including SHAN THA, the Council tones, and SHAN RR) and **`aj00.ttf`** ("A J Kunheing 00" — 59 codepoints, secondary fallback). Both load via `next/font/local` in `app/fonts.ts` (shared, because the 404 pages need them too — see the 404 note under "Routing and locales"). Shan text is handled by a **fallback stack**, not per-element classes: `--font-sans` in `globals.css` is `Google Sans → aj12 → aj00 → sans-serif`, and the browser falls back per glyph, so mixed Shan/Latin works with no markup. Both fonts are **Regular only (`usWeightClass 400`) — there is no bold**, so never reach for `font-bold` on Shan text; use size, color, or spacing. **Still open:** the `.ttf`s ship unsubsetted (~250 KB total) and should become subsetted `.woff2` — the audience is on mobile data. See `design.md`.
+Rules that fall out of already-built work. What is built, mocked, or still open is
+*status* — read it from `design.md` and the backlog, not here.
+
+- **The top-nav Create / notifications / account controls are display-only until
+  auth.** The avatar is a generic icon and **must never assert a logged-in identity or
+  presence** — no name, no photo, no presence dot — while "Sign in" shows. Post `⋯`
+  actions are the same: when auth lands, edit/delete become owner-only and report needs
+  moderation (PBI-005).
+- **The command palette (`components/search/`) loads kbar lazily** — never hoist
+  `KBarProvider` into a layout, or its bundle lands on every page. Its matching is
+  provisional and does **not** settle Myanmar-script tokenisation (🔴 in `design.md`).
+- **Reuse `components/motion/reveal.tsx`** for entrance animation before adding new
+  motion; it's a `"use client"` leaf that honors reduced motion.
+- **Fonts load via a per-glyph fallback stack** (`--font-sans` in `globals.css`), not
+  per-element classes, so mixed Shan/Latin needs no markup. Shared through
+  `app/fonts.ts` because the 404 pages, which render outside the locale layout, need
+  the variables too.
 
 ## Commands
 

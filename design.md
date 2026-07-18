@@ -109,11 +109,11 @@ Both fonts load via **`next/font/local`** in `app/layout.tsx` as `--font-aj12` a
 per-element classes, defined as `--font-sans` in `app/globals.css`:
 
 ```
-Montserrat  →  aj12  →  aj00  →  sans-serif
+Google Sans  →  aj12  →  aj00  →  sans-serif
 ```
 
 The browser falls back **per glyph**, so a sentence mixing Shan and Latin renders
-Montserrat for the Latin and AJ for the Shan with no markup, no `lang` attribute, and
+Google Sans for the Latin and AJ for the Shan with no markup, no `lang` attribute, and
 no risk of untagged user content missing out. That last point is why a stack beats a
 `:lang(shn)` rule here — content is user-generated and multilingual per string.
 

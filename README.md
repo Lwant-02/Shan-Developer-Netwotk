@@ -35,7 +35,7 @@ Then open <http://localhost:3000>.
 | Components | shadcn, `base-nova` style, built on [Base UI](https://base-ui.com) |
 | Icons      | lucide-react                                              |
 | Animation  | motion                                                    |
-| Fonts      | Montserrat (Latin) + AJ 12 / A J Kunheing 00 (Shan), via `next/font` |
+| Fonts      | Google Sans (Latin) + AJ 12 / A J Kunheing 00 (Shan), via `next/font` |
 | Database   | Neon (Postgres) — not yet wired                           |
 | Hosting    | Vercel                                                    |
 | Tests      | Vitest + React Testing Library                            |

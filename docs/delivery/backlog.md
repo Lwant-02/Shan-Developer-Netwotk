@@ -35,7 +35,7 @@ every branch, so a PBI filed on an unmerged branch still holds its number.
 | ID | Title | Status | Notes |
 | --- | --- | --- | --- |
 | [001](./001/prd.md) | Font attribution and licensing | Done | AJ (Jao Kunheing) built the fonts free for Shan speakers. Attribution in `public/fonts/CREDITS.md`. |
-| [002](./002/prd.md) | Apply the Shan font to Shan text | Done | Fallback stack `Montserrat → aj12 → aj00` in `--font-sans`. Verified in built CSS. |
+| [002](./002/prd.md) | Apply the Shan font to Shan text | Done | Fallback stack `Google Sans → aj12 → aj00` in `--font-sans`. Verified in built CSS. |
 | [003](./003/prd.md) | Dark mode palette | Won't Do | **Decided: light mode only.** Keep the inert `dark:` classes; see `design.md`. |
 | [004](./004/prd.md) | Decide locale routing | Done | **Locale-prefixed URLs, Shan (`shn`) default.** Implemented by 006. |
 | [005](./005/prd.md) | Moderation policy and code of conduct | Deferred | Revisit before public launch. |

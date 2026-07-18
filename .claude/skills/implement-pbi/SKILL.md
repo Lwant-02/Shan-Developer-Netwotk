@@ -9,10 +9,18 @@ description: Implement an agreed Product Backlog Item from docs/delivery/ — wo
 
 **If the user did not give a PBI ID, ask. Do not guess and do not pick one yourself.**
 
-Read the backlog first so the question is useful:
+First check whether the branch already answers it:
 
 ```bash
-cat docs/delivery/backlog.md
+npm run pbi:current     # feature/012-... -> 012; exits non-zero if none
+```
+
+If that returns an ID you're resuming that PBI — confirm rather than asking from
+scratch. Otherwise read the backlog so the question is useful:
+
+```bash
+npm run pbi:list agreed   # startable items
+npm run pbi:list          # everything, with statuses
 ```
 
 Then **use AskUserQuestion**, offering the items that are actually startable —

@@ -39,21 +39,37 @@ out-of-scope work as `Proposed` doesn't defer the problem, it launders it.
 **1. Check it doesn't already exist.**
 
 ```bash
+npm run pbi:list
 cat docs/delivery/backlog.md
 ```
+
+Note that a backlog **row** can exist without a `docs/delivery/<id>/` directory —
+several rows were seeded ahead of their PRDs. A row with no directory is still a
+real, claimed PBI: write its PRD rather than filing a new ID for the same work.
 
 Read the rows *and* the "Open questions" section at the bottom — the thing may already
 be tracked as an unanswered question rather than a PBI. If it overlaps an existing
 PBI, extend that one instead of filing a near-duplicate.
 
-**2. Take the next free ID.**
+**2. Take the next free ID — don't read it off the table by eye.**
 
 ```bash
-ls docs/delivery/
+npm run pbi:next        # fetches, then scans every ref
 ```
 
-Next number after the highest, including `Reserved` rows that have no directory yet.
-**Never reuse or renumber an ID** — commit messages reference them permanently.
+This matters because **the working tree is not the whole picture.** A PBI filed on
+someone else's branch, or on a branch you haven't merged, still claims its ID. The
+helper fetches and scans the working tree, every local branch, and every
+remote-tracking branch — backlog rows *and* `docs/delivery/NNN/` directories, since
+either can exist without the other.
+
+Use its output verbatim. **Never reuse or renumber an ID** — commit messages
+reference them permanently.
+
+**What it cannot see:** a PBI created on another machine and never pushed. That's
+unavoidable. If more than one person files PBIs, claim the ID early by pushing the
+backlog row as its own commit, before writing the PRD. `npm run pbi:check` reports
+any ID that ended up claimed for two different things.
 
 **3. Add the backlog row**, status `Proposed`.
 

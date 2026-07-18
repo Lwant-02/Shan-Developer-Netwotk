@@ -8,7 +8,11 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "pbi:next": "node scripts/pbi.mjs next --fetch",
+    "pbi:current": "node scripts/pbi.mjs current",
+    "pbi:list": "node scripts/pbi.mjs list",
+    "pbi:check": "node scripts/pbi.mjs check --fetch"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

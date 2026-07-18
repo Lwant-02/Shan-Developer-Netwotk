@@ -151,6 +151,24 @@ Work is tracked as **Product Backlog Items (PBIs)** in `docs/delivery/`:
   satisfaction.
 - `docs/delivery/<id>/tasks.md` — the breakdown.
 
+Resolve IDs with the helper, never by reading the table:
+
+```bash
+npm run pbi:next        # next free id — fetches and scans every ref
+npm run pbi:current     # id from the branch, e.g. feature/012-... -> 012
+npm run pbi:list agreed # PBIs by status
+npm run pbi:check       # ids claimed for two different things
+```
+
+`pbi:next` scans all local and remote refs, not just your checkout, because a PBI
+filed on an unmerged branch still owns its ID. It cannot see work created on another
+machine and never pushed — if several people file PBIs, push the backlog row first to
+claim the number, then write the PRD.
+
+A backlog **row can exist without a `docs/delivery/<id>/` directory.** Several were
+seeded ahead of their PRDs; the row is the claim, so write the PRD rather than
+allocating a fresh ID for work that already has one.
+
 **A PBI must be `Agreed` before code is written for it.** `Proposed` means written
 down, not decided — building against one is the same error as building against a 🟡
 or 🔴 in `design.md`. Ask first.

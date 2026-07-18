@@ -25,18 +25,18 @@ A PBI must reach `Agreed` before code is written for it. This mirrors the
 | ID | Title | Status | Notes |
 | --- | --- | --- | --- |
 | [001](./001/prd.md) | Font attribution and licensing | Done | Attribution recorded in `public/fonts/CREDITS.md` with sources. Owner's call: AJ built these free for Shan speakers. No longer treated as a blocker. |
-| 002 | Apply the Shan font to Shan text | Done | Fallback stack `Montserrat → aj12 → aj00` in `--font-sans`. Verified in built CSS. |
-| 003 | Subset fonts and convert to woff2 | Proposed | Highest-leverage perf win; audience on mobile data. Consider dropping aj00 — aj12 supersedes its coverage. |
-| 004 | Define the dark mode palette | Won't Do | **Decided: light mode only.** Keep the inert `dark:` classes; see `design.md`. |
-| 005 | Choose brand colors | Proposed | Palette is entirely greyscale. Light palette only now. |
-| 006 | Decide locale routing | Done | **Locale-prefixed URLs, Shan (`shn`) default.** Implementing `next-intl` is a separate PBI. |
-| 007 | Better Auth with Google + GitHub OAuth | Proposed | Sign-in is the only gate. Not NextAuth. Database is Neon. |
-| 008 | Rate limiting for write endpoints | Proposed | Required before any write path ships. Depends on 007. **Load-bearing** — governance is deferred, so technical controls carry the whole spam defense. |
-| 009 | Moderation policy and code of conduct | Deferred | Owner deferred. Revisit before public launch. |
-| 010 | Build the real home page | Proposed | `app/page.tsx` is one line of text. Depends on 005. |
-| 011 | Contributor onboarding (CONTRIBUTING.md, issue templates) | Proposed | Needed before inviting collaborators. Depends on 001. |
-| 012 | Implement `next-intl` locale routing | Proposed | Routing decision is made (006); the implementation isn't. Prefixed URLs, `shn` default. |
-| 013 | Choose image/file storage | Proposed | Neon is Postgres only — unlike Supabase it bundles no storage. Needed before avatars or post images. |
+| [002](./002/prd.md) | Apply the Shan font to Shan text | Done | Fallback stack `Montserrat → aj12 → aj00` in `--font-sans`. Verified in built CSS. |
+| [003](./003/prd.md) | Subset fonts and convert to woff2 | Proposed | Highest-leverage perf win; audience on mobile data. Consider dropping aj00 — aj12 supersedes its coverage. |
+| [004](./004/prd.md) | Define the dark mode palette | Won't Do | **Decided: light mode only.** Keep the inert `dark:` classes; see `design.md`. |
+| [005](./005/prd.md) | Choose brand colors | Proposed | Palette is entirely greyscale. Light palette only now. |
+| [006](./006/prd.md) | Decide locale routing | Done | **Locale-prefixed URLs, Shan (`shn`) default.** Implementing `next-intl` is a separate PBI. |
+| [007](./007/prd.md) | Better Auth with Google + GitHub OAuth | Proposed | Sign-in is the only gate. Not NextAuth. Database is Neon. |
+| [008](./008/prd.md) | Rate limiting for write endpoints | Proposed | Required before any write path ships. Depends on 007. **Load-bearing** — governance is deferred, so technical controls carry the whole spam defense. |
+| [009](./009/prd.md) | Moderation policy and code of conduct | Deferred | Owner deferred. Revisit before public launch. |
+| [010](./010/prd.md) | Build the real home page | Proposed | `app/page.tsx` is one line of text. Depends on 005. |
+| [011](./011/prd.md) | Contributor onboarding (CONTRIBUTING.md, issue templates) | Proposed | Needed before inviting collaborators. Depends on 001. |
+| [012](./012/prd.md) | Implement `next-intl` locale routing | Proposed | Routing decision is made (006); the implementation isn't. Prefixed URLs, `shn` default. |
+| [013](./013/prd.md) | Choose image/file storage | Proposed | Neon is Postgres only — unlike Supabase it bundles no storage. Needed before avatars or post images. |
 
 ## Open questions not yet turned into PBIs
 

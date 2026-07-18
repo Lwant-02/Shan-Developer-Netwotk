@@ -16,6 +16,22 @@ const stub = ({ variable = "" }: { variable?: string }) => ({
 vi.mock("next/font/google", () => ({ Google_Sans: vi.fn(stub) }));
 vi.mock("next/font/local", () => ({ default: vi.fn(stub) }));
 
+// jsdom has no matchMedia; motion's useReducedMotion calls it. Default to "no
+// preference" so animated components render their final state under test.
+if (!window.matchMedia) {
+  window.matchMedia = (query: string) =>
+    ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+      dispatchEvent: () => false,
+    }) as unknown as MediaQueryList;
+}
+
 afterEach(() => {
   cleanup();
 });

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 
+import { Reveal } from "@/components/motion/reveal";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { fontVariables } from "../fonts";
@@ -30,21 +31,26 @@ export default function NotFound() {
       )}
     >
       <main className="flex flex-1 items-center justify-center px-6 py-16">
-        <div className="flex w-full max-w-md flex-col items-center gap-6 text-center">
-          <p className="border-border text-muted-foreground rounded-lg border px-4 py-2 text-4xl">
-            404
-          </p>
-          <div className="flex flex-col gap-2">
-            <h1 className="text-2xl">{t("title")}</h1>
+        <div className="border-border bg-card flex w-full max-w-sm flex-col items-center gap-6 rounded-lg border px-8 py-12 text-center shadow-sm">
+          <Reveal className="flex flex-col items-center gap-3">
+            <span className="text-6xl leading-none tracking-tight tabular-nums sm:text-7xl">
+              404
+            </span>
+            <span className="bg-border h-px w-10" />
+          </Reveal>
+          <Reveal delay={0.1} className="flex flex-col gap-2">
+            <h1 className="text-xl">{t("title")}</h1>
             <p className="text-muted-foreground text-sm">{t("description")}</p>
-          </div>
-          {/* Base UI's Button has no `asChild`, so a link reuses the variants directly. */}
-          <Link
-            href={`/${locale}`}
-            className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
-          >
-            {t("home")}
-          </Link>
+          </Reveal>
+          <Reveal delay={0.2}>
+            {/* Base UI's Button has no `asChild`, so a link reuses the variants directly. */}
+            <Link
+              href={`/${locale}`}
+              className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
+            >
+              {t("home")}
+            </Link>
+          </Reveal>
         </div>
       </main>
     </div>

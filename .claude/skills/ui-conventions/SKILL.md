@@ -95,8 +95,13 @@ alongside the component, props typed off the Base UI primitive.
   target user is on a mid-range Android phone on mobile data; every client component
   is JS they download and run.
 - **Icons** are `lucide-react` (installed, currently unused).
-- **Animation** is `motion` (installed, currently unused). Prefer CSS/Tailwind
-  transitions first; reach for `motion` only when a transition genuinely can't.
+- **Animation** is `motion` (imported from `motion/react`). Prefer CSS/Tailwind
+  transitions first; reach for `motion` only when a transition genuinely can't. Every
+  `motion` component is a client component, so it's a `"use client"` leaf — wrap the
+  smallest thing that moves, never a page. Reuse **`components/motion/reveal.tsx`**
+  (fade + rise on mount, `delay` prop for staggering) before writing a new animation,
+  and **honor `useReducedMotion`** like it does — no motion for users who asked for
+  none.
 
 ## Repo-specific traps
 
@@ -105,8 +110,6 @@ alongside the component, props typed off the Base UI primitive.
   which distorts Myanmar-block marks. Express emphasis with size, color, or spacing.
 - **Dark mode has no palette yet.** `dark:` variants are correct to write, but no
   `.dark { ... }` token block exists, so you cannot visually verify dark mode today.
-- **`* { cursor: pointer }`** in `globals.css` applies a pointer cursor to every
-  element including text. If it obstructs you, raise it — don't silently delete it.
 - **Text is multilingual**, and content language is independent of UI locale. Don't
   hardcode text direction or assume one language per page.
 

@@ -192,7 +192,7 @@ Styling rules, which are not negotiable because theming depends on them:
 - **`app/[locale]/page.tsx` is close to a placeholder.** It renders a greeting and
   the product name from the message files, with no real layout — enough to prove the
   locale plumbing works, not a home page.
-- **`motion` and `lucide-react` are installed but unused.**
+- **`lucide-react` is installed but unused.** `motion` is now used — `components/motion/reveal.tsx` (a `"use client"` leaf, honors reduced motion) animates the 404 pages; reuse it before adding animation.
 - **The PWA is installable, but its icons are placeholders.** `app/manifest.ts` (PBI-009)
   ships a real web manifest and the app installs to the home screen — but `icon-192`,
   `icon-512`, and `icon-maskable` in `public/icons/` are **upscales of the 96×96 logo**,
@@ -200,7 +200,6 @@ Styling rules, which are not negotiable because theming depends on them:
   Chrome shows the manual install but not the automatic prompt. Replace the icons with
   ≥512 art when it exists — the same asset also fixes the OG image and apple-touch icon.
 - **The palette is entirely greyscale** (neutral base, all chart colors are grey). Brand colors are not chosen yet.
-- **`* { cursor: pointer }`** in `globals.css` is an intentional-looking global rule that applies a pointer cursor to *every* element, including text. If it gets in your way, raise it — don't silently delete it.
 - **Fonts are wired; the files are not yet optimized.** `public/fonts/` holds **`aj12.ttf`** ("AJ 12" — the Shan font, 116 Myanmar codepoints including SHAN THA, the Council tones, and SHAN RR) and **`aj00.ttf`** ("A J Kunheing 00" — 59 codepoints, secondary fallback). Both load via `next/font/local` in `app/fonts.ts` (shared, because the 404 pages need them too — see the 404 note under "Routing and locales"). Shan text is handled by a **fallback stack**, not per-element classes: `--font-sans` in `globals.css` is `Google Sans → aj12 → aj00 → sans-serif`, and the browser falls back per glyph, so mixed Shan/Latin works with no markup. Both fonts are **Regular only (`usWeightClass 400`) — there is no bold**, so never reach for `font-bold` on Shan text; use size, color, or spacing. **Still open:** the `.ttf`s ship unsubsetted (~250 KB total) and should become subsetted `.woff2` — the audience is on mobile data. See `design.md`.
 
 ## Commands

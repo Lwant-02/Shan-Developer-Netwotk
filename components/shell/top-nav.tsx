@@ -1,9 +1,9 @@
-import { Bell, Search, SquarePlus, User } from "lucide-react";
+import { Bell, SquarePlus, User } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
+import { SearchTrigger } from "@/components/search/search-trigger";
 import { buttonVariants } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Link } from "@/i18n/navigation";
 import { siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -32,28 +32,11 @@ export function TopNav() {
           <span className="hidden text-sm sm:inline">{siteConfig.name}</span>
         </Link>
 
-        {/* Search is a non-functional placeholder — wiring it is a separate PBI
-            (Myanmar-script tokenisation is unsolved). Disabled to signal that. */}
-        <div className="relative mx-auto hidden w-full max-w-lg flex-1 sm:block">
-          <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
-          <Input
-            disabled
-            placeholder={t("search")}
-            className="bg-muted text-muted-foreground h-10 border-transparent pl-9 disabled:opacity-100"
-          />
-        </div>
+        {/* Renders both entry points — the field above `sm`, the icon below — and
+            loads the palette only when one is used. */}
+        <SearchTrigger />
 
         <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
-          {/* Below `sm` the field has no room, so search collapses to its icon
-              rather than vanishing. */}
-          <button
-            type="button"
-            disabled
-            aria-label={t("search")}
-            className="text-muted-foreground hover:bg-muted flex size-9 items-center justify-center rounded-lg transition-colors disabled:pointer-events-none disabled:opacity-60 sm:hidden"
-          >
-            <Search className="size-5" />
-          </button>
           {/* Both need auth to do anything, so they are disabled rather than
               routed — a signed-out visitor gets "Sign in" as the one live action. */}
           <button

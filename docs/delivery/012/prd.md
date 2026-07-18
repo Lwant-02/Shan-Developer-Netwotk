@@ -2,10 +2,17 @@
 
 | | |
 | --- | --- |
-| **Status** | Proposed |
+| **Status** | Done |
 | **Created** | 2026-07-18 |
 | **Depends on** | PBI-010 (top nav + mock feed, Done) |
 | **Blocked by** | Nothing to ship the UI. **Real content search** additionally needs a database and the Myanmar-tokenisation decision — see Scope. |
+
+> **Closed.** The palette ships lazily — kbar lands in its own 68.1 KB chunk that is
+> **not** in the initial payload, so a visitor who never opens search never downloads
+> it. Unbuilt destinations are omitted. Matching is substring-based and **provisional**;
+> this PBI deliberately did not decide Myanmar tokenisation. Three CoS (⌘K/Esc,
+> keyboard navigation, ~360px) are verified by shape and need a browser — see
+> `tasks.md`. "Done" = merged + verified, not deployed.
 
 ## Problem
 

@@ -43,5 +43,13 @@
     "report": "ပွင်ႇတိုင်ႇ",
     "edit": "မႄး",
     "delete": "မွတ်ႇပႅတ်ႈ"
+  },
+  "Search": {
+    "placeholder": "ၶူၼ်ႉႁႃပွင်ႈလိၵ်ႈ လႄႈ လွင်ႈႁဵတ်းသၢင်ႈ…",
+    "sectionGo": "ၵႂႃႇတီႈ",
+    "sectionSettings": "ၵၢၼ်တင်ႈၵႃႈ",
+    "sectionPosts": "ပွင်ႈလိၵ်ႈ",
+    "switchTo": "လႅၵ်ႈပဵၼ် {locale}",
+    "noResults": "ဢမ်ႇမီးၽွၼ်းလႆႈ"
   }
 }

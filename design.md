@@ -270,10 +270,20 @@ Thin on purpose — enough to start, not a schema.
 
 Conventions live in [`AGENTS.md`](./AGENTS.md). Two decisions belong here:
 
-### Brand color 🔴
+### Brand color 🟢 (decided)
 
-The palette is **100% greyscale today**, chart tokens included. Still open — but now
-a single-pass job, since only the light palette needs picking.
+**Decided: monochrome — black and white, light theme only.** The greyscale palette
+already in `globals.css` is the intended one, not a placeholder: every token is
+zero-chroma `oklch`, and that stays.
+
+This is coherent with the no-dark-mode decision and it puts the emphasis on the
+typography, which is where this project's identity actually lives — Shan script
+rendering correctly is the point, not a brand hue.
+
+One consequence to design around: with no accent colour, **state has to be carried by
+weight, size, spacing, and borders**. That constraint bites harder than usual here,
+because the Shan fonts are Regular only — so no bold either. Contrast and layout do
+all the work.
 
 ### Dark mode 🟢 (decided: not building it)
 

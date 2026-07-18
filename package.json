@@ -12,7 +12,8 @@
     "pbi:next": "node scripts/pbi.mjs next --fetch",
     "pbi:current": "node scripts/pbi.mjs current",
     "pbi:list": "node scripts/pbi.mjs list",
-    "pbi:check": "node scripts/pbi.mjs check --fetch"
+    "pbi:check": "node scripts/pbi.mjs check --fetch",
+    "i18n:prompt": "node scripts/i18n-prompt.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

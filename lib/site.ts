@@ -1,3 +1,22 @@
+// Brand-level constants for site metadata. Values here are language-independent
+// or English by necessity (SEO description); localising the description needs
+// Shan marketing copy, which is a human task — see AGENTS.md.
+export const siteConfig = {
+  name: "Shan Developer Network",
+  title: "Shan Developer Network",
+  description:
+    "A community platform for Shan-speaking developers — profiles, projects, posts, and member-hosted events.",
+  keywords: [
+    "Shan",
+    "Shan developers",
+    "Tai Yai",
+    "Shan script",
+    "developer community",
+    "Myanmar developers",
+  ],
+  logo: "/icons/logo.png",
+} as const;
+
 // No production domain is registered yet. VERCEL_PROJECT_PRODUCTION_URL is set
 // automatically on Vercel; NEXT_PUBLIC_SITE_URL overrides it once a real domain
 // exists. Absolute URLs are required by the sitemap spec, so this must never be

@@ -85,10 +85,15 @@ alongside the component, props typed off the Base UI primitive.
 
 ## Structure
 
-- **Server Component by default.** Add `"use client"` only for state, effects, or
-  event handlers, and push it to the smallest leaf that needs it. Marking a whole
-  page `"use client"` for one `onClick` is a bug — the target user is on a mid-range
-  Android phone on mobile data.
+- **Server Component by default — a hard rule.** A file earns `"use client"` **only**
+  when it directly uses state (`useState`/`useReducer`), effects (`useEffect`), a
+  browser-only API, or a DOM event handler (`onClick`, `onChange`, …). Nothing else:
+  not `useTranslations`, not `async` data fetching, not taking a `className`. When you
+  do need the client, **extract the interactive control into its own leaf component**
+  and keep its parents on the server — never convert a whole page or layout for one
+  `onClick`. Be able to name which of the four triggers forced the directive. The
+  target user is on a mid-range Android phone on mobile data; every client component
+  is JS they download and run.
 - **Icons** are `lucide-react` (installed, currently unused).
 - **Animation** is `motion` (installed, currently unused). Prefer CSS/Tailwind
   transitions first; reach for `motion` only when a transition genuinely can't.
@@ -110,6 +115,8 @@ alongside the component, props typed off the Base UI primitive.
 ```bash
 npm run lint
 npm run build
+npm test
 ```
 
-There is no test setup. Verify UI by actually running `npm run dev` and looking at it.
+Vitest can't render async Server Components, so tests are a floor, not a substitute —
+verify UI by actually running `npm run dev` and looking at it.

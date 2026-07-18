@@ -62,6 +62,67 @@ All routes live under `app/[locale]/`. Locales are **`shn` (default) and `en`**,
 - **UI locale is not content language.** Posts/projects/events carry their own
   language tag; someone reading the UI in English must still see Shan content.
 
+### Shan strings are not machine-translated
+
+`messages/en.json` is the source of truth for structure; `messages/shn.json` is the
+Shan translation. **Agents don't write Shan copy by guessing.** A Shan term must be
+written by a Shan speaker or found attested by a web-searching agent — never
+machine-translated or invented, per PBI-006. Getting this wrong ships fluent-looking
+nonsense to the primary audience.
+
+- **Placeholder convention:** an untranslated Shan value is `"TODO(shn): <English>"`.
+  A left placeholder is a correct, honest state; a made-up Shan word is not. Never
+  ship a `TODO(shn):` string to production knowingly — flag it.
+- **`npm run i18n:prompt`** scans `shn.json` against `en.json` and prints a
+  translation brief (what to translate, and explicitly what *not* to do) for a
+  web-searching agent such as Gemini. It translates nothing itself. Use it to hand
+  off Shan copy rather than filling strings in yourself.
+
+### Site metadata
+
+`app/[locale]/layout.tsx` sets the site-wide SEO metadata via `generateMetadata`
+(per-locale, so `canonical`, `og:url`, `og:locale`, and hreflang are correct).
+Brand-level constants live in `siteConfig` in `lib/site.ts`; absolute URLs come from
+`siteUrl()` through `metadataBase`.
+
+- **Title template.** The layout sets `title.template` = `%s · Shan Developer
+  Network`. Any page that sets a string `title` gets wrapped. A page that needs a
+  bare title (the 404s) must use `title: { absolute: "…" }` to escape it.
+- **Canonical/hreflang describe the locale root.** They're set on the shared layout,
+  so they suit the home page only. When real sub-routes land, **each page must set
+  its own `alternates`** — otherwise every page claims the home URL as canonical.
+- **The description is static English.** Localising it needs Shan marketing copy (a
+  human task), not the `HomePage` message strings, which aren't a description.
+- **No OG image yet.** The only logo is 96×96, too small for a link-preview card. A
+  ~1200×630 image is needed before enabling `openGraph.images` / `twitter.images`.
+
+### 404s render outside the locale layout
+
+Established by PBI-008, after `global-not-found.tsx` was tried and rejected. Don't
+re-derive this:
+
+- **`notFound()` renders in Next's own `<html id="__next_error__">`, not
+  `app/[locale]/layout.tsx`.** The `lang` attribute and the `next/font` variable
+  classes are both dropped, so **Shan silently loses its font**. Any page reached
+  through `notFound()` must re-declare `lang` and the variables from `app/fonts.ts`
+  on its own wrapper. `app/[locale]/not-found.tsx` shows the shape.
+- **A segment's `not-found.tsx` only catches an explicit `notFound()`**, never an
+  unmatched URL — those go to the root not-found and lose the locale. That is why
+  `app/[locale]/[...rest]/page.tsx` exists and does nothing but throw. Deleting it
+  silently un-localises every 404.
+- **Don't reach for `experimental.globalNotFound`.** The docs recommend it for a root
+  layout under a dynamic segment, which describes this app — but it swallows *every*
+  404, including `/en/nope`, so a localised 404 becomes impossible.
+- **The 404 body is empty server-side**; content arrives in the RSC payload. This is
+  pre-existing Next behaviour here, not a regression — verified against a stock 404.
+- **The 404 `<title>` is static and not localised, on purpose.** `not-found.tsx` *can*
+  export `metadata` in this Next version (the docs only promise it for
+  `global-not-found`) and it wins over the layout — but it takes no params, so
+  localising the title needs `getTranslations()`, which **reads headers and flips the
+  invalid-locale path (`/fr.txt`) from static to dynamic, 500ing it**. A 404 is
+  `noindex`, so the title is a tab label, not an SEO surface; the localised message
+  lives in the visible `<h1>`. Keep the title a static string.
+
 ## The two things most likely to trip you up
 
 **1. shadcn here is built on Base UI, not Radix.** Components import from `@base-ui/react/*`. Most shadcn code in your training data uses `@radix-ui/react-*` with `asChild` and `React.forwardRef` — that is the wrong shape for this repo. Copy the patterns in `components/ui/button.tsx` instead. Run `npx shadcn@latest add <component>` to pull new components; don't hand-write them.
@@ -74,7 +135,17 @@ All routes live under `app/[locale]/`. Locales are **`shn` (default) and `en`**,
 - **Class names** always go through `cn()` from `@/lib/utils` — never template-string concatenation.
 - **Component variants** use `cva`, exported alongside the component (see `buttonVariants`).
 - **Colors** are always semantic tokens (`bg-background`, `text-muted-foreground`). Never hardcode a hex or a raw Tailwind palette color like `bg-neutral-900`; it will not respond to theming.
-- **Server Components by default** (`rsc: true`). Only add `"use client"` when a component genuinely needs state, effects, or event handlers.
+- **Server Components by default — this is a hard rule, not a lean.** `rsc: true`.
+  A file gets `"use client"` **only** when it directly uses state (`useState`/
+  `useReducer`), effects (`useEffect`), a browser-only API, or a DOM event handler
+  (`onClick`, `onChange`, …). Nothing else qualifies — not `useTranslations`, not
+  `async`/data fetching, not receiving `className`. When something does need the
+  client, **push `"use client"` down to the smallest leaf** and keep its parents on
+  the server: extract the one interactive control into its own component rather than
+  converting the page. A whole page or layout marked `"use client"` because one
+  button has an `onClick` is a bug — the target user is on a mid-range Android phone
+  on mobile data, and every client component is JS they download and execute. If you
+  reach for `"use client"`, be able to name which of the four triggers forced it.
 - **Radii: `rounded-lg` and nothing else.** One radius across the whole UI — cards, inputs, dialogs, images, buttons. Not `rounded-md`, not `rounded-xl`, not a pixel value. Mixed corner radii are the fastest way for a small design system to start looking accidental, and there is no visual justification for a second radius here. The exception is `components/ui/`, which is registry-managed: leave whatever `shadcn add` ships (`button.tsx` has two `rounded-[min(var(--radius-md),…)]` size variants) rather than forking those files from upstream.
 - **Comment sparingly.** Don't narrate what the code already says, and don't leave a running commentary explaining your reasoning. A comment earns its place only when it records something the reader cannot see — a non-obvious constraint, a deprecation, a workaround for an upstream limitation. Default to none.
 
@@ -124,7 +195,7 @@ Styling rules, which are not negotiable because theming depends on them:
 - **`motion` and `lucide-react` are installed but unused.**
 - **The palette is entirely greyscale** (neutral base, all chart colors are grey). Brand colors are not chosen yet.
 - **`* { cursor: pointer }`** in `globals.css` is an intentional-looking global rule that applies a pointer cursor to *every* element, including text. If it gets in your way, raise it — don't silently delete it.
-- **Fonts are wired; the files are not yet optimized.** `public/fonts/` holds **`aj12.ttf`** ("AJ 12" — the Shan font, 116 Myanmar codepoints including SHAN THA, the Council tones, and SHAN RR) and **`aj00.ttf`** ("A J Kunheing 00" — 59 codepoints, secondary fallback). Both load via `next/font/local` in `layout.tsx`. Shan text is handled by a **fallback stack**, not per-element classes: `--font-sans` in `globals.css` is `Google Sans → aj12 → aj00 → sans-serif`, and the browser falls back per glyph, so mixed Shan/Latin works with no markup. Both fonts are **Regular only (`usWeightClass 400`) — there is no bold**, so never reach for `font-bold` on Shan text; use size, color, or spacing. **Still open:** the `.ttf`s ship unsubsetted (~250 KB total) and should become subsetted `.woff2` — the audience is on mobile data. See `design.md`.
+- **Fonts are wired; the files are not yet optimized.** `public/fonts/` holds **`aj12.ttf`** ("AJ 12" — the Shan font, 116 Myanmar codepoints including SHAN THA, the Council tones, and SHAN RR) and **`aj00.ttf`** ("A J Kunheing 00" — 59 codepoints, secondary fallback). Both load via `next/font/local` in `app/fonts.ts` (shared, because the 404 pages need them too — see the 404 note under "Routing and locales"). Shan text is handled by a **fallback stack**, not per-element classes: `--font-sans` in `globals.css` is `Google Sans → aj12 → aj00 → sans-serif`, and the browser falls back per glyph, so mixed Shan/Latin works with no markup. Both fonts are **Regular only (`usWeightClass 400`) — there is no bold**, so never reach for `font-bold` on Shan text; use size, color, or spacing. **Still open:** the `.ttf`s ship unsubsetted (~250 KB total) and should become subsetted `.woff2` — the audience is on mobile data. See `design.md`.
 
 ## Commands
 
@@ -134,6 +205,7 @@ npm run build      # production build
 npm run lint       # eslint (bare `eslint`, no args)
 npm test           # vitest, single run
 npm run test:watch # vitest in watch mode
+npm run i18n:prompt # translation brief for missing/placeholder Shan strings
 ```
 
 ## Tests
@@ -150,6 +222,15 @@ notice by clicking around:
   implementation details.
 - `__tests__/utils.test.ts` — `cn()` actually resolves conflicting Tailwind
   utilities. This is the reason the `cn()` convention exists, so it's pinned.
+- `__tests__/not-found.test.tsx` — the 404 renders anonymously, its home link keeps
+  the visitor's locale, it carries the font variables itself (see the 404 note under
+  "Routing and locales"), and it uses no bold weight.
+- `__tests__/sitemap.test.ts` — the sitemap covers every locale in `routing.locales`.
+
+**`next/font` is stubbed in `vitest.setup.ts`.** It is a build-time transform with no
+runtime implementation, so importing it under Vitest throws. The stub echoes back a
+hashed-looking class name deliberately: a readable `font-aj12` would look like a
+Tailwind font utility and be merged away by `cn()`, which real emitted names aren't.
 
 When adding tests, write ones that would fail if a product rule in this file broke —
 anonymous read access, rate limits on writes, Shan text surviving a refactor. Don't

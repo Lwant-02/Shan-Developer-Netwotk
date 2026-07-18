@@ -53,7 +53,7 @@ Stop and report if any of these fail:
 ## Branch model
 
 ```
-feature/* → dev → main
+pbi/* and feature/* → dev → main
              │      │
              │      └─ production (this skill)
              └──────── preview (deploy-dev skill)

@@ -175,7 +175,7 @@ Resolve IDs with the helper, never by reading the table:
 
 ```bash
 npm run pbi:next        # next free id — fetches and scans every ref
-npm run pbi:current     # id from the branch, e.g. feature/012-... -> 012
+npm run pbi:current     # id from the branch, e.g. pbi/012-... -> 012
 npm run pbi:list agreed # PBIs by status
 npm run pbi:check       # ids claimed for two different things
 ```
@@ -204,17 +204,23 @@ when no ID is given — it never picks one on your behalf.
 ## Branches
 
 ```
-feature/* → dev → main
-             │      │
-             │      └─ production
-             └──────── preview deployments
+pbi/*  ─┐
+feature/*┴→ dev → main
+              │      │
+              │      └─ production
+              └──────── preview deployments
 ```
 
+- **Work on a PBI branches as `pbi/<id>-<slug>`** — `pbi/008-not-found-page`. The ID
+  makes the branch self-describing and lets `npm run pbi:current` recover it, so the
+  PBI never has to be re-established from memory mid-task.
+- **`feature/<slug>` is for work that belongs to no PBI.** Don't put an ID in it, and
+  don't invent one to fit the pattern — the same rule as commit scopes.
 - **`main` is production.** It is the only branch that deploys to the live site.
   Never commit directly to it and never force-push it.
 - **`dev` is the integration branch**, and the only branch that gets preview
-  deployments. Feature branches merge into `dev` first.
-- Going straight from a feature branch to `main` skips the preview that would have
+  deployments. Both branch kinds merge into `dev` first.
+- Going straight from a topic branch to `main` skips the preview that would have
   caught the problem. Don't.
 
 Deploys are driven by the `deploy-dev` and `deploy-prod` skills in `.claude/skills/`,
@@ -229,11 +235,11 @@ branch behind on both sides and has to be cleaned up by hand.
 merge on the owner's behalf unless asked in that turn.
 
 ```bash
-gh pr create --base dev --head feature/<id>-<slug> --title "..." --body "..."
+gh pr create --base dev --head pbi/<id>-<slug> --title "..." --body "..."
 ```
 
 On merge, GitHub deletes the remote branch automatically. Delete your local copy
-afterwards with `git branch -D feature/<id>-<slug>`.
+afterwards with `git branch -D pbi/<id>-<slug>`.
 
 ## Commit messages
 

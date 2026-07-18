@@ -12,7 +12,7 @@ description: Implement an agreed Product Backlog Item from docs/delivery/ — wo
 First check whether the branch already answers it:
 
 ```bash
-npm run pbi:current     # feature/012-... -> 012; exits non-zero if none
+npm run pbi:current     # pbi/012-... -> 012; exits non-zero if none
 ```
 
 If that returns an ID you're resuming that PBI — confirm rather than asking from
@@ -65,7 +65,7 @@ Branch off `dev` — never work directly on `dev` or `main`:
 ```bash
 git rev-parse --abbrev-ref HEAD
 git switch dev && git pull
-git switch -c feature/<id>-<short-slug>
+git switch -c pbi/<id>-<short-slug>
 ```
 
 Mark the PBI `InProgress` in **both** `docs/delivery/backlog.md` and the PRD header.

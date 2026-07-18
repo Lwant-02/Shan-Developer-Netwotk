@@ -43,5 +43,13 @@
     "report": "Report",
     "edit": "Edit",
     "delete": "Delete"
+  },
+  "Search": {
+    "placeholder": "Search posts and actions…",
+    "sectionGo": "Go to",
+    "sectionSettings": "Settings",
+    "sectionPosts": "Posts",
+    "switchTo": "Switch to {locale}",
+    "noResults": "No results"
   }
 }

@@ -32,6 +32,31 @@ if (!window.matchMedia) {
     }) as unknown as MediaQueryList;
 }
 
+// jsdom implements no Web Animations API; kbar's KBarAnimator calls element.animate
+// on mount. The palette's behaviour under test is matching, not the open animation.
+if (!Element.prototype.animate) {
+  Element.prototype.animate = () =>
+    ({
+      finished: Promise.resolve(),
+      cancel: () => {},
+      finish: () => {},
+      play: () => {},
+      pause: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    }) as unknown as Animation;
+}
+
+// kbar virtualises its result list, which observes the container's size. Without this
+// jsdom shim the list renders intermittently and any test touching it is flaky.
+if (!globalThis.ResizeObserver) {
+  globalThis.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  };
+}
+
 afterEach(() => {
   cleanup();
 });

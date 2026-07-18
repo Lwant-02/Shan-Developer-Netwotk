@@ -305,20 +305,16 @@ and how fast, who curates the glossary, who writes the code of conduct.
 
 Still open:
 
-1. **Font license evidence.** The owner states the font is open source and freely
-   usable, and that a public source exists — **the link is still needed.** Both
-   binaries embed *All Rights Reserved* (`aj00` via an unfilled FontCreator template,
-   `aj12` explicitly), so the files contradict the claim until the source is
-   recorded. Tracked as PBI-001; blocks publishing the repo.
-2. **Is there a bold weight of A J Kunheing available?** Both fonts are
-   `usWeightClass 400`, so all bold on Shan is faux-bold today.
-3. **Brand color.** Light palette only now that dark mode is out.
-4. **Search on Myanmar script.** Shan and Burmese are written without spaces, so
+1. **Is there a bold weight of A J Kunheing available?** Both fonts are
+   `usWeightClass 400`, so all bold on Shan is faux-bold today. Worth asking AJ
+   directly — see `public/fonts/CREDITS.md` for contact routes.
+2. **Brand color.** Light palette only now that dark mode is out.
+3. **Search on Myanmar script.** Shan and Burmese are written without spaces, so
    Postgres's default tokenizer will segment badly. Needs real investigation.
-5. **Does a Shan technical-vocabulary effort already exist** to align the glossary
+4. **Does a Shan technical-vocabulary effort already exist** to align the glossary
    with?
-6. **Is there an existing community to seed from**, or is this cold-start from zero?
-7. **Image and file storage.** Neon is Postgres only — unlike Supabase it doesn't
+5. **Is there an existing community to seed from**, or is this cold-start from zero?
+6. **Image and file storage.** Neon is Postgres only — unlike Supabase it doesn't
    bundle storage. Needed before avatars or post images.
 
 ### Resolved
@@ -326,7 +322,7 @@ Still open:
 | Question | Outcome |
 | --- | --- |
 | Missing Shan glyphs (SHAN THA, Council tones, SHAN RR) | **Resolved** — `aj12.ttf` carries all of them; verified from the `cmap` table. It leads the font stack. |
-| Who authored the font | JAO Kunheing / Jao Kunheing, same designer for both files. Licence terms still to be evidenced (see #1). |
+| Who authored the font, under what terms | **AJ (Jao Kunheing / Nawone Sai)**, built free for the Shan community. Sources: [ajfonts](https://ajfonts.netlify.app/), [Shan Font Library](https://shan-font-library.vercel.app/). Attribution recorded in `public/fonts/CREDITS.md`. |
 | Locale-prefixed URLs? Default locale? | **Yes, prefixed. Shan (`shn`) is the default.** |
 | Dark palette | **Not building dark mode.** Light only. |
 | Zawgyi detection/conversion | **No.** Store Unicode, period. |

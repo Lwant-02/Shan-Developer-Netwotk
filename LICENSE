@@ -25,16 +25,14 @@ SOFTWARE.
 NOTE ON BUNDLED FONTS
 
 This MIT license covers the source code in this repository. It does NOT cover
-the font files in `public/fonts/`, which are third-party works with separate
-terms:
+the font files in `public/fonts/`, which are third-party works by AJ (Jao
+Kunheing / Nawone Sai), built and shared for the Shan community:
 
-  - `aj00.ttf` — "A J Kunheing 00", designer JAO Kunheing (Nawone Sai).
-    Embedded copyright is an unfilled template ("Typeface © (your company).
-    2022. All Rights Reserved"); no license field is set.
-  - `aj12.ttf` — "AJ 12", Copyright (c) 2024 by Jao Kunheing.
-    Embedded license reads "All rights reserved."
+  - `aj12.ttf` — "AJ 12", Copyright (c) 2024 by Jao Kunheing
+  - `aj00.ttf` — "A J Kunheing 00", JAO Kunheing (Nawone Sai)
 
-Neither font currently grants redistribution rights. Resolving this is tracked
-as PBI-001 and blocks publishing this repository. Do not redistribute these
-files until permission is obtained in writing, ideally under the SIL Open Font
-License.
+Sources: https://ajfonts.netlify.app/ and https://shan-font-library.vercel.app/
+
+See public/fonts/CREDITS.md for attribution and terms. If you reuse or
+redistribute these fonts, keep the attribution and confirm terms with the
+designer.

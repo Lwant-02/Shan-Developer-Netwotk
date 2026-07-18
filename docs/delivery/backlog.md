@@ -24,7 +24,7 @@ A PBI must reach `Agreed` before code is written for it. This mirrors the
 
 | ID | Title | Status | Notes |
 | --- | --- | --- | --- |
-| [001](./001/prd.md) | Resolve font licensing before publishing the repo | Agreed | **Blocks open-sourcing.** Owner states the font is open source and a public source exists — **link still needed**; both binaries embed All Rights Reserved. |
+| [001](./001/prd.md) | Font attribution and licensing | Done | Attribution recorded in `public/fonts/CREDITS.md` with sources. Owner's call: AJ built these free for Shan speakers. No longer treated as a blocker. |
 | 002 | Apply the Shan font to Shan text | Done | Fallback stack `Montserrat → aj12 → aj00` in `--font-sans`. Verified in built CSS. |
 | 003 | Subset fonts and convert to woff2 | Proposed | Highest-leverage perf win; audience on mobile data. Consider dropping aj00 — aj12 supersedes its coverage. |
 | 004 | Define the dark mode palette | Won't Do | **Decided: light mode only.** Keep the inert `dark:` classes; see `design.md`. |

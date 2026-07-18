@@ -81,9 +81,6 @@ npx shadcn@latest add dialog
 
 These are unfinished, not oversights to route around:
 
-- **Font licensing is unresolved.** Both bundled fonts embed *All Rights Reserved*.
-  This **blocks publishing the repository** — see
-  [PBI-001](./docs/delivery/001/prd.md).
 - **Fonts ship unsubsetted.** ~250 KB of `.ttf`. They should be subsetted `.woff2`;
   the audience is on mobile data. The highest-leverage perf win available.
 - **The palette is entirely greyscale.** Brand colors haven't been chosen.
@@ -105,6 +102,13 @@ Deliberately *not* being built, so they don't read as gaps:
 | `npm run lint`       | ESLint                        |
 | `npm test`           | Vitest, single run            |
 | `npm run test:watch` | Vitest in watch mode          |
+
+## Credits
+
+The Shan fonts are the work of **AJ (Jao Kunheing / Nawone Sai)**, built and shared
+for the Shan community — [ajfonts](https://ajfonts.netlify.app/) ·
+[Shan Font Library](https://shan-font-library.vercel.app/). Shan text on this site
+renders because of that work. See [`public/fonts/CREDITS.md`](./public/fonts/CREDITS.md).
 
 ## Contributing with AI agents
 

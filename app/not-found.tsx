@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { Reveal } from "@/components/motion/reveal";
 import { buttonVariants } from "@/components/ui/button";
 import { routing } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
@@ -25,25 +26,31 @@ export default function RootNotFound() {
       )}
     >
       <main className="flex flex-1 items-center justify-center px-6 py-16">
-        <div className="flex w-full max-w-md flex-col items-center gap-6 text-center">
-          <p className="border-border text-muted-foreground rounded-lg border px-4 py-2 text-4xl">
-            404
-          </p>
-          <p className="text-muted-foreground text-sm">Shan Developer Network</p>
-          <div className="flex flex-wrap items-center justify-center gap-2">
+        <div className="border-border bg-card flex w-full max-w-sm flex-col items-center gap-6 rounded-lg border px-8 py-12 text-center shadow-sm">
+          <Reveal className="flex flex-col items-center gap-3">
+            <span className="text-6xl leading-none tracking-tight tabular-nums sm:text-7xl">
+              404
+            </span>
+            <span className="bg-border h-px w-10" />
+          </Reveal>
+          <Reveal delay={0.1}>
+            <p className="text-muted-foreground text-sm">Shan Developer Network</p>
+          </Reveal>
+          <Reveal
+            delay={0.2}
+            className="flex flex-wrap items-center justify-center gap-2"
+          >
             {routing.locales.map((locale) => (
               <Link
                 key={locale}
                 href={`/${locale}`}
                 lang={locale}
-                className={cn(
-                  buttonVariants({ variant: "outline", size: "lg" })
-                )}
+                className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
               >
                 /{locale}
               </Link>
             ))}
-          </div>
+          </Reveal>
         </div>
       </main>
     </div>

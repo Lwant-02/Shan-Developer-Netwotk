@@ -128,11 +128,12 @@ The chosen fonts are Unicode-only, which effectively decides this: **store Unico
 period.** **Decided: no Zawgyi detection or conversion.** Not in v1, not planned.
 Revisit only if real users actually paste Zawgyi and complain.
 
-### Locale routing 🟢 (decided)
+### Locale routing 🟢 (decided and implemented)
 
 **Decided: locale-prefixed URLs, with Shan (`shn`) as the default locale.** An
-anonymous visitor with no preference gets Shan. `next-intl` is the proposed library;
-English alongside Shan, Burmese (`my`) likely later.
+anonymous visitor with no preference gets Shan — `Accept-Language` is deliberately
+not consulted. Implemented with `next-intl` in PBI-006: `/shn` and `/en`, `/`
+redirects to `/shn`, both prerendered statically. Burmese (`my`) likely later.
 
 This follows from the thesis: a Shan-speaking visitor should land on Shan without
 configuring anything, and the URL should say which language the content is in. Note

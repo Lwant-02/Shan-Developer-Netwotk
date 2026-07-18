@@ -11,7 +11,7 @@ you post and interact.
 
 > **Status: pre-alpha scaffold.** The foundations — build tooling, theming, fonts,
 > component conventions, and tests — are in place. No product features are built
-> yet; `app/page.tsx` renders a single line. [`design.md`](./design.md) holds the
+> yet; `app/[locale]/page.tsx` renders a single line. [`design.md`](./design.md) holds the
 > thesis, the planned scope, and the decisions still to be made;
 > [`docs/delivery/backlog.md`](./docs/delivery/backlog.md) holds the work.
 
@@ -50,9 +50,13 @@ live in the `@theme inline` block of `app/globals.css` rather than a JS config f
 
 ```
 app/
-  layout.tsx     # root layout — fonts, metadata, html/body shell
-  page.tsx       # home — one line of Shan + English for now
+  [locale]/      # every route lives under a locale segment (/shn, /en)
+    layout.tsx   # root layout — fonts, metadata, html/body shell, lang
+    page.tsx     # home — a greeting for now
   globals.css    # Tailwind entry, @theme tokens, design system variables
+i18n/            # next-intl routing + request config
+messages/        # UI strings per locale (shn.json, en.json)
+proxy.ts         # locale redirects (NOT middleware.ts — deprecated in Next 16)
 components/
   ui/            # shadcn components (generated — prefer the CLI over hand-editing)
 lib/

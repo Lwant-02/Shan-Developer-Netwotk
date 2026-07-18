@@ -39,7 +39,7 @@ every branch, so a PBI filed on an unmerged branch still holds its number.
 | [003](./003/prd.md) | Dark mode palette | Won't Do | **Decided: light mode only.** Keep the inert `dark:` classes; see `design.md`. |
 | [004](./004/prd.md) | Decide locale routing | Done | **Locale-prefixed URLs, Shan (`shn`) default.** Implemented by 006. |
 | [005](./005/prd.md) | Moderation policy and code of conduct | Deferred | Revisit before public launch. |
-| [006](./006/prd.md) | Locale-prefixed routing with next-intl | Proposed | `/shn` and `/en`, `/` → `/shn`. Implements 004. Should land before any auth or home-page routes. |
+| [006](./006/prd.md) | Locale-prefixed routing with next-intl | Done | `/shn` and `/en`, `/` → `/shn`. Implements 004. Should land before any auth or home-page routes. |
 
 ## Open questions — not yet PBIs
 

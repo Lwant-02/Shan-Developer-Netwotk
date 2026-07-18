@@ -10,11 +10,9 @@
   --font-google-sans: var(--font-google-sans);
   --font-aj00: var(--font-aj00);
   --font-aj12: var(--font-aj12);
-  /* Default stack. Google Sans has no Myanmar coverage and the AJ fonts have only
-     minimal Latin, so order matters: the browser falls back per-glyph, giving
-     Google Sans for Latin and AJ for Shan within the same string. aj12 leads the
-     Shan fallbacks — it covers 116 Myanmar codepoints to aj00's 59, including
-     SHAN THA, the Council tones, and SHAN RR. */
+  /* Order matters: the browser falls back per-glyph, so Google Sans serves Latin
+     and AJ serves Shan within the same string. aj12 leads — it covers 116 Myanmar
+     codepoints to aj00's 59. */
   --font-sans: var(--font-google-sans), var(--font-aj12), var(--font-aj00),
     sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);

@@ -2,9 +2,14 @@
 
 | | |
 | --- | --- |
-| **Status** | Won't Do |
+| **Status** | Won't Do — **superseded by [PBI-011](../011/prd.md)** |
 | **Created** | 2026-07-18 |
 | **Decided** | 2026-07-18 |
+
+> **Reversed 2026-07-18.** The owner decided dark mode is wanted after all. The work
+> lives in [PBI-011](../011/prd.md), per the "If this is ever revisited" note below.
+> Everything under "What this means in practice" is **no longer in force** — it is
+> kept so the original decision, and the fact that it changed, stay readable.
 
 ## Decision
 

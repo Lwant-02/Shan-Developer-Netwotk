@@ -188,7 +188,22 @@ Styling rules, which are not negotiable because theming depends on them:
 
 ## Known gaps — do not mistake these for finished work
 
-- **Dark mode is deliberately not built.** Light mode only — a decided product call, not a gap. `globals.css` keeps `@custom-variant dark` and shadcn components keep their `dark:` classes; **leave them alone.** They are inert without a `.dark` palette, and stripping them would fork the components from the registry. Do not add a `.dark` block, a theme toggle, or `next-themes`.
+- **Dark mode is built** (PBI-011, reversing PBI-003's light-only call). `globals.css`
+  has a `.dark` block mirroring `:root`; both palettes are **greyscale** since brand
+  colour is still open. `next-themes` sets the class before first paint via
+  `components/theme-provider.tsx`, defaults to the OS preference, and persists an
+  explicit choice; the toggle is `components/shell/theme-toggle.tsx` in the left nav.
+  The shadcn `dark:` classes are **live now** — still don't edit `components/ui/*`.
+  **Swap themed content with CSS (`dark:`), never React state**: the server can't know
+  the visitor's theme, so a state swap either mismatches on hydration or needs a
+  mounted guard, and `react-hooks/set-state-in-effect` rejects the guard. See
+  `theme-toggle.tsx`. **`components/theme-provider.tsx` has no `"use client"`, and
+  must not gain one** — next-themes' own provider carries it, so the wrapper stays a
+  Server Component and its pre-paint `<script>` is server-rendered only. Marking the
+  wrapper client makes React re-render that script on every client navigation and
+  React 19 rejects it ("Encountered a script tag while rendering React component").
+  **The 404s stay light** — they render outside the locale layout, so they get no
+  provider and no pre-paint script.
 - **The home page is a Reddit-style shell over a *mock* feed (PBI-010).** `app/[locale]/page.tsx`
   composes `components/shell/` (top nav, left nav, right rail) and `components/feed/`
   (post card + feed) reading `lib/feed.ts` — a **typed mock**, not a database. Real

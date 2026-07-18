@@ -36,7 +36,7 @@ every branch, so a PBI filed on an unmerged branch still holds its number.
 | --- | --- | --- | --- |
 | [001](./001/prd.md) | Font attribution and licensing | Done | AJ (Jao Kunheing) built the fonts free for Shan speakers. Attribution in `public/fonts/CREDITS.md`. |
 | [002](./002/prd.md) | Apply the Shan font to Shan text | Done | Fallback stack `Google Sans → aj12 → aj00` in `--font-sans`. Verified in built CSS. |
-| [003](./003/prd.md) | Dark mode palette | Won't Do | **Decided: light mode only.** Keep the inert `dark:` classes; see `design.md`. |
+| [003](./003/prd.md) | Dark mode palette | Won't Do | **Superseded by [011](./011/prd.md)** — the owner reversed the light-only call. Kept so the original decision stays legible. |
 | [004](./004/prd.md) | Decide locale routing | Done | **Locale-prefixed URLs, Shan (`shn`) default.** Implemented by 006. |
 | [005](./005/prd.md) | Moderation policy and code of conduct | Deferred | Revisit before public launch. |
 | [006](./006/prd.md) | Locale-prefixed routing with next-intl | Done | `/shn` and `/en`, `/` → `/shn`. Implements 004. Should land before any auth or home-page routes. |
@@ -44,6 +44,7 @@ every branch, so a PBI filed on an unmerged branch still holds its number.
 | [008](./008/prd.md) | Design the 404 page | Done | Next's unstyled English default is replaced by a localized page. Verified and completed with verified Shan script. |
 | [009](./009/prd.md) | Installable PWA (web manifest + icons) | Done | `app/manifest.ts` + install icons; **no service worker** (offline deferred). Icons are placeholder upscales of the 96px logo — real ≥512 art is an Open Question below. |
 | [010](./010/prd.md) | Home page — Reddit-style feed (shell + mock data) | Done | Replaces the placeholder home with a **mobile-first** 3-region feed layout + post cards from **typed mock data**. Anonymous-readable. No DB/auth/voting — those are later PBIs; the card carries a vote *slot* only. |
+| [011](./011/prd.md) | Dark mode | InProgress | Supersedes [003](./003/prd.md) — the owner reversed light-only. `.dark` token block + `next-themes` + a toggle in the left nav. Greyscale; brand colour stays open. |
 
 ## Open questions — not yet PBIs
 

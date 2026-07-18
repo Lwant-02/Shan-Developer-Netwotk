@@ -21,7 +21,10 @@
     "toggleNav": "Toggle navigation",
     "create": "Create",
     "notifications": "Notifications",
-    "account": "Account"
+    "account": "Account",
+    "themeDark": "Dark",
+    "themeLight": "Light",
+    "theme": "Theme"
   },
   "Home": {
     "sortBest": "Best",

@@ -285,18 +285,25 @@ weight, size, spacing, and borders**. That constraint bites harder than usual he
 because the Shan fonts are Regular only — so no bold either. Contrast and layout do
 all the work.
 
-### Dark mode 🟢 (decided: not building it)
+### Dark mode 🟢 (decided: building it — reversed 2026-07-18)
 
-**Decided: light mode only.** No `.dark` token block will be defined.
+**Decided: light and dark.** The earlier light-only call ([PBI-003](docs/delivery/003/prd.md))
+was **reversed by the owner** and is superseded by [PBI-011](docs/delivery/011/prd.md).
+003 is kept as a `Won't Do` record so the original reasoning stays readable.
 
-Consequences, so nobody treats this as unfinished work:
+The argument that carried it: the audience is on mid-range Android, where OLED panels
+are the norm and a reading-heavy feed at night is the common case.
 
-- `globals.css` keeps `@custom-variant dark`, and shadcn components keep their
-  `dark:` classes. **Leave them.** They are inert without a `.dark` palette, and
-  stripping them would fork the components from the registry — `shadcn add` would
-  overwrite the edits anyway.
-- Do not add `.dark { ... }` tokens, a theme toggle, or `next-themes`.
-- If dark mode is ever wanted, it becomes a new PBI; it is not a lingering gap.
+- `globals.css` now defines a `.dark` token block mirroring `:root`. Both palettes are
+  **greyscale** — brand colour is still open, and picking one belongs in the same pass
+  for light and dark together.
+- The shadcn `dark:` classes, previously inert, are now **live**. Still don't edit
+  `components/ui/*`: they remain registry-managed.
+- `next-themes` sets the class before first paint, defaults to the OS preference, and
+  persists an explicit choice. The toggle is in the left nav's secondary group.
+- **404 pages render outside the locale layout**, so they have no provider and no
+  pre-paint script — they stay light. Same root cause as the font issue documented
+  under the 404 notes in `AGENTS.md`.
 
 ## Governance 🟡 (deferred)
 
@@ -335,7 +342,7 @@ Still open:
 | Missing Shan glyphs (SHAN THA, Council tones, SHAN RR) | **Resolved** — `aj12.ttf` carries all of them; verified from the `cmap` table. It leads the font stack. |
 | Who authored the font, under what terms | **AJ (Jao Kunheing / Nawone Sai)**, built free for the Shan community. Sources: [ajfonts](https://ajfonts.netlify.app/), [Shan Font Library](https://shan-font-library.vercel.app/). Attribution recorded in `public/fonts/CREDITS.md`. |
 | Locale-prefixed URLs? Default locale? | **Yes, prefixed. Shan (`shn`) is the default.** |
-| Dark palette | **Not building dark mode.** Light only. |
+| Dark palette | **Building it** (PBI-011, reversed 2026-07-18). Greyscale `.dark` block + `next-themes`. Supersedes PBI-003's light-only call. |
 | Zawgyi detection/conversion | **No.** Store Unicode, period. |
 | Database | **Neon** (Postgres). |
 | Hosting | **Vercel.** |

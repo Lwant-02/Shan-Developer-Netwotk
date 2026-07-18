@@ -21,7 +21,10 @@
     "toggleNav": "သိူင်ႇ/ၼႄ ၼႄတၢင်း",
     "create": "သၢင်ႈ",
     "notifications": "လွင်ႈပွင်ႇၶၢဝ်ႇ",
-    "account": "မၢႆၽၢင်"
+    "account": "မၢႆၽၢင်",
+    "themeDark": "လပ်း",
+    "themeLight": "လႅင်း",
+    "theme": "ႁၢင်ႈၾၢင်"
   },
   "Home": {
     "sortBest": "လီသုတ်း",

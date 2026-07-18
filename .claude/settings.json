@@ -1,0 +1,45 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run lint)",
+      "Bash(npm run build)",
+      "Bash(npm test)",
+      "Bash(npx vitest run *)",
+      "Bash(npm run dev)",
+      "Bash(npm ci)",
+      "Bash(npm install)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(npx shadcn@latest add *)",
+      "Bash(git status *)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git show *)",
+      "Bash(git branch *)",
+      "Bash(git remote *)",
+      "Bash(git rev-parse *)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr list *)",
+      "Bash(gh issue view *)",
+      "Bash(gh issue list *)",
+      "Bash(vercel ls *)",
+      "Bash(vercel logs *)",
+      "Bash(vercel inspect *)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(vercel deploy *)",
+      "Bash(vercel promote *)",
+      "Bash(vercel rollback *)",
+      "Bash(vercel env *)"
+    ],
+    "deny": [
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "Bash(git reset --hard *)",
+      "Bash(git clean -fd *)",
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./.vercel/**)"
+    ]
+  }
+}

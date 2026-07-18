@@ -2,6 +2,7 @@ import { Calendar, FileText, FolderGit2, House, Users } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Link } from "@/i18n/navigation";
+import { siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 // Projects/Posts/Events/People pages don't exist yet, so those items are disabled
@@ -65,6 +66,17 @@ export function LeftNav({ className }: { className?: string }) {
           );
         })}
       </div>
+
+      <hr className="border-border my-3" />
+
+      <p
+        className={cn(
+          "text-muted-foreground/70 mt-6 px-3 text-[11px] leading-relaxed",
+          hideOnCollapse,
+        )}
+      >
+        © {new Date().getFullYear()} {siteConfig.name}
+      </p>
     </nav>
   );
 }

@@ -42,7 +42,25 @@ justified against that thesis is out of scope.
 
 ## Stack
 
-Next.js 16.2 (App Router) · React 19.2 · TypeScript (strict) · Tailwind CSS v4 · shadcn (`base-nova` style, built on Base UI).
+Next.js 16.2 (App Router) · React 19.2 · TypeScript (strict) · Tailwind CSS v4 · shadcn (`base-nova` style, built on Base UI) · next-intl.
+
+## Routing and locales
+
+All routes live under `app/[locale]/`. Locales are **`shn` (default) and `en`**, and
+**both carry a URL prefix** — `/shn/...` and `/en/...`, with `/` redirecting to
+`/shn`. Config is `i18n/routing.ts`; UI strings live in `messages/<locale>.json`.
+
+- **`Accept-Language` is not consulted.** A visitor with no explicit locale always
+  gets Shan. This is deliberate and keeps responses invariant per URL, so pages stay
+  statically prerendered for the anonymous readers who are the common case.
+- **The redirect file is `proxy.ts`, not `middleware.ts`.** The middleware convention
+  is deprecated and renamed in this Next version. next-intl's own docs and nearly all
+  training data say `middleware.ts` — they are wrong for this repo.
+- **`params` is a Promise** and must be awaited.
+- New pages go under `app/[locale]/`. Read strings with `useTranslations`, and call
+  `setRequestLocale(locale)` so the route stays static.
+- **UI locale is not content language.** Posts/projects/events carry their own
+  language tag; someone reading the UI in English must still see Shan content.
 
 ## The two things most likely to trip you up
 
@@ -100,8 +118,9 @@ Styling rules, which are not negotiable because theming depends on them:
 ## Known gaps — do not mistake these for finished work
 
 - **Dark mode is deliberately not built.** Light mode only — a decided product call, not a gap. `globals.css` keeps `@custom-variant dark` and shadcn components keep their `dark:` classes; **leave them alone.** They are inert without a `.dark` palette, and stripping them would fork the components from the registry. Do not add a `.dark` block, a theme toggle, or `next-themes`.
-- **`app/page.tsx` is close to a placeholder.** It renders one line of Shan plus
-  English text and no real layout — enough to prove Shan renders, not a home page.
+- **`app/[locale]/page.tsx` is close to a placeholder.** It renders a greeting and
+  the product name from the message files, with no real layout — enough to prove the
+  locale plumbing works, not a home page.
 - **`motion` and `lucide-react` are installed but unused.**
 - **The palette is entirely greyscale** (neutral base, all chart colors are grey). Brand colors are not chosen yet.
 - **`* { cursor: pointer }`** in `globals.css` is an intentional-looking global rule that applies a pointer cursor to *every* element, including text. If it gets in your way, raise it — don't silently delete it.

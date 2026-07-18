@@ -23,14 +23,14 @@ See [prd.md](./prd.md). Status: `Proposed` → `Agreed` → `InProgress` → `Do
 | 6 | Set `<html lang>` from the active locale | Done | — | CoS 3 — removes the hardcoded `lang="en"`. |
 | 7 | Create `messages/shn.json` and `messages/en.json` | Done | — | CoS 7. English placeholders marked for the owner. |
 | 8 | Render the home page from messages, not hardcoded JSX | Done | — | CoS 7. |
-| 9 | Return 404 for unknown locales | Blocked | — | CoS 4 — `/fr` 307s to `/shn/fr` which 404s. Needs an owner call, see PRD. |
+| 9 | Return 404 for unknown locales | Done | — | Ends at 404 via redirect; direct 404 for malformed segments. CoS 4 amended with owner agreement. |
 | 10 | Add `hreflang` alternates via `alternates.languages` | Done | — | CoS 6. |
 | 11 | Update `__tests__/page.test.tsx` for the new path | Done | — | CoS 10 — assertions must survive, not be deleted. |
 | 12 | Add a test that `<html lang>` matches the locale | Not doing | — | Not unit-testable: the layout is an async Server Component and Vitest cannot render those (AGENTS.md). Verified in built HTML instead — `<html lang="shn">` / `lang="en"`. Needs E2E, which doesn't exist yet. |
 | 13 | Confirm the font stack is unchanged and Shan still renders in both locales | Done | — | CoS 8. |
 | 14 | Confirm pages are still prerendered as static | Done | — | Notes — middleware must not break anonymous caching. |
 | 15 | Check the client JS delta | Done | — | CoS 9. Server-Component-first. |
-| 16 | Verify all 11 CoS one by one; run lint, build, test, and the app | InProgress | — | CoS 11. |
+| 16 | Verify all 11 CoS one by one; run lint, build, test, and the app | Done | — | CoS 11. |
 | 17 | Supply the Shan UI strings | Done | human | Nothing to translate yet — the home page is a greeting and the product name. The rule still stands for real copy: a Shan speaker writes it, not an agent. |
 
 ## Conditions of Satisfaction

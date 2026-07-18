@@ -2,9 +2,10 @@
 
 | | |
 | --- | --- |
-| **Status** | InProgress |
+| **Status** | Done |
 | **Created** | 2026-07-18 |
 | **Agreed** | 2026-07-18 |
+| **Completed** | 2026-07-18 |
 | **Implements** | PBI-004 (locale routing decision) |
 | **Should land before** | any auth or home-page work — both add routes |
 
@@ -72,7 +73,13 @@ establishes the mechanism; those consume it.
 2. `/` redirects to `/shn`.
 3. `<html lang>` matches the active locale on every page — `shn` under `/shn`, `en`
    under `/en`. No hardcoded value remains anywhere.
-4. An unknown locale (`/fr`, `/xx`) returns a **404**, not a crash or an empty shell.
+4. An unknown locale ends at a **404**, not a crash or an empty shell. **Amended on
+   completion, with the owner's agreement:** `/fr` returns 307 to `/shn/fr`, which
+   404s. Under `localePrefix: "always"` an unknown first segment is
+   indistinguishable from a page path — `/fr` is prefixed exactly as `/about` would
+   be — so a direct 404 would need a locale-shaped-string heuristic that misfires on
+   real routes like `/faq`. A malformed segment that reaches the app (e.g. `/fr.txt`)
+   does 404 directly via the layout guard.
 5. **Anonymous access is unaffected.** Every locale route renders with no session and
    stays indexable. Routing introduces no auth, cookie, or session dependency.
 6. Locale alternates are discoverable to crawlers — `hreflang` alternates via the

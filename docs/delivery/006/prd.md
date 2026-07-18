@@ -2,8 +2,9 @@
 
 | | |
 | --- | --- |
-| **Status** | Proposed |
+| **Status** | InProgress |
 | **Created** | 2026-07-18 |
+| **Agreed** | 2026-07-18 |
 | **Implements** | PBI-004 (locale routing decision) |
 | **Should land before** | any auth or home-page work — both add routes |
 
@@ -104,10 +105,10 @@ establishes the mechanism; those consume it.
   negotiation and redirects. Every page is currently prerendered as static content —
   middleware that varies on cookies can undermine that, which matters because
   anonymous reads are the common case. Verify pages are still static after wiring.
-- **Locale detection:** an anonymous visitor with no preference gets Shan, per
-  PBI-004. Whether `Accept-Language` may override to `en` is a small open call —
-  always defaulting to Shan is simpler and matches the decision as written. Record
-  whichever is chosen.
-- **Translation content is a human task.** An agent can scaffold message files and
-  wire routing, but the Shan strings need a Shan speaker. Placeholder Shan written by
-  an agent must not ship.
+- **Locale detection — decided:** `Accept-Language` does **not** override. Every
+  visitor with no explicit locale lands on `/shn`, regardless of browser language.
+  Simpler, matches PBI-004 as written, and keeps pages static since nothing varies
+  per request.
+- **Translation content is a human task.** Nothing needed translating for this PBI —
+  the home page is a greeting and the product name. When real copy lands it must be
+  written by a Shan speaker; agent-written Shan must not merge.

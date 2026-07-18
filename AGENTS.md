@@ -58,6 +58,7 @@ Next.js 16.2 (App Router) · React 19.2 · TypeScript (strict) · Tailwind CSS v
 - **Colors** are always semantic tokens (`bg-background`, `text-muted-foreground`). Never hardcode a hex or a raw Tailwind palette color like `bg-neutral-900`; it will not respond to theming.
 - **Server Components by default** (`rsc: true`). Only add `"use client"` when a component genuinely needs state, effects, or event handlers.
 - **Radii** derive from a single `--radius`; use `rounded-md`/`rounded-lg` etc. rather than fixed pixel values.
+- **Comment sparingly.** Don't narrate what the code already says, and don't leave a running commentary explaining your reasoning. A comment earns its place only when it records something the reader cannot see — a non-obvious constraint, a deprecation, a workaround for an upstream limitation. Default to none.
 
 ## Building and refactoring UI
 

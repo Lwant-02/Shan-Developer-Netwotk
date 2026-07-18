@@ -2,10 +2,19 @@
 
 | | |
 | --- | --- |
-| **Status** | Proposed |
+| **Status** | Done |
 | **Created** | 2026-07-18 |
+| **Completed** | 2026-07-18 |
 | **Depends on** | PBI-006 (locale routing, Done) |
 | **Reference** | A Reddit desktop screenshot supplied by the owner |
+
+> **Closed.** The owner translated all 19 chrome strings before merge, so no
+> `TODO(shn)` placeholder ships — `/shn` renders entirely in Shan and
+> `npm run i18n:prompt` reports clean. Two CoS are verified by shape but not runtime
+> here: the ~360px layout (CoS 3) and the live locale switch (CoS 8) need a browser.
+> Mock post bodies stay English (`lang: "en"`); the per-post language mechanism is
+> built, but a truly mixed feed waits on real Shan post content. "Done" = merged +
+> verified, not deployed (Vercel unlinked).
 
 ## Problem
 
@@ -91,8 +100,11 @@ mock data**.
    locale).
 6. The post card shows a **vote slot** and a **comment / share row**, visually complete
    but non-functional (mock counts) — no voting mechanic is implemented.
-7. **Signed-out chrome:** a "Sign in" affordance appears instead of Create /
-   notifications / avatar; there is no fabricated logged-in state.
+7. **Signed-out chrome:** a "Sign in" affordance is the only live action in the nav.
+   Create, notifications, and the account avatar are present but **disabled**, so the
+   shape of the signed-in nav is designed without fabricating a logged-in state — the
+   avatar is a generic icon, never a user identity or presence indicator. Auth gates
+   them for real in a later PBI.
 8. A **locale switcher** (shn/en) is present and preserves the current path.
 9. **Monochrome, `rounded-lg`, no `font-bold` on Shan**; semantic tokens only; reuses
    `buttonVariants`, `Reveal`, and shadcn primitives (pulled via the CLI) rather than

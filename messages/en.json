@@ -7,5 +7,38 @@
     "title": "Page not found",
     "description": "This page doesn't exist, or it has moved.",
     "home": "Back to home"
+  },
+  "Nav": {
+    "home": "Home",
+    "projects": "Projects",
+    "posts": "Posts",
+    "events": "Events",
+    "people": "People",
+    "comingSoon": "soon",
+    "signIn": "Sign in",
+    "search": "Search the community",
+    "openMenu": "Open menu",
+    "toggleNav": "Toggle navigation",
+    "create": "Create",
+    "notifications": "Notifications",
+    "account": "Account"
+  },
+  "Home": {
+    "sortBest": "Best",
+    "sortNew": "New",
+    "aboutTitle": "Welcome",
+    "aboutBody": "A community for Shan-speaking developers — share projects, ask questions, and host events. Anyone can read; sign in to join in.",
+    "signInToPost": "Sign in to post",
+    "recentTitle": "Recent activity"
+  },
+  "Post": {
+    "upvote": "Upvote",
+    "downvote": "Downvote",
+    "comments": "comments",
+    "share": "Share",
+    "more": "More actions",
+    "report": "Report",
+    "edit": "Edit",
+    "delete": "Delete"
   }
 }

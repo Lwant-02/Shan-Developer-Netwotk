@@ -189,10 +189,24 @@ Styling rules, which are not negotiable because theming depends on them:
 ## Known gaps — do not mistake these for finished work
 
 - **Dark mode is deliberately not built.** Light mode only — a decided product call, not a gap. `globals.css` keeps `@custom-variant dark` and shadcn components keep their `dark:` classes; **leave them alone.** They are inert without a `.dark` palette, and stripping them would fork the components from the registry. Do not add a `.dark` block, a theme toggle, or `next-themes`.
-- **`app/[locale]/page.tsx` is close to a placeholder.** It renders a greeting and
-  the product name from the message files, with no real layout — enough to prove the
-  locale plumbing works, not a home page.
-- **`lucide-react` is installed but unused.** `motion` is now used — `components/motion/reveal.tsx` (a `"use client"` leaf, honors reduced motion) animates the 404 pages; reuse it before adding animation.
+- **The home page is a Reddit-style shell over a *mock* feed (PBI-010).** `app/[locale]/page.tsx`
+  composes `components/shell/` (top nav, left nav, right rail) and `components/feed/`
+  (post card + feed) reading `lib/feed.ts` — a **typed mock**, not a database. Real
+  posts, auth, and the **voting mechanic** (the card has a display-only vote *slot*)
+  are still open. All chrome is **fully translated into Shan** (owner-written; verify
+  with `npm run i18n:prompt`, which reports clean). Locale-aware links/redirects use
+  `i18n/navigation.ts` (`Link`, `useRouter`,
+  `usePathname` from `createNavigation`) — the locale switcher swaps `/shn`↔`/en` there.
+  The shell is **full-bleed**: the sidebar is flush to the viewport edge with a
+  `border-r`, not a centred max-width container. **Create, notifications, and the
+  account avatar in the top nav are present but `disabled`** — the signed-in nav's
+  shape without a fabricated session; the avatar is a generic icon and must never
+  become an identity or presence indicator before auth gates it. Post `⋯` menus
+  (report/edit/delete) are likewise display-only: edit/delete must become
+  owner-only, and report needs moderation (PBI-005, deferred).
+- **`motion` and `lucide-react` are both in use now.** `components/motion/reveal.tsx`
+  (a `"use client"` leaf, honors reduced motion) animates the 404s — reuse it before
+  adding animation. `lucide-react` supplies the nav and post-card icons.
 - **The PWA is installable, but its icons are placeholders.** `app/manifest.ts` (PBI-009)
   ships a real web manifest and the app installs to the home screen — but `icon-192`,
   `icon-512`, and `icon-maskable` in `public/icons/` are **upscales of the 96×96 logo**,

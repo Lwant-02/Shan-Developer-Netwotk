@@ -43,7 +43,7 @@ every branch, so a PBI filed on an unmerged branch still holds its number.
 | [007](./007/prd.md) | Sitemap and robots.txt | Done | Neither file exists; nothing tells a crawler the routes exist. Indexability is the recruiting mechanism. |
 | [008](./008/prd.md) | Design the 404 page | Done | Next's unstyled English default is replaced by a localized page. Verified and completed with verified Shan script. |
 | [009](./009/prd.md) | Installable PWA (web manifest + icons) | Done | `app/manifest.ts` + install icons; **no service worker** (offline deferred). Icons are placeholder upscales of the 96px logo — real ≥512 art is an Open Question below. |
-| [010](./010/prd.md) | Home page — Reddit-style feed (shell + mock data) | Proposed | Replaces the placeholder home with a **mobile-first** 3-region feed layout + post cards from **typed mock data**. Anonymous-readable. No DB/auth/voting — those are later PBIs; the card carries a vote *slot* only. |
+| [010](./010/prd.md) | Home page — Reddit-style feed (shell + mock data) | Done | Replaces the placeholder home with a **mobile-first** 3-region feed layout + post cards from **typed mock data**. Anonymous-readable. No DB/auth/voting — those are later PBIs; the card carries a vote *slot* only. |
 
 ## Open questions — not yet PBIs
 
@@ -61,7 +61,8 @@ not before. The reasoning behind each lives in `design.md`.
   Database is Neon.
 - **Rate limiting on write endpoints.** Required by `AGENTS.md` before any write path
   ships — and with moderation deferred (005), it is currently the whole spam defense.
-- **The real home page.** `app/page.tsx` is one line of text.
+- **Real posts feed** (replaces PBI-010's mock `lib/feed.ts`), and the **voting
+  mechanic** decision the post card left a slot for — both need the DB + auth first.
 - **Contributor onboarding** — `CONTRIBUTING.md`, issue templates, a `good first
   issue` path. Needed before inviting collaborators.
 - **Image and file storage.** Neon is Postgres only; unlike Supabase it bundles none.

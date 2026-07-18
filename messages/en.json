@@ -2,5 +2,10 @@
   "HomePage": {
     "greeting": "Hello",
     "description": "Shan Developer Network — a community platform for Shan-speaking developers."
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "description": "This page doesn't exist, or it has moved.",
+    "home": "Back to home"
   }
 }

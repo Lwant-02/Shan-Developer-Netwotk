@@ -2,5 +2,10 @@
   "HomePage": {
     "greeting": "မႂ်ႇသုင်ၶႃႈ",
     "description": "Shan Developer Network"
+  },
+  "NotFound": {
+    "title": "ၼႃႈလိၵ်ႈ ႁႃဢမ်ႇႁၼ်",
+    "description": "ၼႃႈလိၵ်ႈၼႆႉ ဢမ်ႇမီးဝႆႉ ဢမ်ႇၼၼ် လႆႈၶၢႆႉၵႂႃႇယဝ်ႉ။",
+    "home": "ပွၵ်ႈၶိုၼ်းၼႃႈႁူဝ်ႁႅၵ်ႈ"
   }
 }

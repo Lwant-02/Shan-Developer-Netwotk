@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| **Status** | Proposed |
+| **Status** | Done |
 | **Created** | 2026-07-18 |
 | **Depends on** | PBI-006 (locale routing, Done) |
 

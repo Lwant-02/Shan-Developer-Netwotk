@@ -41,7 +41,7 @@ every branch, so a PBI filed on an unmerged branch still holds its number.
 | [005](./005/prd.md) | Moderation policy and code of conduct | Deferred | Revisit before public launch. |
 | [006](./006/prd.md) | Locale-prefixed routing with next-intl | Done | `/shn` and `/en`, `/` → `/shn`. Implements 004. Should land before any auth or home-page routes. |
 | [007](./007/prd.md) | Sitemap and robots.txt | Done | Neither file exists; nothing tells a crawler the routes exist. Indexability is the recruiting mechanism. |
-| [008](./008/prd.md) | Design the 404 page | Proposed | Next's unstyled English default is reachable today, including via the `/fr` → `/shn/fr` redirect from 006. |
+| [008](./008/prd.md) | Design the 404 page | Done | Next's unstyled English default is replaced by a localized page. Verified and completed with verified Shan script. |
 
 ## Open questions — not yet PBIs
 

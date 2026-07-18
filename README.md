@@ -19,10 +19,17 @@ you post and interact.
 
 ```bash
 npm install
+cp .env.example .env.local
 npm run dev
 ```
 
-Then open <http://localhost:3000>.
+Then open <http://localhost:3000> — it redirects to `/shn`.
+
+`.env.local` is gitignored; `.env.example` is the tracked template. The only variable
+today is `NEXT_PUBLIC_SITE_URL`, the canonical origin used for absolute URLs in
+`sitemap.xml` and `robots.txt`. It falls back to `http://localhost:3000` locally and
+to Vercel's `VERCEL_PROJECT_PRODUCTION_URL` on a deployment, so it only needs setting
+once a real domain exists.
 
 ## Stack
 

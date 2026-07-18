@@ -220,6 +220,16 @@ feature/* → dev → main
 Deploys are driven by the `deploy-dev` and `deploy-prod` skills in `.claude/skills/`,
 which enforce these branch gates.
 
+**Delete feature branches once merged.** The repo has `delete_branch_on_merge`
+enabled, but that only fires when a branch is merged **through a pull request** — a
+local `git merge` plus `git push` leaves the branch behind on both sides. Either
+merge via PR and let GitHub clean up, or delete both copies yourself:
+
+```bash
+git push origin --delete feature/<id>-<slug>
+git branch -D feature/<id>-<slug>
+```
+
 ## Commit messages
 
 ```

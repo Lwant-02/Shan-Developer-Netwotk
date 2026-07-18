@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 
+import { ThemeProvider } from "@/components/theme-provider";
 import { routing } from "@/i18n/routing";
 import { siteConfig, siteUrl } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -94,7 +95,9 @@ export default async function RootLayout({
       className={cn(fontVariables, "h-full antialiased")}
     >
       <body className="min-h-full flex flex-col">
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <ThemeProvider>
+          <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

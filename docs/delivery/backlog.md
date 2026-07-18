@@ -5,6 +5,13 @@ One row per PBI. Detail lives in `docs/delivery/<id>/prd.md` and `tasks.md`.
 
 **This file is the index, not the spec.** Keep rows short; put reasoning in the PRD.
 
+**PBIs are filed one at a time, by the owner, using the `create-pbi` skill** — when
+the work is actually wanted, not speculatively. A backlog pre-stuffed with everything
+that might one day be built is a wish list: it goes stale faster than it gets read,
+and it invites building against items nobody decided on. Known-open work that hasn't
+been scoped yet lives in `design.md` and in Open Questions below — not as `Proposed`
+rows here.
+
 ## Status values
 
 | Status | Means |
@@ -12,7 +19,7 @@ One row per PBI. Detail lives in `docs/delivery/<id>/prd.md` and `tasks.md`.
 | `Proposed` | Written down, not agreed. Do not build. |
 | `Agreed` | Scope settled, ready to pick up. |
 | `InProgress` | Being worked on now. |
-| `Done` | Shipped and verified in production. |
+| `Done` | Shipped and verified. |
 | `Reserved` | ID claimed for planned work, not yet drafted. |
 | `Deferred` | Real, deliberately postponed. Not dropped. |
 | `Won't Do` | Decided against. Kept so the decision isn't relitigated. |
@@ -20,35 +27,47 @@ One row per PBI. Detail lives in `docs/delivery/<id>/prd.md` and `tasks.md`.
 A PBI must reach `Agreed` before code is written for it. This mirrors the
 🟢/🟡/🔴 markers in `design.md` — don't build against a 🟡 or 🔴.
 
+Resolve IDs with `npm run pbi:next` rather than reading this table by eye — it scans
+every branch, so a PBI filed on an unmerged branch still holds its number.
+
 ## Backlog
 
 | ID | Title | Status | Notes |
 | --- | --- | --- | --- |
-| [001](./001/prd.md) | Font attribution and licensing | Done | Attribution recorded in `public/fonts/CREDITS.md` with sources. Owner's call: AJ built these free for Shan speakers. No longer treated as a blocker. |
+| [001](./001/prd.md) | Font attribution and licensing | Done | AJ (Jao Kunheing) built the fonts free for Shan speakers. Attribution in `public/fonts/CREDITS.md`. |
 | [002](./002/prd.md) | Apply the Shan font to Shan text | Done | Fallback stack `Montserrat → aj12 → aj00` in `--font-sans`. Verified in built CSS. |
-| [003](./003/prd.md) | Subset fonts and convert to woff2 | Proposed | Highest-leverage perf win; audience on mobile data. Consider dropping aj00 — aj12 supersedes its coverage. |
-| [004](./004/prd.md) | Define the dark mode palette | Won't Do | **Decided: light mode only.** Keep the inert `dark:` classes; see `design.md`. |
-| [005](./005/prd.md) | Choose brand colors | Proposed | Palette is entirely greyscale. Light palette only now. |
-| [006](./006/prd.md) | Decide locale routing | Done | **Locale-prefixed URLs, Shan (`shn`) default.** Implementing `next-intl` is a separate PBI. |
-| [007](./007/prd.md) | Better Auth with Google + GitHub OAuth | Proposed | Sign-in is the only gate. Not NextAuth. Database is Neon. |
-| [008](./008/prd.md) | Rate limiting for write endpoints | Proposed | Required before any write path ships. Depends on 007. **Load-bearing** — governance is deferred, so technical controls carry the whole spam defense. |
-| [009](./009/prd.md) | Moderation policy and code of conduct | Deferred | Owner deferred. Revisit before public launch. |
-| [010](./010/prd.md) | Build the real home page | Proposed | `app/page.tsx` is one line of text. Depends on 005. |
-| [011](./011/prd.md) | Contributor onboarding (CONTRIBUTING.md, issue templates) | Proposed | Needed before inviting collaborators. Depends on 001. |
-| [012](./012/prd.md) | Implement `next-intl` locale routing | Proposed | Routing decision is made (006); the implementation isn't. Prefixed URLs, `shn` default. |
-| [013](./013/prd.md) | Choose image/file storage | Proposed | Neon is Postgres only — unlike Supabase it bundles no storage. Needed before avatars or post images. |
+| [003](./003/prd.md) | Dark mode palette | Won't Do | **Decided: light mode only.** Keep the inert `dark:` classes; see `design.md`. |
+| [004](./004/prd.md) | Decide locale routing | Done | **Locale-prefixed URLs, Shan (`shn`) default.** Implemented by 006. |
+| [005](./005/prd.md) | Moderation policy and code of conduct | Deferred | Revisit before public launch. |
+| [006](./006/prd.md) | Locale-prefixed routing with next-intl | Proposed | `/shn` and `/en`, `/` → `/shn`. Implements 004. Should land before any auth or home-page routes. |
 
-## Open questions not yet turned into PBIs
+## Open questions — not yet PBIs
 
-From `design.md`. These need a human answer before they can be scoped:
+Known-open work. **File these with `create-pbi` when you actually want them built**,
+not before. The reasoning behind each lives in `design.md`.
 
-1. **The public source for the font license** — needed to close PBI-001.
-2. Is there a bold weight of A J Kunheing available? Both fonts are Regular only.
-3. Search on Myanmar script — Shan and Burmese have no spaces between words, so
-   Postgres's default tokenizer won't segment them. Needs investigation before search
-   is scoped.
-4. Does a Shan technical-vocabulary effort already exist to align the glossary with?
-5. Is there an existing community to seed from, or is this cold-start from zero?
+- **Subset the fonts to `.woff2`.** ~250 KB of unsubsetted `.ttf` ships today and the
+  audience is on mobile data; `design.md` calls it the highest-leverage perf win.
+  Consider dropping `aj00` — `aj12` supersedes its coverage.
+- **Brand colors.** The palette is entirely greyscale, chart tokens included. Blocks
+  any real page design.
+- **Better Auth with Google + GitHub OAuth.** Sign-in is the only gate. Not NextAuth.
+  Database is Neon.
+- **Rate limiting on write endpoints.** Required by `AGENTS.md` before any write path
+  ships — and with moderation deferred (005), it is currently the whole spam defense.
+- **The real home page.** `app/page.tsx` is one line of text.
+- **Contributor onboarding** — `CONTRIBUTING.md`, issue templates, a `good first
+  issue` path. Needed before inviting collaborators.
+- **Image and file storage.** Neon is Postgres only; unlike Supabase it bundles none.
+  Needed before avatars or post images. Watch EXIF GPS stripping — location is coarse
+  and optional by design, and photo metadata defeats that silently.
+- **Search on Myanmar script.** Shan and Burmese are written without spaces between
+  words, so Postgres's default tokenizer will segment them badly or not at all.
+- **A bold weight of A J Kunheing**, if one exists. Both fonts are Regular only, so
+  all bold on Shan is faux-bold today.
+- **Shan technical vocabulary** — does an existing effort exist to align a glossary
+  with?
+- **Community seeding** — an existing community to draw from, or cold-start from zero?
 
-*(The missing-glyph question is resolved — `aj12.ttf` carries SHAN THA, the Council
+*(Resolved: the missing-glyph question — `aj12.ttf` carries SHAN THA, the Council
 tones, and SHAN RR. See `design.md`.)*

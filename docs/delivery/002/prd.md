@@ -53,8 +53,9 @@ var(--font-aj00), sans-serif}`.
 
 ## Notes
 
-- Follow-on work is tracked separately: **PBI-003** (subset to woff2 — the files ship
-  unoptimized) and **PBI-012** (locale routing, which fixes the hardcoded
-  `<html lang="en">` that still mislabels Shan pages).
+- Follow-on work: **PBI-006** (locale routing) fixes the hardcoded
+  `<html lang="en">` that still mislabels Shan pages. Subsetting the fonts to
+  `.woff2` remains open and is recorded in `design.md` under Font loading — the
+  files ship unoptimized at ~250 KB.
 - Both fonts are `usWeightClass 400`. Emphasis on Shan must use size, color, or
   spacing; `font-bold` triggers synthesized faux-bold and distorts Myanmar marks.

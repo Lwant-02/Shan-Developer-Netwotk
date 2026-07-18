@@ -1,38 +1,51 @@
-# PBI-004 — Dark mode palette
+# PBI-004 — Decide locale routing
 
 | | |
 | --- | --- |
-| **Status** | Won't Do |
+| **Status** | Done |
 | **Created** | 2026-07-18 |
 | **Decided** | 2026-07-18 |
+| **Implemented by** | PBI-006 |
+
+## Problem
+
+`design.md` flagged locale routing as blocking: **retrofitting locale routing touches
+every route**, so it had to be decided before routes were written. Two questions were
+open — whether URLs carry a locale prefix, and what an anonymous visitor with no
+stated preference gets.
 
 ## Decision
 
-**Light mode only. Dark mode will not be built.**
+**Locale-prefixed URLs, with Shan (`shn`) as the default locale.**
 
-Recorded as a PBI rather than deleted so the decision isn't relitigated every time
-someone notices the inert `dark:` classes and assumes they're unfinished work.
+- Both locales are prefixed: `/shn/...` and `/en/...`.
+- `/` redirects to `/shn`.
+- An anonymous visitor with no preference gets **Shan**.
+- Launch locales are `shn` and `en`. Burmese (`my`) is deferred.
 
-## Background
+## Why this and not the alternative
 
-`app/globals.css` declares `@custom-variant dark (&:is(.dark *))`, and the shadcn
-components carry `dark:` utility classes throughout. No `.dark { ... }` token block
-exists, so none of it has any effect.
+The alternative — leaving the default locale unprefixed, so Shan lives at `/` and
+only English is prefixed — produces shorter URLs for the default case. It was
+rejected because an explicit prefix makes the language visible in **every shared
+link**, which matters for a community that shares links in mixed-language contexts.
+A URL that states its language is itself an expression of the thesis.
 
-This previously read as a gap. It is now a decision.
+Defaulting to Shan rather than English follows directly: a Shan speaker should land on
+Shan without configuring anything. English-first with Shan as an option would be the
+afterthought treatment the project exists to avoid.
 
-## What this means in practice
+## Scope boundary
 
-1. **Do not add** a `.dark` token block, a theme toggle, or `next-themes`.
-2. **Do not strip** the `dark:` classes from `components/ui/*`. Those files are
-   registry-managed — `npx shadcn@latest add` overwrites them, so edits would be lost
-   and the components would drift from upstream. They are inert and harmless.
-3. **Do not remove** `@custom-variant dark` from `globals.css` for the same reason.
-4. New components need no `dark:` variants, but copying them from a shadcn primitive
-   is fine and not worth cleaning up.
+This decision covers **UI locale** only. It does not govern the **content** language
+tag that posts, projects, and events each carry — that is a separate field on the
+data model, and a user reading the UI in English must still be able to see
+Shan-language content. Do not conflate the two.
 
-## If this is ever revisited
+## Notes
 
-Dark mode becomes a **new PBI**, not a reopening of this one. It would need the brand
-palette first (PBI-005), since picking light and dark tokens in one pass is the only
-way to keep them coherent.
+- Implementation is **PBI-006** (`next-intl`), deliberately split so the decision
+  could be recorded without waiting on the build.
+- Consequence to watch during implementation: `app/layout.tsx` currently hardcodes
+  `<html lang="en">` while rendering Shan, which is wrong for both screen readers and
+  search engines. PBI-006 fixes it.

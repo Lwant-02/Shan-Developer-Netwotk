@@ -1,52 +1,56 @@
-# PBI-005 — Choose brand colors
+# PBI-005 — Moderation policy and code of conduct
 
 | | |
 | --- | --- |
-| **Status** | Proposed |
+| **Status** | Deferred |
 | **Created** | 2026-07-18 |
-| **Blocks** | PBI-010 (home page) |
+| **Deferred** | 2026-07-18 |
+
+## Status
+
+**Deferred by the owner.** Recorded rather than dropped, because the underlying risk
+does not go away by not writing it down.
 
 ## Problem
 
-The palette is **entirely greyscale**. Every token in `app/globals.css` is a
-zero-chroma `oklch` value — `--primary: oklch(0.205 0 0)`, `--destructive` aside, and
-all five chart colors are greys (`oklch(0.87 0 0)` through `oklch(0.269 0 0)`).
+`design.md` framed this as urgent and non-optional: who moderates, and how quickly?
+Who curates the glossary? Who writes the code of conduct?
 
-That is the stock shadcn neutral base, untouched. The site currently has no visual
-identity at all, and anything built before the palette lands will need revisiting.
+Since anyone signed in can post, moderation was one of the two lines of defense. With
+it deferred, the **technical** controls carry the entire load — which is what makes
+rate limiting load-bearing rather than routine. `AGENTS.md` requires every write
+endpoint to have one; with moderation deferred that requirement is now the whole
+spam defense.
 
-## Why it matters
+The original framing, kept here because it's the argument for revisiting: this reads
+as a non-engineering concern and is in fact what determines whether the site is alive
+in a year.
 
-A community platform is partly an identity object — people decide whether it looks
-like somewhere they belong. More practically, this **blocks the real home page**
-(PBI-010): building a landing page against placeholder greys means designing it
-twice.
+## When to revisit
 
-There is also a Shan-specific angle worth considering rather than defaulting to a
-generic tech palette: color carries cultural meaning, and this project's whole
-argument is that it is *for* a particular community.
+Whichever comes first:
 
-## Conditions of Satisfaction
+1. **Before public launch.**
+2. The first time someone posts something that needs removing and there is no answer
+   for who removes it, under what rule, or how fast.
+3. When a second person joins the project — moderation is unworkable as an
+   undocumented solo instinct.
+4. When contributor onboarding is written, since a code of conduct is part of what
+   collaborators expect to find.
 
-1. A primary brand color is chosen and expressed as `oklch` semantic tokens in the
-   `@theme inline` block of `app/globals.css`.
-2. Accent and chart tokens are derived from it — no leftover greyscale chart colors.
-3. Contrast meets **WCAG AA** for body text and interactive elements, verified rather
-   than assumed. Shan script has fine marks and thin strokes; low contrast hurts it
-   more than Latin.
-4. Nothing hardcodes a hex or a raw Tailwind palette color — all consumption is via
-   semantic tokens (`bg-primary`, `text-muted-foreground`).
-5. `components/ui/button.tsx` variants render correctly with the new tokens, with no
-   component edits required.
-6. Light mode only — dark tokens are out of scope per PBI-004.
+## What it would need to answer
+
+- Who moderates, and what response time is realistic?
+- What are the actual rules — what gets removed, what gets a warning?
+- How does a user report something? (`design.md`'s data model sketch already
+  anticipates a `Report` entity.)
+- Is there an appeal?
+- Who curates the glossary, which is a smaller version of the same question?
 
 ## Notes
 
-- **This needs a human decision.** An agent can implement tokens and check contrast
-  ratios; it should not pick the brand color. Choosing it is a product and cultural
-  call.
-- Worth checking whether any existing Shan community or Shan-language project has
-  established colors that would read as familiar rather than arbitrary.
-- Tailwind v4 here is CSS-configured. Tokens go in `@theme inline` in
-  `app/globals.css` — there is no `tailwind.config.js`.
-- Keep `--radius` and the existing radius scale untouched; this PBI is color only.
+- Rate limiting slows bulk abuse. It does nothing about a single account
+  posting one thing that has to come down. These are different problems.
+- Identity is sensitive in this region — pseudonymity is supported, and moderation
+  processes that require real identity to appeal would undermine that. Any policy
+  written here has to hold that line.

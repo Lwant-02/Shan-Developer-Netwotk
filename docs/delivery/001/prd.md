@@ -1,10 +1,11 @@
-# PBI-001 — Resolve font licensing before publishing the repo
+# PBI-001 — Font attribution and licensing
 
 | | |
 | --- | --- |
-| **Status** | Agreed |
+| **Status** | Done |
 | **Created** | 2026-07-18 |
-| **Blocks** | Open-sourcing the repository; PBI-011 |
+| **Blocks** | — (was: open-sourcing the repository) |
+| **Completed** | 2026-07-18 |
 
 ## Problem
 

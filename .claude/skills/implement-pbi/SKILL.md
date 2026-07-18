@@ -49,9 +49,8 @@ cat docs/delivery/<id>/tasks.md   # may not exist yet
   against a 🟡 or 🔴 in `design.md`. Say it's unagreed and ask before proceeding.
 - **Status is `Reserved`.** The ID is a placeholder; there's no PRD to build from.
 - **Status is `Done`.** Confirm what's actually wanted — a fix, or a new PBI?
-- **A dependency isn't `Done`.** The backlog Notes record these (005 blocks 004; 007
-  blocks 008; 001 blocks publishing). Building on an unfinished dependency means
-  reworking it.
+- **A dependency isn't `Done`.** Dependencies are recorded in the backlog Notes and
+  in the PRD header table. Building on an unfinished one means reworking it.
 - **`tasks.md` doesn't exist.** The PBI is `Agreed` but not broken down. Write
   `tasks.md` first, from the PRD's conditions of satisfaction, and confirm it before
   starting.

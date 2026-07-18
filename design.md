@@ -294,8 +294,8 @@ because the underlying risk doesn't go away:
 
 Sign-in is the only gate, so rate limiting and moderation remain the entire spam
 defense. Deferring governance means the **technical** controls carry the whole load
-until a human process exists — which makes the rate limits on write endpoints
-(PBI-008) load-bearing rather than routine.
+until a human process exists — which makes the rate limits on write
+endpoints load-bearing rather than routine.
 
 Revisit before public launch, or the first time someone posts something that needs
 removing and there's no answer for who removes it. Open at that point: who moderates

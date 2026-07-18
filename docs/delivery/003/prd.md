@@ -1,53 +1,38 @@
-# PBI-003 — Subset the fonts and convert to woff2
+# PBI-003 — Dark mode palette
 
 | | |
 | --- | --- |
-| **Status** | Proposed |
+| **Status** | Won't Do |
 | **Created** | 2026-07-18 |
-| **Depends on** | PBI-002 (Done) |
+| **Decided** | 2026-07-18 |
 
-## Problem
+## Decision
 
-Both Shan fonts ship as unsubsetted `.ttf`:
+**Light mode only. Dark mode will not be built.**
 
-| File | Size | Codepoints |
-| --- | --- | --- |
-| `aj00.ttf` | ~134 KB | 331 |
-| `aj12.ttf` | ~111 KB | 324 |
+Recorded as a PBI rather than deleted so the decision isn't relitigated every time
+someone notices the inert `dark:` classes and assumes they're unfinished work.
 
-That is roughly **250 KB of font data** on first paint, in a format with no
-compression, for a site whose stated target user is on a **mid-range Android phone on
-mobile data**. `design.md` calls this the highest-leverage performance win available.
+## Background
 
-`next/font/local` preloads by default, so both files are fetched even though aj12
-alone covers everything aj00 does.
+`app/globals.css` declares `@custom-variant dark (&:is(.dark *))`, and the shadcn
+components carry `dark:` utility classes throughout. No `.dark { ... }` token block
+exists, so none of it has any effect.
 
-## Why it matters
+This previously read as a gap. It is now a decision.
 
-Public reach is the recruiting mechanism, and reach depends on the site being usable
-on a slow connection. A quarter-megabyte of fonts before first paint is the single
-largest avoidable cost currently in the bundle.
+## What this means in practice
 
-## Conditions of Satisfaction
+1. **Do not add** a `.dark` token block, a theme toggle, or `next-themes`.
+2. **Do not strip** the `dark:` classes from `components/ui/*`. Those files are
+   registry-managed — `npx shadcn@latest add` overwrites them, so edits would be lost
+   and the components would drift from upstream. They are inert and harmless.
+3. **Do not remove** `@custom-variant dark` from `globals.css` for the same reason.
+4. New components need no `dark:` variants, but copying them from a shadcn primitive
+   is fine and not worth cleaning up.
 
-1. Fonts are served as `.woff2`.
-2. Fonts are subsetted to the codepoints actually needed — Myanmar block, Myanmar
-   Ext-A, Basic Latin, and punctuation. **Verify no Shan glyph is dropped**, in
-   particular U+1080, U+108B–U+108D, U+108F, and the Shan digits U+1090–U+1099.
-3. Total font payload is measurably smaller; record before and after in the PBI.
-4. Shan still renders correctly — the CoS from PBI-002 continue to hold.
-5. A decision is recorded on whether `aj00` is kept at all (see Notes).
-6. `npm run build` succeeds and the app is verified running.
+## If this is ever revisited
 
-## Notes
-
-- **Consider dropping `aj00` entirely.** aj12 supersedes its coverage (116 Myanmar
-  codepoints vs 59, plus every glyph aj00 lacks). Keeping it as a second preloaded
-  file costs bandwidth for no coverage gain. If it stays, consider `preload: false`.
-- Subsetting a Myanmar-script font is **not** a naive codepoint filter: the shaping
-  tables (GSUB/GPOS) do mark positioning and conjunct forming. Dropping the wrong
-  lookups produces text that renders but is positioned wrongly. Verify visually with
-  real Shan text, not just a byte-size diff.
-- Tooling: `fonttools` (`pyftsubset`) is the usual choice, with
-  `--layout-features` retained for `mymr`.
-- Keep `public/fonts/CREDITS.md` accurate if filenames change.
+Dark mode becomes a **new PBI**, not a reopening of this one. It would need the brand
+palette settled first — still open in `design.md` — since picking light and dark
+tokens in one pass is the only way to keep them coherent.

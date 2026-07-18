@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| **Status** | Agreed |
+| **Status** | Done |
 | **Created** | 2026-07-18 |
 | **Supersedes** | [PBI-003](../003/prd.md) — "light mode only", reversed by the owner |
 | **Depends on** | PBI-010 (home page shell — the toggle lives in the left nav) |

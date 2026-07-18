@@ -44,6 +44,16 @@ export function TopNav() {
         </div>
 
         <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
+          {/* Below `sm` the field has no room, so search collapses to its icon
+              rather than vanishing. */}
+          <button
+            type="button"
+            disabled
+            aria-label={t("search")}
+            className="text-muted-foreground hover:bg-muted flex size-9 items-center justify-center rounded-lg transition-colors disabled:pointer-events-none disabled:opacity-60 sm:hidden"
+          >
+            <Search className="size-5" />
+          </button>
           {/* Both need auth to do anything, so they are disabled rather than
               routed — a signed-out visitor gets "Sign in" as the one live action. */}
           <button

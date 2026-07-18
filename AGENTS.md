@@ -59,21 +59,179 @@ Next.js 16.2 (App Router) · React 19.2 · TypeScript (strict) · Tailwind CSS v
 - **Server Components by default** (`rsc: true`). Only add `"use client"` when a component genuinely needs state, effects, or event handlers.
 - **Radii** derive from a single `--radius`; use `rounded-md`/`rounded-lg` etc. rather than fixed pixel values.
 
+## Building and refactoring UI
+
+The rule is **reuse before you create**. Every new component is a thing someone has
+to keep in sync with the design system; most UI work here should add zero new
+primitives. Work down this ladder and stop at the first rung that works:
+
+1. **Compose what exists.** Search `components/` first. If a variant of an existing
+   component gets you there, use it. Extend it with a new `cva` variant rather than
+   forking a near-copy — two components that differ by a border radius is the exact
+   debt this repo is trying to avoid.
+2. **Pull the shadcn primitive.** If it's a standard pattern (dialog, card, input,
+   dropdown), run `npx shadcn@latest add <component>`. Don't hand-write a component
+   that the registry already ships — and don't paste one from memory, since training
+   data shadcn is Radix-shaped and this repo is Base UI-shaped.
+3. **Write a new component only if 1 and 2 genuinely don't cover it.** Put
+   app-specific composites in `components/` (not `components/ui/`, which is
+   registry-managed and will be overwritten by `shadcn add`). Follow the shape of
+   `components/ui/button.tsx`: named function, `data-slot`, `cn()`, `cva` variants
+   exported alongside, props typed off the primitive.
+
+Styling rules, which are not negotiable because theming depends on them:
+
+- **Tailwind utilities only.** No CSS modules, no `styled-components`, no inline
+  `style={{}}` for anything a utility can express. One-off CSS goes in the
+  `@layer base` block in `globals.css`, not next to the component.
+- **Semantic tokens only** — `bg-card`, `text-muted-foreground`, `border-border`.
+  A raw `bg-neutral-900` or a hex silently opts that element out of theming and out
+  of dark mode when the palette lands.
+- **Every class list goes through `cn()`.** It merges conflicts correctly; template
+  strings don't, and the bug only shows up when a caller passes `className`.
+- **Accept `className`** on any component meant to be composed, and merge it last so
+  callers can override.
+- **Server Component unless proven otherwise.** Push `"use client"` down to the
+  smallest leaf that needs interactivity — see the mid-range-Android constraint
+  above. A whole page marked `"use client"` because one button has an `onClick` is
+  a bug, not a shortcut.
+
 ## Known gaps — do not mistake these for finished work
 
-- **Dark mode is wired but has no palette.** `globals.css` declares `@custom-variant dark` and components carry `dark:` variants, but no `.dark { ... }` token block exists. Dark mode does not currently work. Defining that block is a real task, not a cleanup.
-- **`app/page.tsx` is a placeholder** returning `<div>Page</div>`.
+- **Dark mode is deliberately not built.** Light mode only — a decided product call, not a gap. `globals.css` keeps `@custom-variant dark` and shadcn components keep their `dark:` classes; **leave them alone.** They are inert without a `.dark` palette, and stripping them would fork the components from the registry. Do not add a `.dark` block, a theme toggle, or `next-themes`.
+- **`app/page.tsx` is close to a placeholder.** It renders one line of Shan plus
+  English text and no real layout — enough to prove Shan renders, not a home page.
 - **`motion` and `lucide-react` are installed but unused.**
 - **The palette is entirely greyscale** (neutral base, all chart colors are grey). Brand colors are not chosen yet.
 - **`* { cursor: pointer }`** in `globals.css` is an intentional-looking global rule that applies a pointer cursor to *every* element, including text. If it gets in your way, raise it — don't silently delete it.
-- **The Shan font is present but not wired up.** `public/fonts/aj06.ttf` (A J Kunheing 06, a real Unicode Shan font) exists, but `layout.tsx` still loads only Montserrat with `subsets: ["latin"]`, which has no Myanmar-block coverage. **Shan text does not render correctly today.** Load aj06 via `next/font/local` (read `node_modules/next/dist/docs/01-app/01-getting-started/13-fonts.md` first) and pair it: Montserrat for Latin, aj06 for Shan. Note it is **Regular only — there is no bold**, so don't reach for `font-bold` on Shan text; see `design.md`.
+- **Fonts are wired; the files are not yet optimized.** `public/fonts/` holds **`aj12.ttf`** ("AJ 12" — the Shan font, 116 Myanmar codepoints including SHAN THA, the Council tones, and SHAN RR) and **`aj00.ttf`** ("A J Kunheing 00" — 59 codepoints, secondary fallback). Both load via `next/font/local` in `layout.tsx`. Shan text is handled by a **fallback stack**, not per-element classes: `--font-sans` in `globals.css` is `Montserrat → aj12 → aj00 → sans-serif`, and the browser falls back per glyph, so mixed Shan/Latin works with no markup. Both fonts are **Regular only (`usWeightClass 400`) — there is no bold**, so never reach for `font-bold` on Shan text; use size, color, or spacing. **Still open:** the `.ttf`s ship unsubsetted (~250 KB total) and should become subsetted `.woff2` — the audience is on mobile data. See `design.md`.
 
 ## Commands
 
 ```bash
-npm run dev     # dev server on :3000
-npm run build   # production build
-npm run lint    # eslint (bare `eslint`, no args)
+npm run dev        # dev server on :3000
+npm run build      # production build
+npm run lint       # eslint (bare `eslint`, no args)
+npm test           # vitest, single run
+npm run test:watch # vitest in watch mode
 ```
 
-There is no test setup yet. Verify changes by running the app.
+## Tests
+
+Vitest + React Testing Library, set up per `node_modules/next/dist/docs/01-app/02-guides/testing/vitest.md`.
+Tests live in `__tests__/`. `npm test` is a **single run** (`vitest run`) — plain
+`vitest` watches and will hang a non-interactive session.
+
+Coverage is deliberately thin. It exists to catch the class of regression you won't
+notice by clicking around:
+
+- `__tests__/page.test.tsx` — the home page renders **for an anonymous visitor** and
+  still contains Myanmar-block script. Both are product requirements, not
+  implementation details.
+- `__tests__/utils.test.ts` — `cn()` actually resolves conflicting Tailwind
+  utilities. This is the reason the `cn()` convention exists, so it's pinned.
+
+When adding tests, write ones that would fail if a product rule in this file broke —
+anonymous read access, rate limits on writes, Shan text surviving a refactor. Don't
+add snapshot tests of markup; they break on every restyle and catch nothing.
+
+**Verify a test can fail.** Break the thing it covers, watch it go red, then restore.
+A test that passes against broken code is worse than no test.
+
+Note that Vitest cannot render **async** Server Components — the Next guide says to
+cover those with E2E instead. There is no E2E setup yet. Still verify real changes by
+running the app; the tests are a floor, not a substitute.
+
+## Backlog
+
+Work is tracked as **Product Backlog Items (PBIs)** in `docs/delivery/`:
+
+- `docs/delivery/backlog.md` — the index. One row per PBI, with status.
+- `docs/delivery/<id>/prd.md` — the problem, the argument, the conditions of
+  satisfaction.
+- `docs/delivery/<id>/tasks.md` — the breakdown.
+
+**A PBI must be `Agreed` before code is written for it.** `Proposed` means written
+down, not decided — building against one is the same error as building against a 🟡
+or 🔴 in `design.md`. Ask first.
+
+`design.md` remains the decision record and holds the thesis; the backlog holds the
+work. If they disagree, `design.md` wins and the backlog is wrong.
+
+Two skills in `.claude/skills/` cover the workflow: **`create-pbi`** (assign an ID,
+write the PRD) and **`implement-pbi`** (build an agreed item, verify against its
+conditions of satisfaction, close it out). `implement-pbi` asks which PBI to work on
+when no ID is given — it never picks one on your behalf.
+
+## Branches
+
+```
+feature/* → dev → main
+             │      │
+             │      └─ production
+             └──────── preview deployments
+```
+
+- **`main` is production.** It is the only branch that deploys to the live site.
+  Never commit directly to it and never force-push it.
+- **`dev` is the integration branch**, and the only branch that gets preview
+  deployments. Feature branches merge into `dev` first.
+- Going straight from a feature branch to `main` skips the preview that would have
+  caught the problem. Don't.
+
+Deploys are driven by the `deploy-dev` and `deploy-prod` skills in `.claude/skills/`,
+which enforce these branch gates.
+
+## Commit messages
+
+```
+type(scope): short summary — second clause if the commit does two things
+
+Prose explaining what changed and, more importantly, why. Wrap at 72
+characters. Reference related issues by number so the reasoning is
+reachable later. Explain the decision, not the diff — the diff is already
+in the commit.
+
+A second paragraph for artifacts, scope boundaries, and what was
+deliberately left out. State plainly when a commit is partial: "Docs only
+— no code yet."
+
+Deploy-Risk: none — documentation only; no code, schema, or config touched
+Deploy-Note: adds .claude/skills/; no runtime surface
+Deploy-Verify: none
+
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+```
+
+**Subject.** `type(scope): summary`, imperative mood, lowercase after the colon, no
+trailing period, ideally under ~72 chars. Types are `feat`, `fix`, `docs`,
+`refactor`, `perf`, `style`, `test`, `build`, `ci`, `chore`. Use an em dash (`—`) to
+join clauses when one commit genuinely does two things — though prefer splitting the
+commit.
+
+**Scope** is the PBI number the work belongs to (`feat(002):`), matching
+`docs/delivery/backlog.md`. Omit the parenthetical entirely when the work belongs to
+no PBI — write `chore:` rather than inventing a number. Never fabricate an ID to
+satisfy the format.
+
+**Body** is required for anything non-trivial. Blank line after the subject, wrapped
+at 72. Say why. A reader six months out has the diff and needs the reasoning.
+
+**The `Deploy-*` trailers** exist so that whoever ships this commit knows what it does
+to the live site without re-reading the diff. They feed the `deploy-prod` skill's
+preflight and post-deploy verification.
+
+- `Deploy-Risk:` — blast radius, and why. Start with `none` / `low` / `medium` /
+  `high`, then a short justification. Migrations, auth changes, rate-limit changes,
+  and anything touching public read access are never `none`.
+- `Deploy-Note:` — what actually happens on deploy: new routes, new env vars needed,
+  data backfills, cache implications. Write `none` if genuinely nothing.
+- `Deploy-Verify:` — the concrete check to run against production after shipping.
+  `none` for commits with no runtime surface. Anything touching public content must
+  include verifying it still renders **logged out**.
+
+**Always end with** `Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>` when an
+agent wrote the commit.
+
+**Never** commit or push unless explicitly asked, and never bypass hooks
+(`--no-verify`) or force-push to `main`.

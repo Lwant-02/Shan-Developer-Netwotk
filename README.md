@@ -9,10 +9,11 @@ never do this.
 Anyone can read, without an account. Signing in with Google or GitHub is what lets
 you post and interact.
 
-> **Status: pre-alpha scaffold.** The foundations — build tooling, theming, and
-> component conventions — are in place. No product features are built yet;
-> `app/page.tsx` is still a placeholder. [`design.md`](./design.md) holds the
-> thesis, the planned scope, and the decisions still to be made.
+> **Status: pre-alpha scaffold.** The foundations — build tooling, theming, fonts,
+> component conventions, and tests — are in place. No product features are built
+> yet; `app/page.tsx` renders a single line. [`design.md`](./design.md) holds the
+> thesis, the planned scope, and the decisions still to be made;
+> [`docs/delivery/backlog.md`](./docs/delivery/backlog.md) holds the work.
 
 ## Getting started
 
@@ -34,7 +35,10 @@ Then open <http://localhost:3000>.
 | Components | shadcn, `base-nova` style, built on [Base UI](https://base-ui.com) |
 | Icons      | lucide-react                                              |
 | Animation  | motion                                                    |
-| Font       | Montserrat, via `next/font/google`                        |
+| Fonts      | Montserrat (Latin) + AJ 12 / A J Kunheing 00 (Shan), via `next/font` |
+| Database   | Neon (Postgres) — not yet wired                           |
+| Hosting    | Vercel                                                    |
+| Tests      | Vitest + React Testing Library                            |
 
 Two choices here differ from the common defaults and are worth knowing before you
 write code: this shadcn setup sits on **Base UI rather than Radix**, so components
@@ -47,7 +51,7 @@ live in the `@theme inline` block of `app/globals.css` rather than a JS config f
 ```
 app/
   layout.tsx     # root layout — fonts, metadata, html/body shell
-  page.tsx       # placeholder
+  page.tsx       # home — one line of Shan + English for now
   globals.css    # Tailwind entry, @theme tokens, design system variables
 components/
   ui/            # shadcn components (generated — prefer the CLI over hand-editing)
@@ -77,25 +81,30 @@ npx shadcn@latest add dialog
 
 These are unfinished, not oversights to route around:
 
-- **The Shan font isn't wired up yet.** `public/fonts/aj06.ttf` is in the repo, but
-  `layout.tsx` still loads only Montserrat (`subsets: ["latin"]`), which has no
-  Myanmar-block coverage — so Shan text doesn't render correctly today. Given the
-  project's premise, this is the most important open item. See
-  [`design.md`](./design.md).
-- **Dark mode is wired but non-functional.** The `dark` variant is declared and
-  components carry `dark:` classes, but no `.dark` token palette has been defined.
+- **Font licensing is unresolved.** Both bundled fonts embed *All Rights Reserved*.
+  This **blocks publishing the repository** — see
+  [PBI-001](./docs/delivery/001/prd.md).
+- **Fonts ship unsubsetted.** ~250 KB of `.ttf`. They should be subsetted `.woff2`;
+  the audience is on mobile data. The highest-leverage perf win available.
 - **The palette is entirely greyscale.** Brand colors haven't been chosen.
-- **No tests.** No test runner is configured yet.
 - **`motion` and `lucide-react` are installed but unused.**
+
+Deliberately *not* being built, so they don't read as gaps:
+
+- **Dark mode.** Light mode only. Components keep inert `dark:` classes so they stay
+  in sync with the shadcn registry — leave them.
+- **Zawgyi detection or conversion.** Unicode only.
 
 ## Commands
 
-| Command         | Does                          |
-| --------------- | ----------------------------- |
-| `npm run dev`   | Dev server on port 3000       |
-| `npm run build` | Production build              |
-| `npm start`     | Serve a production build      |
-| `npm run lint`  | ESLint                        |
+| Command              | Does                          |
+| -------------------- | ----------------------------- |
+| `npm run dev`        | Dev server on port 3000       |
+| `npm run build`      | Production build              |
+| `npm start`          | Serve a production build      |
+| `npm run lint`       | ESLint                        |
+| `npm test`           | Vitest, single run            |
+| `npm run test:watch` | Vitest in watch mode          |
 
 ## Contributing with AI agents
 

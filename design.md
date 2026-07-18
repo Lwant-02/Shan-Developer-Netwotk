@@ -71,64 +71,74 @@ which is a chunk of the intended audience.
 
 This section is the product, not a localization checklist.
 
-### Font 🟢 (chosen) / 🔴 (open issues)
+### Font 🟢 (chosen)
 
-**`public/fonts/aj06.ttf` — "A J Kunheing 06 Regular"**, added by the owner.
+`aj06.ttf` was **replaced** by two fonts, both by the same designer:
 
-Verified by inspecting the font binary:
+- **`public/fonts/aj12.ttf` — "AJ 12"**, Jao Kunheing, 2024. **The Shan font.**
+- **`public/fonts/aj00.ttf` — "A J Kunheing 00"**, JAO Kunheing (Nawone Sai).
+  Kept as a secondary fallback.
 
-| Check | Result |
-| --- | --- |
-| Encoding | ✅ **True Unicode** — 0 private-use codepoints, so not a Zawgyi-style hack |
-| Shaping | ✅ Declares `mymr` + `latn` in GSUB, has GPOS mark positioning, has U+25CC |
-| Myanmar block | ✅ 59 codepoints (U+1004–U+109F) |
-| Myanmar Ext-A / Ext-B | ✅ 7 / 6 codepoints |
-| Shan tones & digits | ✅ U+1087–U+108A, U+1090–U+1099 present |
-| Embedding | ✅ `fsType = 0` (installable, no embedding restriction) |
+Verified by reading the `cmap` and `name` tables of each binary:
 
-Four real issues, none fatal:
+| Check | `aj12.ttf` | `aj00.ttf` |
+| --- | --- | --- |
+| Myanmar block (U+1000–U+109F) | ✅ **116 codepoints** | 59 codepoints |
+| Myanmar Ext-A | ✅ 8 | 7 |
+| Basic Latin | 95/95 | 95/95 |
+| U+1080 SHAN THA | ✅ | ❌ |
+| U+108B–U+108D Council tones | ✅ | ❌ |
+| U+108F SHAN RR | ✅ | ❌ |
+| Weight | Regular only (`usWeightClass 400`) | Regular only |
+| Embedding | `fsType = 0` | `fsType = 0` |
 
-1. **🔴 Regular only — no bold, no italic, not variable** (`usWeightClass 400`,
-   `macStyle 0`). For a text-heavy reading site this bites: headings and `<strong>`
-   in Shan will get synthesized faux-bold, which looks bad on Myanmar script and
-   can distort marks. Either source a bold weight of this family, or set a
-   deliberate typographic rule (weight via size/color, not bolding).
-2. **🔴 Missing some Shan characters**: U+1080 SHAN THA, U+108B–U+108D (Shan Council
-   tone marks), U+108F SHAN RR. Whether these matter depends on which orthography
-   the content uses — **needs a call from someone who writes Shan daily.** Missing
-   glyphs render as tofu.
-3. **🔴 License provenance unclear.** The copyright string is an unfilled
-   FontCreator template — `Typeface © (your company). 2022. All Rights Reserved` —
-   with no license name or URL. `fsType=0` technically permits embedding, but
-   "All Rights Reserved" with no identifiable licensor is a weak basis for shipping
-   a font on a public site. Worth tracking down the author.
-4. **Latin coverage is minimal** (95 Basic Latin glyphs). Fine — Montserrat handles
-   Latin. Pair them deliberately: **Montserrat for Latin, aj06 for Shan.**
+**aj12 resolves the missing-glyph problem** that was open against aj06 — it carries
+SHAN THA, all three Council tone marks, and SHAN RR. That is why it leads the stack.
 
-### Font loading 🔴
+Remaining issue:
 
-The font sits in `public/fonts/`. Prefer **`next/font/local`**, which self-hosts,
-fingerprints, and preloads with no layout shift. Read
-`node_modules/next/dist/docs/01-app/01-getting-started/13-fonts.md` before wiring it.
-A `.ttf` is also large; **subset and convert to `.woff2`** — the audience is on
-mobile data, and this is one of the highest-leverage performance wins available.
+**🔴 Regular only — no bold, no italic, not variable**, in both fonts. For a
+text-heavy reading site this bites: headings and `<strong>` in Shan get synthesized
+faux-bold, which distorts Myanmar marks. Express emphasis with size, color, or
+spacing rather than weight. Sourcing a bold weight is still worth asking about.
 
-### Zawgyi vs. Unicode 🟡
+### Font loading 🟢 (wired) / 🔴 (not yet optimized)
 
-The chosen font is Unicode-only, which effectively decides this: **store Unicode,
-period.** Remaining question is whether to *detect* Zawgyi input and convert on
-paste, or just reject/ignore it. Recommendation: don't build conversion for v1;
-revisit if real users actually paste Zawgyi.
+Both fonts load via **`next/font/local`** in `app/layout.tsx` as `--font-aj12` and
+`--font-aj00`. Shan text gets the right font through a **fallback stack** rather than
+per-element classes, defined as `--font-sans` in `app/globals.css`:
 
-### Locale routing 🔴
+```
+Montserrat  →  aj12  →  aj00  →  sans-serif
+```
 
-Proposed: `next-intl`, Shan (`shn`) + English, probably Burmese (`my`).
-**Decide whether URLs are locale-prefixed before writing routes** — retrofitting
-locale routing touches everything.
+The browser falls back **per glyph**, so a sentence mixing Shan and Latin renders
+Montserrat for the Latin and AJ for the Shan with no markup, no `lang` attribute, and
+no risk of untagged user content missing out. That last point is why a stack beats a
+`:lang(shn)` rule here — content is user-generated and multilingual per string.
 
-Also open: default locale for an anonymous visitor.
+**🔴 Still to do:** the files are `.ttf` and ship together (~250 KB). **Subset and
+convert to `.woff2`** — the audience is on mobile data, and this remains one of the
+highest-leverage performance wins available. Consider whether aj00 is worth keeping
+at all now that aj12 supersedes its coverage; dropping it halves the font payload.
 
-### Per-content language tagging 🟡
+### Zawgyi vs. Unicode 🟢 (decided)
+
+The chosen fonts are Unicode-only, which effectively decides this: **store Unicode,
+period.** **Decided: no Zawgyi detection or conversion.** Not in v1, not planned.
+Revisit only if real users actually paste Zawgyi and complain.
+
+### Locale routing 🟢 (decided)
+
+**Decided: locale-prefixed URLs, with Shan (`shn`) as the default locale.** An
+anonymous visitor with no preference gets Shan. `next-intl` is the proposed library;
+English alongside Shan, Burmese (`my`) likely later.
+
+This follows from the thesis: a Shan-speaking visitor should land on Shan without
+configuring anything, and the URL should say which language the content is in. Note
+this is UI locale only — content carries its own language tag, see below.
+
+### Per-content language tagging 🟢 (decided)
 
 Distinct from UI locale, and more important. Each **post/project/event carries its
 own language tag**, because the community is genuinely multilingual and someone
@@ -228,13 +238,18 @@ assume standard FTS works.
 Next.js 16.2 App Router · React 19.2 · TypeScript strict · Tailwind v4 (CSS-first) ·
 shadcn `base-nova` on **Base UI** (not Radix). Gotchas: [`AGENTS.md`](./AGENTS.md).
 
-### Proposed 🟡
+### Decided 🟢
 
-- **Database: Postgres** — Better Auth needs one anyway. Supabase or Neon; Supabase
-  if solo, since it bundles DB, storage, and image handling.
+- **Database: Neon** (Postgres). Better Auth needs a Postgres anyway.
+- **Hosting: Vercel.** `main` deploys to production, `dev` to previews — see
+  `AGENTS.md` and the `deploy-dev` / `deploy-prod` skills.
 - **Content:** posts/projects/events/profiles in Postgres. Curated resources and the
-  glossary can be MDX in-repo (free versioning and review via git).
-- **Hosting:** Vercel.
+  glossary can be MDX in-repo (free versioning and review via git). 🟡 — the MDX half
+  is still a proposal.
+
+Neon over Supabase means storage and image handling are **not** bundled and will need
+a separate answer when profile avatars or post images arrive. Not urgent, but don't
+assume it's covered.
 
 ### Data model sketch 🟡
 
@@ -256,32 +271,67 @@ Conventions live in [`AGENTS.md`](./AGENTS.md). Two decisions belong here:
 
 ### Brand color 🔴
 
-The palette is **100% greyscale today**, chart tokens included. Pick the brand color
-and the dark palette **in one pass**, because:
+The palette is **100% greyscale today**, chart tokens included. Still open — but now
+a single-pass job, since only the light palette needs picking.
 
-### Dark mode is declared but non-functional 🔴
+### Dark mode 🟢 (decided: not building it)
 
-`globals.css` declares the `dark` variant and components carry `dark:` classes, but
-**no `.dark` token block exists**, so those classes are inert. Unfinished work, not
-a cleanup task.
+**Decided: light mode only.** No `.dark` token block will be defined.
 
-## Governance 🔴
+Consequences, so nobody treats this as unfinished work:
 
-Who moderates, and how quickly? Who curates the glossary? Who writes the code of
-conduct?
+- `globals.css` keeps `@custom-variant dark`, and shadcn components keep their
+  `dark:` classes. **Leave them.** They are inert without a `.dark` palette, and
+  stripping them would fork the components from the registry — `shadcn add` would
+  overwrite the edits anyway.
+- Do not add `.dark { ... }` tokens, a theme toggle, or `next-themes`.
+- If dark mode is ever wanted, it becomes a new PBI; it is not a lingering gap.
 
-Moderation is now the *only* line of defense, since anyone signed in can post — which
-makes this more urgent, not less. It reads as a non-engineering concern and is in fact
-what determines whether the site is alive in a year. Answer it before launch.
+## Governance 🟡 (deferred)
+
+**Deferred by the owner — not required for now.** Recorded rather than dropped,
+because the underlying risk doesn't go away:
+
+Sign-in is the only gate, so rate limiting and moderation remain the entire spam
+defense. Deferring governance means the **technical** controls carry the whole load
+until a human process exists — which makes the rate limits on write endpoints
+(PBI-008) load-bearing rather than routine.
+
+Revisit before public launch, or the first time someone posts something that needs
+removing and there's no answer for who removes it. Open at that point: who moderates
+and how fast, who curates the glossary, who writes the code of conduct.
 
 ## Open questions
 
-1. Do the missing Shan glyphs (SHAN THA, Council tones, SHAN RR) matter for the
-   orthography you'll actually publish in? **Blocks committing to this font.**
-2. Who authored `aj06.ttf`, and under what license?
-3. Is there a bold weight of A J Kunheing available?
-4. Locale-prefixed URLs? Default locale for anonymous visitors? **Blocks routing.**
-5. Brand color and dark palette.
-6. Who moderates, and how fast?
-7. Does a Shan technical-vocabulary effort already exist to align the glossary with?
-8. Is there an existing community to seed from, or is this cold-start from zero?
+Still open:
+
+1. **Font license evidence.** The owner states the font is open source and freely
+   usable, and that a public source exists — **the link is still needed.** Both
+   binaries embed *All Rights Reserved* (`aj00` via an unfilled FontCreator template,
+   `aj12` explicitly), so the files contradict the claim until the source is
+   recorded. Tracked as PBI-001; blocks publishing the repo.
+2. **Is there a bold weight of A J Kunheing available?** Both fonts are
+   `usWeightClass 400`, so all bold on Shan is faux-bold today.
+3. **Brand color.** Light palette only now that dark mode is out.
+4. **Search on Myanmar script.** Shan and Burmese are written without spaces, so
+   Postgres's default tokenizer will segment badly. Needs real investigation.
+5. **Does a Shan technical-vocabulary effort already exist** to align the glossary
+   with?
+6. **Is there an existing community to seed from**, or is this cold-start from zero?
+7. **Image and file storage.** Neon is Postgres only — unlike Supabase it doesn't
+   bundle storage. Needed before avatars or post images.
+
+### Resolved
+
+| Question | Outcome |
+| --- | --- |
+| Missing Shan glyphs (SHAN THA, Council tones, SHAN RR) | **Resolved** — `aj12.ttf` carries all of them; verified from the `cmap` table. It leads the font stack. |
+| Who authored the font | JAO Kunheing / Jao Kunheing, same designer for both files. Licence terms still to be evidenced (see #1). |
+| Locale-prefixed URLs? Default locale? | **Yes, prefixed. Shan (`shn`) is the default.** |
+| Dark palette | **Not building dark mode.** Light only. |
+| Zawgyi detection/conversion | **No.** Store Unicode, period. |
+| Database | **Neon** (Postgres). |
+| Hosting | **Vercel.** |
+| Per-content language tagging | **Yes** — content language is independent of UI locale. |
+| Who moderates, and how fast | **Deferred**, not answered. See Governance. |
+| Data model | Deferred — revisit when the first feature needs a schema. |

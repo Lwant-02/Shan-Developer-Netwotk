@@ -33,6 +33,13 @@
       "Bash(vercel env *)"
     ],
     "deny": [
+      "Bash(git add .)",
+      "Bash(git add -A *)",
+      "Bash(git add -A)",
+      "Bash(git add --all *)",
+      "Bash(git add --all)",
+      "Bash(git add -u *)",
+      "Bash(git add -u)",
       "Bash(git push --force *)",
       "Bash(git push -f *)",
       "Bash(git reset --hard *)",

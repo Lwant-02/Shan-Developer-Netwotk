@@ -271,5 +271,25 @@ preflight and post-deploy verification.
 **Always end with** `Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>` when an
 agent wrote the commit.
 
+## Staging
+
+**Stage files by name. Never `git add .`, `git add -A`, `git add --all`, or
+`git add -u`.**
+
+```bash
+git status --short          # look at what actually changed
+git add app/[locale]/page.tsx messages/shn.json
+git diff --cached           # read what you are about to commit
+```
+
+Blanket staging commits whatever happens to be in the tree — a scratch file, a
+`.env` someone hasn't gitignored yet, a stray build artifact, an unrelated edit from
+another task. `.gitignore` is not a safety net: it only covers what someone already
+thought to list, and the one file that matters will be the one that isn't there.
+Naming files also forces you to notice a change you didn't intend to make.
+
+These are in the `deny` list in `.claude/settings.json`, but that's a prefix match and
+not a real boundary — the rule is the boundary.
+
 **Never** commit or push unless explicitly asked, and never bypass hooks
 (`--no-verify`) or force-push to `main`.

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 
+import { DevConsoleFilter } from "@/components/shell/dev-console-filter";
 import { ThemeProvider } from "@/components/theme-provider";
 import { routing } from "@/i18n/routing";
 import { siteConfig, siteUrl } from "@/lib/site";
@@ -95,6 +96,7 @@ export default async function RootLayout({
       className={cn(fontVariables, "h-full antialiased")}
     >
       <body className="min-h-full flex flex-col">
+        {process.env.NODE_ENV === "development" && <DevConsoleFilter />}
         <ThemeProvider>
           <NextIntlClientProvider>{children}</NextIntlClientProvider>
         </ThemeProvider>

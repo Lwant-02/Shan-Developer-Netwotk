@@ -23,6 +23,15 @@
     "notifications": "Notifications",
     "account": "Account"
   },
+  "Auth": {
+    "title": "Sign in",
+    "description": "Sign in to post, comment, and host events. You don't need an account to read.",
+    "google": "Continue with Google",
+    "github": "Continue with GitHub",
+    "or": "or",
+    "privacy": "Your email is never shown publicly. You can use a display name instead of your real one.",
+    "consent": "I agree to the Terms of Service and Privacy Policy."
+  },
   "Home": {
     "sortBest": "Best",
     "sortNew": "New",

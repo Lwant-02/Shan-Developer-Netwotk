@@ -2,6 +2,7 @@ import { Bell, SquarePlus, User } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
+import { SignInDialog } from "@/components/auth/sign-in-dialog";
 import { SearchTrigger } from "@/components/search/search-trigger";
 import { buttonVariants } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
@@ -66,12 +67,19 @@ export function TopNav() {
             </span>
           </button>
           <LocaleSwitcher />
-          <button
-            type="button"
-            className={cn(buttonVariants({ size: "default" }), "cursor-pointer")}
-          >
-            {t("signIn")}
-          </button>
+          {/* Hidden from `xl`, where the right rail's "Sign in to post" card takes
+              over — two sign-in buttons on one screen is one too many. */}
+          <SignInDialog>
+            <button
+              type="button"
+              className={cn(
+                buttonVariants({ size: "default" }),
+                "cursor-pointer font-normal xl:hidden",
+              )}
+            >
+              {t("signIn")}
+            </button>
+          </SignInDialog>
         </div>
       </div>
     </header>

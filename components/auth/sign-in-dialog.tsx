@@ -14,6 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
 // Sign-in is the only gate in the product, so this is the highest-stakes screen in the
@@ -83,14 +84,35 @@ export function SignInDialog({ children }: { children: ReactElement }) {
             id="auth-consent"
             checked={agreed}
             onCheckedChange={(checked) => setAgreed(checked)}
+            aria-labelledby="auth-consent-label"
             className="mt-0.5"
           />
-          <label
-            htmlFor="auth-consent"
-            className="text-muted-foreground cursor-pointer text-xs leading-relaxed"
+          {/* Not a <label htmlFor>: the sentence now carries links, and clicking a
+              link inside a label would toggle the checkbox and nests interactive
+              controls. `aria-labelledby` gives the checkbox its name instead. */}
+          <p
+            id="auth-consent-label"
+            className="text-muted-foreground text-xs leading-relaxed"
           >
-            {t("consent")}
-          </label>
+            {t.rich("consent", {
+              terms: (chunks) => (
+                <Link
+                  href="/terms"
+                  className="text-foreground underline underline-offset-2"
+                >
+                  {chunks}
+                </Link>
+              ),
+              privacy: (chunks) => (
+                <Link
+                  href="/privacy"
+                  className="text-foreground underline underline-offset-2"
+                >
+                  {chunks}
+                </Link>
+              ),
+            })}
+          </p>
         </div>
 
         <p className="text-muted-foreground text-xs leading-relaxed">

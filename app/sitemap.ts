@@ -5,7 +5,7 @@ import { siteUrl } from "@/lib/site";
 
 // Routes are listed once, without a locale; every locale is expanded from
 // routing.locales so adding one cannot silently omit it from the sitemap.
-const routes = [""] as const;
+const routes = ["", "/about", "/terms", "/privacy"] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = siteUrl();

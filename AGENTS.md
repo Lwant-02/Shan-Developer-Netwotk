@@ -68,21 +68,34 @@ All routes live under `app/[locale]/`. Locales are **`shn` (default) and `en`**,
 - **UI locale is not content language.** Posts/projects/events carry their own
   language tag; someone reading the UI in English must still see Shan content.
 
-### Shan strings are not machine-translated
+### Shan strings are translated, then reviewed by a Shan speaker
 
 `messages/en.json` is the source of truth for structure; `messages/shn.json` is the
-Shan translation. **Agents don't write Shan copy by guessing.** A Shan term must be
-written by a Shan speaker or found attested by a web-searching agent — never
-machine-translated or invented, per PBI-006. Getting this wrong ships fluent-looking
-nonsense to the primary audience.
+Shan translation. A capable web-searching agent (e.g. Gemini) does the translation: it
+**searches first** for how Shan speakers actually write each term and prefers an
+attested term over a coined one. Where no established term exists, it should still
+**translate** — its best rendering, flagged for review — rather than leave the string
+in English.
 
-- **Placeholder convention:** an untranslated Shan value is `"TODO(shn): <English>"`.
-  A left placeholder is a correct, honest state; a made-up Shan word is not. Never
-  ship a `TODO(shn):` string to production knowingly — flag it.
+The safeguard against fluent-looking nonsense is **review by a Shan speaker before it
+ships**, not refusing to translate — the owner is a Shan speaker and reviews the
+result. This **relaxes PBI-006's** earlier "leave a `TODO(shn)` placeholder if a term
+isn't attested" outcome, which left long copy (the Terms and Privacy pages)
+effectively untranslated.
+
+- **Still Shan Unicode only** — never Zawgyi or Burmese substitutions — and keep ICU
+  placeholders (`{name}`, tags) verbatim.
+- **Placeholder convention:** `"TODO(shn): <English>"` marks a value that still needs
+  translating or reviewing — a temporary state to resolve, not a resting place. Don't
+  knowingly ship one to production; flag it.
+- **Terms and Privacy are English-only.** These two pages are legal copy and stay in
+  one authoritative language; their `shn.json` values mirror the English **on purpose**
+  — a matching English value there is intentional, not a missing translation. They are
+  excluded from the brief via `ENGLISH_ONLY` in `scripts/i18n-prompt.mjs`. Everything
+  else, including the **About** page, is still translated.
 - **`npm run i18n:prompt`** scans `shn.json` against `en.json` and prints a
-  translation brief (what to translate, and explicitly what *not* to do) for a
-  web-searching agent such as Gemini. It translates nothing itself. Use it to hand
-  off Shan copy rather than filling strings in yourself.
+  translation brief for the web-searching agent. Use it to hand off Shan copy rather
+  than filling strings in yourself.
 
 ### Site metadata
 

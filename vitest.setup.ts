@@ -1,5 +1,31 @@
+import { createElement, type ReactNode } from "react";
 import { afterEach, vi } from "vitest";
 import { cleanup } from "@testing-library/react";
+
+// next-intl's locale-aware navigation (createNavigation) imports `next/navigation`,
+// whose bare subpath export vite can't resolve under jsdom — the same class of
+// build-time-only concern as next/font below. Tests don't exercise real routing, so
+// stub the app's navigation module with a plain anchor and inert hooks.
+vi.mock("@/i18n/navigation", () => ({
+  Link: ({
+    href,
+    children,
+    ...props
+  }: {
+    href?: string;
+    children?: ReactNode;
+  } & Record<string, unknown>) =>
+    createElement(
+      "a",
+      { href: typeof href === "string" ? href : "#", ...props },
+      children
+    ),
+  usePathname: () => "/",
+  useRouter: () => ({ push: () => {}, replace: () => {}, prefetch: () => {} }),
+  getPathname: () => "/",
+  redirect: () => {},
+  permanentRedirect: () => {},
+}));
 
 // next/font is a build-time transform with no runtime implementation, so importing
 // it under Vitest throws. The stubs echo the requested CSS variable back, which is

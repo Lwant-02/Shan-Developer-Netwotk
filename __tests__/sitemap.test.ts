@@ -12,7 +12,23 @@ test("sitemap covers every configured locale", () => {
   for (const locale of routing.locales) {
     expect(urls.some((url) => url.endsWith(`/${locale}`))).toBe(true);
   }
-  expect(urls).toHaveLength(routing.locales.length);
+  // No locale is silently dropped from any route: each is represented the same
+  // number of times (once per route).
+  const counts = routing.locales.map(
+    (l) => urls.filter((u) => new URL(u).pathname.startsWith(`/${l}`)).length
+  );
+  expect(new Set(counts).size).toBe(1);
+});
+
+// The static content routes (PBI-015) must be indexable in every locale.
+test("sitemap includes the static content routes for every locale", () => {
+  const urls = sitemap().map((entry) => entry.url);
+
+  for (const locale of routing.locales) {
+    for (const path of ["/about", "/terms", "/privacy"]) {
+      expect(urls.some((url) => url.endsWith(`/${locale}${path}`))).toBe(true);
+    }
+  }
 });
 
 test("every sitemap entry declares all locale alternates", () => {

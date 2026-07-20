@@ -16,7 +16,7 @@ export const siteConfig = {
     "developer community",
     "Myanmar developers",
   ],
-  logo: "/icons/logo.png",
+  logo: "/icons/logo.svg",
 } as const;
 
 // No production domain is registered yet. VERCEL_PROJECT_PRODUCTION_URL is set

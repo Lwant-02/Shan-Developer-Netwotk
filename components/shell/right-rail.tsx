@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 
+import { SignInDialog } from "@/components/auth/sign-in-dialog";
 import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { mockPosts } from "@/lib/feed";
@@ -19,12 +20,17 @@ export function RightRail() {
             {tHome("aboutBody")}
           </p>
         </div>
-        <button
-          type="button"
-          className={cn(buttonVariants({ size: "lg" }), "w-full cursor-pointer")}
-        >
-          {tHome("signInToPost")}
-        </button>
+        <SignInDialog>
+          <button
+            type="button"
+            className={cn(
+              buttonVariants({ size: "lg" }),
+              "w-full cursor-pointer font-normal",
+            )}
+          >
+            {tHome("signInToPost")}
+          </button>
+        </SignInDialog>
       </Card>
 
       <Card className="flex flex-col gap-1 p-5">

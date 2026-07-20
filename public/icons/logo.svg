@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <g fill="none" stroke="#FFFFFF" stroke-width="72" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Left bracket < -->
+    <path d="M 150 54 L 36 256 L 150 458" />
+    
+    <!-- Letter s -->
+    <path d="M 312 150 C 312 108 284 74 256 74 C 220 74 200 108 200 160 C 200 240 312 272 312 352 C 312 404 284 438 256 438 C 220 438 200 404 200 362" />
+    
+    <!-- Right bracket > -->
+    <path d="M 362 54 L 476 256 L 362 458" />
+  </g>
+</svg>

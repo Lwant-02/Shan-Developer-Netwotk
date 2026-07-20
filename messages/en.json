@@ -11,9 +11,9 @@
   "Nav": {
     "home": "Home",
     "projects": "Projects",
-    "posts": "Posts",
+    "community": "Community",
     "events": "Events",
-    "people": "People",
+    "developers": "Developers",
     "comingSoon": "soon",
     "signIn": "Sign in",
     "search": "Search the community",
@@ -21,7 +21,10 @@
     "toggleNav": "Toggle navigation",
     "create": "Create",
     "notifications": "Notifications",
-    "account": "Account"
+    "account": "Account",
+    "about": "About SDN",
+    "terms": "Terms",
+    "privacy": "Privacy"
   },
   "Auth": {
     "title": "Sign in",

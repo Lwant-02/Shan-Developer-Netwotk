@@ -58,7 +58,9 @@ export async function generateMetadata({
     icons: {
       icon: siteConfig.logo,
       shortcut: siteConfig.logo,
-      apple: siteConfig.logo,
+      // iOS does not support SVG for apple-touch-icon, so this one stays a PNG —
+      // pointing it at the SVG logo silently gives iPhone users no home-screen icon.
+      apple: "/icons/icon-192.png",
     },
     appleWebApp: {
       capable: true,

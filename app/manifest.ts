@@ -3,9 +3,10 @@ import type { MetadataRoute } from "next";
 import { siteConfig } from "@/lib/site";
 
 // Installable PWA manifest (PBI-009). Manifest + icons only — no service worker,
-// so no offline and no new client JS; that is a later PBI. Colors mirror the light
-// --background (oklch(1 0 0) = white), and there is no dark theme, so one color is
-// correct. start_url is /shn, the Shan-first entry point.
+// so no offline and no new client JS; that is a later PBI. Colors mirror `--background`
+// from the dark-only palette (PBI-013); white here would flash a white splash screen
+// before a dark app, and clash with the dark icons. start_url is /shn, the Shan-first
+// entry point.
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: siteConfig.name,
@@ -13,8 +14,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: siteConfig.description,
     start_url: "/shn",
     display: "standalone",
-    background_color: "#ffffff",
-    theme_color: "#ffffff",
+    background_color: "#0a0a0a",
+    theme_color: "#0a0a0a",
     lang: "shn",
     dir: "ltr",
     icons: [

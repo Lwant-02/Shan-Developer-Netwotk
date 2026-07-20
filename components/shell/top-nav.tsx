@@ -23,14 +23,19 @@ export function TopNav() {
         </MobileNav>
 
         <Link href="/" className="flex shrink-0 items-center gap-2">
+          {/* `unoptimized` because the logo is now an SVG: Next's image optimizer
+              refuses SVG unless `dangerouslyAllowSVG` is set, which is not worth
+              widening for one static mark. */}
           <Image
-            src="/icons/icon-192.png"
+            src={siteConfig.logo}
             alt={siteConfig.name}
-            width={28}
-            height={28}
-            className="rounded-lg"
+            width={32}
+            height={32}
+            unoptimized
           />
-          <span className="hidden text-sm sm:inline">{siteConfig.name}</span>
+          <span className="hidden text-lg font-bold sm:inline">
+            {siteConfig.name}
+          </span>
         </Link>
 
         {/* Renders both entry points — the field above `sm`, the icon below — and

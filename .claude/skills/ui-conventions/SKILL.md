@@ -108,8 +108,10 @@ alongside the component, props typed off the Base UI primitive.
 - **Shan text has no bold.** Both fonts in `public/fonts/` are Regular only
   (`usWeightClass 400`). `font-bold` on Shan script triggers synthesized faux-bold,
   which distorts Myanmar-block marks. Express emphasis with size, color, or spacing.
-- **Dark mode has no palette yet.** `dark:` variants are correct to write, but no
-  `.dark { ... }` token block exists, so you cannot visually verify dark mode today.
+- **The UI is dark-only** (PBI-013). The greyscale palette lives in `:root` — there is
+  no `.dark` block, no theme class, and no toggle. Don't add one, and don't write a
+  light-mode fallback. The `dark` variant is unconditional so the registry components'
+  `dark:` utilities keep applying; write semantic tokens and it just works.
 - **Text is multilingual**, and content language is independent of UI locale. Don't
   hardcode text direction or assume one language per page.
 

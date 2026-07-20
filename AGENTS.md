@@ -154,7 +154,7 @@ re-derive this:
   reach for `"use client"`, be able to name which of the four triggers forced it.
 - **Radii: `rounded-lg` and nothing else.** One radius across the whole UI — cards, inputs, dialogs, images, buttons. Not `rounded-md`, not `rounded-xl`, not a pixel value. Mixed corner radii are the fastest way for a small design system to start looking accidental, and there is no visual justification for a second radius here. The exception is `components/ui/`, which is registry-managed: leave whatever `shadcn add` ships (`button.tsx` has two `rounded-[min(var(--radius-md),…)]` size variants) rather than forking those files from upstream.
 - **No bold on Shan text.** The AJ fonts are Regular-only (`usWeightClass 400`), so `font-bold` / `font-semibold` / `font-medium` synthesize faux-bold that distorts Myanmar tone marks. Express emphasis with size, color, or spacing. This binds nearly all UI, since any string can contain Shan.
-- **Theme with CSS, never React state.** A `.dark` block in `globals.css` drives both (greyscale) palettes; swap themed content with `dark:` utilities. The server can't know the visitor's theme, so a state swap mismatches on hydration, and `react-hooks/set-state-in-effect` rejects the mounted-guard workaround. **`components/theme-provider.tsx` must not gain `"use client"`** — next-themes' provider carries it, so the wrapper stays a Server Component and its pre-paint `<script>` renders server-side only; a client wrapper makes React re-render the script on navigation, which React 19 rejects. The shadcn `dark:` classes are live — still don't edit `components/ui/*`.
+- **Dark-only theme, in CSS with no React state.** The UI ships **one theme — dark** (PBI-013, which reversed the light+dark PBI-011). The greyscale palette lives in **`:root`** in `globals.css` — there is no `.dark` block and no theme class, so the 404 pages (which render outside the locale layout) inherit it for free. There is **no `next-themes`, no toggle, and no theme provider** — don't reintroduce them, and don't add a `prefers-color-scheme` read or a persisted preference; the theme is invariant per URL so pages stay statically prerendered. The `dark` variant is deliberately **unconditional** (`@custom-variant dark (&)`) because `components/ui/*` is registry-managed and ships `dark:` utilities that must keep applying — don't rescope it, and still don't edit those files.
 - **Comment sparingly.** Don't narrate what the code already says, and don't leave a running commentary explaining your reasoning. A comment earns its place only when it records something the reader cannot see — a non-obvious constraint, a deprecation, a workaround for an upstream limitation. Default to none.
 
 ## Building and refactoring UI
@@ -183,8 +183,8 @@ Styling rules, which are not negotiable because theming depends on them:
   `style={{}}` for anything a utility can express. One-off CSS goes in the
   `@layer base` block in `globals.css`, not next to the component.
 - **Semantic tokens only** — `bg-card`, `text-muted-foreground`, `border-border`.
-  A raw `bg-neutral-900` or a hex silently opts that element out of theming and out
-  of dark mode when the palette lands.
+  A raw `bg-neutral-900` or a hex silently opts that element out of the greyscale
+  dark palette.
 - **Every class list goes through `cn()`.** It merges conflicts correctly; template
   strings don't, and the bug only shows up when a caller passes `className`.
 - **Accept `className`** on any component meant to be composed, and merge it last so

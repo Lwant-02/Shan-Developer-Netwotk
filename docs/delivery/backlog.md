@@ -44,8 +44,9 @@ every branch, so a PBI filed on an unmerged branch still holds its number.
 | [008](./008/prd.md) | Design the 404 page | Done | Next's unstyled English default is replaced by a localized page. Verified and completed with verified Shan script. |
 | [009](./009/prd.md) | Installable PWA (web manifest + icons) | Done | `app/manifest.ts` + install icons; **no service worker** (offline deferred). Icons are placeholder upscales of the 96px logo — real ≥512 art is an Open Question below. |
 | [010](./010/prd.md) | Home page — Reddit-style feed (shell + mock data) | Done | Replaces the placeholder home with a **mobile-first** 3-region feed layout + post cards from **typed mock data**. Anonymous-readable. No DB/auth/voting — those are later PBIs; the card carries a vote *slot* only. |
-| [011](./011/prd.md) | Dark mode | Done | Supersedes [003](./003/prd.md) — the owner reversed light-only. `.dark` token block + `next-themes` + a toggle in the left nav. Greyscale; brand colour stays open. |
+| [011](./011/prd.md) | Dark mode | Done | Built light + dark (`.dark` block + `next-themes` + toggle), superseding [003](./003/prd.md). **Now superseded by [013](./013/prd.md)** — the owner reversed to dark-only and its toggle/`next-themes` were removed. Kept so the light+dark decision stays legible. |
 | [012](./012/prd.md) | Command palette search (kbar) | Done | Makes the dead nav search live. **Navigation + mock feed only** — real full-text search needs the DB and the Myanmar-tokenisation decision. |
+| [013](./013/prd.md) | Dark-only theme | Done | Supersedes [011](./011/prd.md) — the owner reversed light+dark to **dark only** for the developer aesthetic. Removes `next-themes`, the toggle, and the `DevConsoleFilter` workaround; the greyscale palette moves into `:root`. |
 
 ## Open questions — not yet PBIs
 

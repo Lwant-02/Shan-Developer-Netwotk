@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 
 import { Reveal } from "@/components/motion/reveal";
+import { DevConsoleFilter } from "@/components/shell/dev-console-filter";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { fontVariables } from "../fonts";
@@ -30,6 +31,7 @@ export default function NotFound() {
         "font-sans bg-background text-foreground flex min-h-dvh flex-col antialiased"
       )}
     >
+      {process.env.NODE_ENV === "development" && <DevConsoleFilter />}
       <main className="flex flex-1 items-center justify-center px-6 py-16">
         <div className="border-border bg-card flex w-full max-w-sm flex-col items-center gap-6 rounded-lg border px-8 py-12 text-center shadow-sm">
           <Reveal className="flex flex-col items-center gap-3">

@@ -12,9 +12,8 @@ import {
   VisualState,
   type Action,
 } from "kbar";
-import { FileText, House, Languages, Moon, Sun } from "lucide-react";
+import { FileText, House, Languages } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useTheme } from "next-themes";
 import { useEffect } from "react";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
@@ -109,7 +108,6 @@ export function CommandPalette({ openSignal }: { openSignal: number }) {
   const router = useRouter();
   const pathname = usePathname();
   const locale = useLocale();
-  const { setTheme } = useTheme();
 
   // Only destinations that exist. Projects/Posts/Events/People are omitted until
   // their pages land — a palette of dead ends is worse than a short one.
@@ -131,20 +129,6 @@ export function CommandPalette({ openSignal }: { openSignal: number }) {
         icon: <Languages className={icon} />,
         perform: () => router.replace(pathname, { locale: it }),
       })),
-    {
-      id: "theme-light",
-      name: tNav("themeLight"),
-      section: t("sectionSettings"),
-      icon: <Sun className={icon} />,
-      perform: () => setTheme("light"),
-    },
-    {
-      id: "theme-dark",
-      name: tNav("themeDark"),
-      section: t("sectionSettings"),
-      icon: <Moon className={icon} />,
-      perform: () => setTheme("dark"),
-    },
     // Mock posts. `keywords` carries the author so a handle matches too. Matching is
     // substring-based, which is provisional — it is NOT the Myanmar tokenisation
     // decision, which needs a real corpus (design.md, open question 3).

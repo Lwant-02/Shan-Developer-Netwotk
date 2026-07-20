@@ -272,38 +272,43 @@ Conventions live in [`AGENTS.md`](./AGENTS.md). Two decisions belong here:
 
 ### Brand color 🟢 (decided)
 
-**Decided: monochrome — black and white, light theme only.** The greyscale palette
-already in `globals.css` is the intended one, not a placeholder: every token is
-zero-chroma `oklch`, and that stays.
+**Decided: monochrome — greyscale, dark only.** The greyscale palette in
+`globals.css` is the intended one, not a placeholder: every token is zero-chroma
+`oklch`, and that stays. The UI ships a single dark surface (see Theme below), so the
+`.dark` block is the palette that actually renders.
 
-This is coherent with the no-dark-mode decision and it puts the emphasis on the
-typography, which is where this project's identity actually lives — Shan script
-rendering correctly is the point, not a brand hue.
+Monochrome puts the emphasis on the typography, which is where this project's identity
+actually lives — Shan script rendering correctly is the point, not a brand hue.
 
 One consequence to design around: with no accent colour, **state has to be carried by
 weight, size, spacing, and borders**. That constraint bites harder than usual here,
 because the Shan fonts are Regular only — so no bold either. Contrast and layout do
 all the work.
 
-### Dark mode 🟢 (decided: building it — reversed 2026-07-18)
+### Theme 🟢 (decided: dark only — reversed 2026-07-20)
 
-**Decided: light and dark.** The earlier light-only call ([PBI-003](docs/delivery/003/prd.md))
-was **reversed by the owner** and is superseded by [PBI-011](docs/delivery/011/prd.md).
-003 is kept as a `Won't Do` record so the original reasoning stays readable.
+**Decided: dark only.** The call has flipped twice: light-only
+([PBI-003](docs/delivery/003/prd.md), `Won't Do`) → light + dark
+([PBI-011](docs/delivery/011/prd.md), built with `next-themes` + a toggle) → **dark
+only** ([PBI-013](docs/delivery/013/prd.md), which removed that machinery). Each
+superseded PBI is kept as a record so the history stays readable.
 
-The argument that carried it: the audience is on mid-range Android, where OLED panels
-are the norm and a reading-heavy feed at night is the common case.
+The argument that carried it: a single opinionated dark surface matches the
+developer-tool aesthetic, and the audience is on mid-range Android where OLED panels
+make a reading-heavy dark feed the sensible default. Dropping the switcher also drops
+a client provider, a pre-paint script, and the console-warning workaround that script
+forced.
 
-- `globals.css` now defines a `.dark` token block mirroring `:root`. Both palettes are
-  **greyscale** — brand colour is still open, and picking one belongs in the same pass
-  for light and dark together.
-- The shadcn `dark:` classes, previously inert, are now **live**. Still don't edit
-  `components/ui/*`: they remain registry-managed.
-- `next-themes` sets the class before first paint, defaults to the OS preference, and
-  persists an explicit choice. The toggle is in the left nav's secondary group.
-- **404 pages render outside the locale layout**, so they have no provider and no
-  pre-paint script — they stay light. Same root cause as the font issue documented
-  under the 404 notes in `AGENTS.md`.
+- The greyscale palette lives in **`:root`** in `globals.css`; there is no `.dark`
+  block and no theme class. Nothing in React touches it, so the palette is invariant.
+- The `dark` variant is deliberately **unconditional** (`@custom-variant dark (&)`),
+  because `components/ui/*` is registry-managed and ships `dark:` utilities that must
+  keep applying. Don't edit those files.
+- No `next-themes`, no toggle, no OS-preference read, no persisted choice — every URL
+  renders identically, which keeps pages statically prerendered.
+- **404 pages render outside the locale layout**, but they still inherit `:root`, so
+  they need no special handling here — unlike the font variables, which they do have
+  to re-declare (see the 404 notes in `AGENTS.md`).
 
 ## Governance 🟡 (deferred)
 
@@ -326,7 +331,8 @@ Still open:
 1. **Is there a bold weight of A J Kunheing available?** Both fonts are
    `usWeightClass 400`, so all bold on Shan is faux-bold today. Worth asking AJ
    directly — see `public/fonts/CREDITS.md` for contact routes.
-2. **Brand color.** Light palette only now that dark mode is out.
+2. **Brand color.** Greyscale monochrome for now, on the dark surface. Whether to
+   introduce a single accent hue is still open.
 3. **Search on Myanmar script.** Shan and Burmese are written without spaces, so
    Postgres's default tokenizer will segment badly. Needs real investigation.
 4. **Does a Shan technical-vocabulary effort already exist** to align the glossary
@@ -342,7 +348,7 @@ Still open:
 | Missing Shan glyphs (SHAN THA, Council tones, SHAN RR) | **Resolved** — `aj12.ttf` carries all of them; verified from the `cmap` table. It leads the font stack. |
 | Who authored the font, under what terms | **AJ (Jao Kunheing / Nawone Sai)**, built free for the Shan community. Sources: [ajfonts](https://ajfonts.netlify.app/), [Shan Font Library](https://shan-font-library.vercel.app/). Attribution recorded in `public/fonts/CREDITS.md`. |
 | Locale-prefixed URLs? Default locale? | **Yes, prefixed. Shan (`shn`) is the default.** |
-| Dark palette | **Building it** (PBI-011, reversed 2026-07-18). Greyscale `.dark` block + `next-themes`. Supersedes PBI-003's light-only call. |
+| Theme | **Dark only** (PBI-013, reversed 2026-07-20). Greyscale `.dark` pinned on, no toggle. Supersedes PBI-011 (light + dark), which superseded PBI-003 (light-only). |
 | Zawgyi detection/conversion | **No.** Store Unicode, period. |
 | Database | **Neon** (Postgres). |
 | Hosting | **Vercel.** |

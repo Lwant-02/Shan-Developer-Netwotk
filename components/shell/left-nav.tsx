@@ -5,7 +5,6 @@ import { Link } from "@/i18n/navigation";
 import { siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { CollapsedNavTooltip } from "./collapsed-nav-tooltip";
-import { ThemeToggle } from "./theme-toggle";
 
 // Projects/Posts/Events/People pages don't exist yet, so those items are disabled
 // with a "soon" cue rather than shipping links that 404 (agreed at PBI-010 time).
@@ -72,12 +71,6 @@ export function LeftNav({ className }: { className?: string }) {
       </div>
 
       <hr className="border-border my-3" />
-
-      {/* Secondary group — About, Help and the rest land here as they exist. The
-          segmented control has no room in the collapsed rail. */}
-      <div className={cn("flex flex-col gap-0.5 px-3", hideOnCollapse)}>
-        <ThemeToggle />
-      </div>
 
       <p
         className={cn(

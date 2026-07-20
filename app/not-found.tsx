@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { Reveal } from "@/components/motion/reveal";
-import { DevConsoleFilter } from "@/components/shell/dev-console-filter";
 import { buttonVariants } from "@/components/ui/button";
 import { routing } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
@@ -26,7 +25,6 @@ export default function RootNotFound() {
         "font-sans bg-background text-foreground flex min-h-dvh flex-col antialiased"
       )}
     >
-      {process.env.NODE_ENV === "development" && <DevConsoleFilter />}
       <main className="flex flex-1 items-center justify-center px-6 py-16">
         <div className="border-border bg-card flex w-full max-w-sm flex-col items-center gap-6 rounded-lg border px-8 py-12 text-center shadow-sm">
           <Reveal className="flex flex-col items-center gap-3">

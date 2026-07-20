@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
+import { CollapsedNavTooltip } from "./collapsed-nav-tooltip";
 import { ThemeToggle } from "./theme-toggle";
 
 // Projects/Posts/Events/People pages don't exist yet, so those items are disabled
@@ -33,37 +34,39 @@ export function LeftNav({ className }: { className?: string }) {
 
           if ("href" in rest) {
             return (
-              <Link
-                key={key}
-                href={rest.href}
-                aria-current="page"
-                title={label}
-                className={cn(item, "bg-muted text-foreground")}
-              >
-                <Icon className="size-5 shrink-0" />
-                <span className={hideOnCollapse}>{label}</span>
-              </Link>
+              <CollapsedNavTooltip key={key} label={label}>
+                <Link
+                  href={rest.href}
+                  aria-current="page"
+                  aria-label={label}
+                  className={cn(item, "bg-muted text-foreground")}
+                >
+                  <Icon className="size-5 shrink-0" />
+                  <span className={hideOnCollapse}>{label}</span>
+                </Link>
+              </CollapsedNavTooltip>
             );
           }
 
           return (
-            <span
-              key={key}
-              aria-disabled="true"
-              title={label}
-              className={cn(item, "text-muted-foreground hover:bg-muted/60")}
-            >
-              <Icon className="size-5 shrink-0 opacity-70" />
-              <span className={hideOnCollapse}>{label}</span>
+            <CollapsedNavTooltip key={key} label={label}>
               <span
-                className={cn(
-                  "text-muted-foreground/80 ml-auto text-[10px]",
-                  hideOnCollapse,
-                )}
+                aria-disabled="true"
+                aria-label={label}
+                className={cn(item, "text-muted-foreground hover:bg-muted/60")}
               >
-                {t("comingSoon")}
+                <Icon className="size-5 shrink-0 opacity-70" />
+                <span className={hideOnCollapse}>{label}</span>
+                <span
+                  className={cn(
+                    "text-muted-foreground/80 ml-auto text-[10px]",
+                    hideOnCollapse,
+                  )}
+                >
+                  {t("comingSoon")}
+                </span>
               </span>
-            </span>
+            </CollapsedNavTooltip>
           );
         })}
       </div>

@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+
 // Brand-level constants for site metadata. Values here are language-independent
 // or English by necessity (SEO description); localising the description needs
 // Shan marketing copy, which is a human task — see AGENTS.md.
@@ -31,4 +33,24 @@ export function siteUrl(): string {
   if (vercel) return `https://${vercel}`;
 
   return "http://localhost:3000";
+}
+
+// Per-page canonical + hreflang for a locale sub-route. Each page must set its own
+// `alternates`; a page that inherits the layout's would claim the home URL as
+// canonical (see AGENTS.md). `path` is locale-relative and leading-slashed ("/about").
+export function localeAlternates(
+  locale: string,
+  path: string,
+): Metadata["alternates"] {
+  const href = (l: string) => `/${l}${path}`;
+  return {
+    canonical: href(locale),
+    // Next types these keys against a BCP-47 union that omits `shn`, a valid
+    // ISO 639-3 code. The cast widens that limitation, not a real error.
+    languages: {
+      shn: href("shn"),
+      en: href("en"),
+      "x-default": href("shn"),
+    } as NonNullable<NonNullable<Metadata["alternates"]>["languages"]>,
+  };
 }

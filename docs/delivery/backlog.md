@@ -48,7 +48,7 @@ every branch, so a PBI filed on an unmerged branch still holds its number.
 | [012](./012/prd.md) | Command palette search (kbar) | Done | Makes the dead nav search live. **Navigation + mock feed only** — real full-text search needs the DB and the Myanmar-tokenisation decision. |
 | [013](./013/prd.md) | Dark-only theme | Done | Supersedes [011](./011/prd.md) — the owner reversed light+dark to **dark only** for the developer aesthetic. Removes `next-themes`, the toggle, and the `DevConsoleFilter` workaround; the greyscale palette moves into `:root`. |
 | [014](./014/prd.md) | Sign-in dialog (frontend only) | Done | The nav's "Sign in" now opens a dialog with Google + GitHub OAuth options. **UI only** — no Better Auth, no session, no DB; the two provider buttons are where wiring attaches. |
-| [015](./015/prd.md) | Static informational pages — About, Terms, Privacy | Proposed | Real routes for three destinations the shipped UI already points at (inert footer links, disabled "about" nav, PBI-014 consent line). Shares one static-page shell. **Terms/Privacy legal copy is a human task** — pages ship, binding content is owner-reviewed. Relates to [014](./014/prd.md), [005](./005/prd.md), [007](./007/prd.md). |
+| [015](./015/prd.md) | Static informational pages — About, Terms, Privacy | InProgress | Real routes for three destinations the shipped UI already points at (inert footer links, disabled "about" nav, PBI-014 consent line). Shares one static-page shell. **Terms/Privacy legal copy is a human task** — pages ship, binding content is owner-reviewed. Relates to [014](./014/prd.md), [005](./005/prd.md), [007](./007/prd.md). |
 
 ## Open questions — not yet PBIs
 

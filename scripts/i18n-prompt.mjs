@@ -19,6 +19,13 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const MESSAGES = join(ROOT, "messages");
 const PLACEHOLDER = "TODO(shn):";
 
+// Namespaces kept English-only by decision: the Terms and Privacy pages are legal copy
+// and stay in one authoritative language (English). Their `shn.json` values mirror the
+// English on purpose, so they are excluded from the brief — the tool must not ask for a
+// Shan translation that shouldn't exist. See AGENTS.md.
+const ENGLISH_ONLY = ["Terms", "Privacy"];
+const isEnglishOnly = (path) => ENGLISH_ONLY.includes(path.split(".")[0]);
+
 function parseArgs(argv) {
   const opts = { from: "en", to: "shn" };
   for (let i = 0; i < argv.length; i++) {
@@ -72,6 +79,7 @@ function main() {
   const target = flatten(loadMessages(to));
 
   const pending = Object.entries(source)
+    .filter(([path]) => !isEnglishOnly(path))
     .filter(([path, english]) => isUntranslated(target[path], english))
     .map(([path, english]) => ({ path, english, placeholders: placeholdersIn(english) }));
 

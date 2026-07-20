@@ -33,7 +33,7 @@
     "github": "သိုပ်ႇလူၺ်ႈ GitHub",
     "or": "ဢမ်ႇၼၼ်",
     "privacy": "ဢီးမေးလ်သူ တေဢမ်ႇၼႄပၼ် တီႈၵူၼ်းတင်းၼမ် သေပွၵ်ႈ။ သူၸၢင်ႈၸႂ်ႉ ၸိုဝ်ႈၼႄ တႅၼ်းၸိုဝ်ႈတႄႉသူလႆႈယူႇ။",
-    "consent": "ၶႃႈလႆႈၸႂ်ၸွမ်း ၶေႃႈတူၵ်းလွင်ႈၸႂ်ႉတိုဝ်း လႄႈ မူႇပိူင်လွင်ႈသုၼ်ႇတူဝ်။"
+    "consent": "ၶႃႈလႆႈၸႂ်ၸွမ်း <terms>ၶေႃႈတူၵ်းလွင်ႈၸႂ်ႉတိုဝ်း</terms> လႄႈ <privacy>မူႇပိူင်လွင်ႈသုၼ်ႇတူဝ်</privacy>။"
   },
   "Home": {
     "sortBest": "လီသုတ်း",
@@ -60,5 +60,147 @@
     "sectionPosts": "ပွင်ႈလိၵ်ႈ",
     "switchTo": "လႅၵ်ႈပဵၼ် {locale}",
     "noResults": "ဢမ်ႇမီးၽွၼ်းလႆႈ"
+  },
+  "About": {
+    "title": "ၵဵဝ်ႇၵပ်း Shan Developer Network",
+    "intro": "Shan Developer Network ၼႆႉ ပဵၼ်ဝႅပ်ႉသၢႆႉတူင်ႇဝိူင်း တွၼ်ႈတႃႇ ၽူႈၶူင်ႊသၢင်ႈၵူၼ်းတႆး၊ ဢၼ်ပၼ်တီႈယူႇ ၽႃႇသႃႇၵႂၢမ်းလၢတ်ႈ လႄႈ တူင်ႇဝိူင်းၵူၼ်းယူႇ တီႈႁူဝ်ႁႅၵ်ႈ။ ပဵၼ်တီႈ တွၼ်ႈတႃႇ ၵူၼ်းၼုမ်ႇတႆး တေလႆႈႁဵၼ်း၊ ႁူၺ်းတူဝ် လႄႈ သၢင်ႈတိုဝ်ႉတၢင်း၊ ႁူမ်ႈတင်း ၽူႈၶူင်ႊသၢင်ႈ မီးလွင်ႈႁူႉတၢင်းႁၼ်ၶဝ် တေပိုၼ်ၽႄ တၢင်းႁူႉ လႄႈ ၼႄတၢင်း — ၼင်ႇႁိူဝ် တူင်ႇဝိူင်းၼမ်ႉၵတ်ႉ တႅၵ်ႇၼူဝ်းတႆး တေယႂ်ႇမႃး ၸွမ်းၵၼ်။",
+    "sections": {
+      "purpose": {
+        "heading": "ႁဵတ်းသင် လႆႈမီးမႃး",
+        "body": "Shan Developer Network မီးမႃး တွၼ်ႈတႃႇ သိမ်းဝႆႉ ၽႃႇသႃႇၵႂၢမ်းလၢတ်ႈတႆး လႄႈ တူင်ႇဝိူင်းတႆး ႁႂ်ႈမီး တီႈယူႇ ၼႂ်းမိူင်းလူၵ်ႈ ဢၼ်ၸႂ်ႉ ၽႃႇသႃႇဢိင်းၵလဵတ်ႈ ပဵၼ်ႁူဝ်ႁႅၵ်ႈ — ၽႃႇသႃႇ လႄႈ တူင်ႇဝိူင်းၵူၼ်းယူႇ မီးတီႈႁူဝ်ႁႅၵ်ႈ။ ပဵၼ်ႁိူၼ်း ဢၼ်သၢင်ႈဝႆႉ ໂດຍ ၽူႈၶူင်ႊသၢင်ႈတႆး တွၼ်ႈတႃႇ ၽူႈၶူင်ႊသၢင်ႈတႆး လႄႈ ၵူၼ်းၼုမ်ႇတႆး ႁူၼ်းလၢႆး တႃႇႁႃ တီႈယူႇ၊ တႃႇႁဵၼ်း လႄႈ တႃႇသၢင်ႈ။ ႁူမ်ႈတင်း ပဵၼ်တီႈ ႁူမ်ႈသိမ်း ဢႅပ်ႉ လႄႈ ၶူင်းၵၢၼ် ဢၼ်ၵူၼ်းတႆး ၶူင်ႊသၢင်ႈဝႆႉ ဝႆႉ တီႈၼိုင်ႈ ၼင်ႇႁိူဝ် ၵၢၼ်ႁဵတ်းသၢင်ႈ တူင်ႇဝိူင်းၼႆႉ တေႁၼ်လႆႈ တွၼ်ႈတႃႇ ၵူၼ်းၼုမ်ႇ ႁူၼ်းလၢႆး ဝၼ်းမိူင်းၼႃႈ။"
+      },
+      "learn": {
+        "heading": "ႁဵၼ်း၊ ၵပ်းသိုပ်ႇ လႄႈ ၵႂႃႇၼႃႈ",
+        "body": "ဢမ်ႇဝႃႈ သူ တိူဝ်ႉတေႇႁဵတ်း ဢမ်ႇၼၼ် ႁဵတ်းၵၢၼ်မႃး လၢႆလၢႆပီယဝ်ႉ၊ တီႈၼႆႈ ပဵၼ်တီႈ ႁႃ လွင်ႈလူဝ်ႇ တင်း ၵူၼ်းဢၼ် ၸၢင်ႈၸွႆႈလႆႈ။ ၵူၼ်းမႂ်ႇ ၸၢင်ႈလူ တူၺ်း ပွင်ႈလိၵ်ႈ၊ ၶူင်းၵၢၼ် လႄႈ ပၢင်ႁူပ်ႉထူပ်း သေ ႁဵၼ်းဢဝ် ၼႂ်းၽႃႇသႃႇၵႂၢမ်းလၢတ်ႈ ၸဝ်ႈၵဝ်ႇလႆႈ၊ ႁူမ်ႈတင်း ၸၢင်ႈၵပ်းသိုပ်ႇ ၽူႈၶူင်ႊသၢင်ႈ ဢၼ်မီးလွင်ႈႁူႉတၢင်းႁၼ် တွၼ်ႈတႃႇ တၢင်းၼႄ လႄႈ ႁႅင်းၸႂ် တႃႇသိုပ်ႇၵႂႃႇ။ ၵၢၼ်လူ ၼႆႉ ပိုတ်ႇပၼ် ၵူႈၵေႃႉ ໂດຍ ဢမ်ႇလူဝ်ႇမီး မၢႆၽၢင်၊ လႄႈ ၵၢၼ်ၶဝ်ႈလွၵ်ႉဢိၼ်ႇ လူၺ်ႈ Google ဢမ်ႇၼၼ် GitHub တေႁဵတ်းႁႂ်ႈ သူ ၶဝ်ႈႁူမ်ႈ၊ ထၢမ် လႄႈ ပိုၼ်ၽႄလႆႈ။"
+      },
+      "language": {
+        "heading": "သၢင်ႈဝႆႉ တွၼ်ႈတႃႇ ၽႃႇသႃႇတႆး",
+        "body": "ၼႃႈလိၵ်ႈ ၸႂ်ႉတိုဝ်း လႆႈ ၼႂ်းၽႃႇသႃႇတႆး လႄႈ ၽႃႇသႃႇဢိင်းၵလဵတ်ႈ၊ လႄႈ ပွင်ႈလိၵ်ႈ ၵူႈပွင်ႈ ၸၢင်ႈၸႂ်ႉ ၽႃႇသႃႇၵႂၢမ်းလၢတ်ႈ တူဝ်ၸဝ်ႈၵဝ်ႇ။ ဢႅၵ်ႇလိၵ်ႈတႆး ၼႆႉ ၸႂ်ႉဝႆႉ တွၼ်ႈလိၵ်ႈ (Font) ဢၼ်မီးၵူၼ်းတႆး သၢင်ႈဝႆႉ တွၼ်ႈတႃႇ တူင်ႇဝိူင်းတႆး၊ ၼင်ႇႁိူဝ် သဵင်ယိူၼ်ႉ လႄႈ တူဝ်ဆင့် တေႁၼ်လႆႈ ၸႅင်ႈလႅင်း ၼႃႈလိၵ်ႈ။"
+      },
+      "safety": {
+        "heading": "မၢႆၽၢင်သူ ပဵၼ်ၶိူင်ႈၸႂ်ႉသူ",
+        "body": "သူ ၸၢင်ႈၶဝ်ႈႁူမ်ႈ ၸႂ်ႉတိုဝ်း ၸိုဝ်ႈၼႄ တႅၼ်း ၸိုဝ်ႈတႄႉသူလႆႈယူႇ။ ဢီးမေးလ် ဢၼ်ၶဝ်ႈလွၵ်ႉဢိၼ်ႇ လူၺ်ႈ Google ဢမ်ႇၼၼ် GitHub ၼၼ်ႉ တေဢမ်ႇၼႄ တီႈၵူၼ်းတင်းၼမ် သေပွၵ်ႈ၊ လႄႈ ទីႈယူႇ ဢၼ်သူပိုၼ်ၽႄၼၼ်ႉ ပဵၼ်လွင်ႈလိူၵ်ႈသုတ်ႉ ဢၼ်ဢမ်ႇလႆႈ တိူဝ်ႉမၢႆ သေဢၼ်။ ၵၢၼ်ၸႂ်ႉ ၸိုဝ်ႈတႅၼ်း ပဵၼ်လၢႆး ဢၼ်ႁပ်ႉပၼ် တီႈၼႂ်း တူင်ႇဝိူင်းၼႆႉ။"
+      },
+      "contact": {
+        "heading": "လွင်ႈၵပ်းသိုပ်ႇ",
+        "body": "မီးၶေႃႈထၢမ်၊ လွင်ႈမႄး၊ ဢမ်ႇၼၼ် ၶႂ်ႈၸွႆႈသၢင်ႈ တီႈၼႆႈႁႃႉ? လွင်ႈၵပ်းသိုပ်ႇ တူင်ႇဝိူင်း တေတမ်းၼႄ တီႈၼႆႈ မိူဝ်ႈပိုတ်ႇမႃး။"
+      }
+    }
+  },
+  "Terms": {
+    "title": "Terms of Service",
+    "intro": "These terms govern your use of Shan Developer Network. By signing in and taking part, you agree to them. Please read them alongside the Privacy Policy. Reading the site needs no account, so these terms mainly concern members who sign in to contribute.",
+    "sections": {
+      "acceptance": {
+        "heading": "Acceptance of these terms",
+        "body": "By accessing or using Shan Developer Network, you agree to these terms. If you do not agree, please do not sign in or contribute. Anyone may read the site without an account and without accepting these terms."
+      },
+      "eligibility": {
+        "heading": "Who can use the platform",
+        "body": "You must be at least 13 years old to create an account and contribute. By signing in, you confirm that you meet this minimum age and that the information you provide is accurate."
+      },
+      "account": {
+        "heading": "Your account",
+        "body": "Accounts are created by signing in with Google or GitHub. You are responsible for the activity under your account and for keeping access to it secure. Let us know if you believe your account has been used without your permission."
+      },
+      "content": {
+        "heading": "Your content",
+        "body": "You keep ownership of what you post. By posting, you grant the community a non-exclusive licence to display and distribute your content on the platform so that others can read it. Do not post content you do not have the right to share."
+      },
+      "conduct": {
+        "heading": "Acceptable use",
+        "body": "Be respectful. Do not post spam, harassment, hateful content, or anything unlawful, and do not impersonate others. Do not attempt to disrupt the service, evade rate limits, scrape at scale, or misuse other members' identities or information."
+      },
+      "ip": {
+        "heading": "Our intellectual property",
+        "body": "The platform itself — its name, design, and software — belongs to the project and its contributors. These terms do not grant you rights to it beyond ordinary use of the site. Your own content remains yours."
+      },
+      "moderation": {
+        "heading": "Moderation and termination",
+        "body": "Content that breaks these terms may be removed, and accounts that repeatedly or seriously break them may be suspended or closed. A fuller code of conduct and moderation policy is in progress. You may stop using the platform at any time."
+      },
+      "thirdParty": {
+        "heading": "Third-party services and links",
+        "body": "Signing in relies on Google and GitHub, and the platform may link to outside sites. Those services are governed by their own terms, and we are not responsible for their content or practices."
+      },
+      "warranty": {
+        "heading": "Disclaimer",
+        "body": "The platform is provided as-is and as-available, without warranties of any kind, express or implied. It is early-stage software, and features may change, be interrupted, or break."
+      },
+      "liability": {
+        "heading": "Limitation of liability",
+        "body": "To the extent permitted by law, Shan Developer Network and its contributors are not liable for indirect, incidental, or consequential damages arising from your use of the platform, or for content posted by others."
+      },
+      "changes": {
+        "heading": "Changes to these terms",
+        "body": "These terms may change as the platform grows. Material changes will be noted here. Continuing to use the platform after a change means you accept the updated terms."
+      },
+      "contact": {
+        "heading": "Contact",
+        "body": "Questions about these terms can be raised through the community channels listed on the About page."
+      }
+    }
+  },
+  "Privacy": {
+    "title": "Privacy Policy",
+    "intro": "This policy explains what information Shan Developer Network handles and how. Protecting the identity of people in this community is a safety matter, not an afterthought — and this policy reflects that.",
+    "sections": {
+      "scope": {
+        "heading": "About this policy",
+        "body": "This policy covers the information handled when you read the site, sign in, and take part. Reading is possible without an account and without giving us personal information."
+      },
+      "collect": {
+        "heading": "Information we collect",
+        "body": "When you sign in with Google or GitHub, we receive a basic profile and an email address to identify your account. We store what you choose to add — a display name, a short bio, other profile details — and the posts, comments, and events you create. We also keep limited technical data such as IP address and request logs to keep the service secure and to enforce rate limits."
+      },
+      "use": {
+        "heading": "How we use your information",
+        "body": "We use your information to run the platform: to sign you in, attribute your posts, let others reach your public profile, and keep the community safe from spam and abuse. We do not sell your information or use it for advertising."
+      },
+      "public": {
+        "heading": "What is public — and what is never",
+        "body": "Posts, projects, profiles, and events are public and readable by anyone. Your sign-in email address is never shown publicly. You can take part under a display name rather than your real name."
+      },
+      "location": {
+        "heading": "Location",
+        "body": "Any location you share is coarse and optional. The platform does not require or track precise location."
+      },
+      "cookies": {
+        "heading": "Cookies",
+        "body": "We use essential cookies to keep you signed in and to keep the site secure. These are needed for the platform to work; we do not use advertising or third-party tracking cookies."
+      },
+      "sharing": {
+        "heading": "How information is shared",
+        "body": "We do not sell your information. It is shared only with the service providers that help us run the platform, or where we are required to by law. Anything you post publicly is, by design, visible to everyone."
+      },
+      "providers": {
+        "heading": "Sign-in providers",
+        "body": "Authentication is handled through Google and GitHub. Their handling of your data is governed by their own privacy policies. We receive only what is needed to identify your account."
+      },
+      "retention": {
+        "heading": "Data retention",
+        "body": "We keep your account information for as long as your account exists, and your public content for as long as it stays posted. If you delete your account, we remove or anonymise your personal information, except where we must keep some of it to meet legal or security obligations."
+      },
+      "security": {
+        "heading": "Security",
+        "body": "We take reasonable measures to protect your information. No online service can be perfectly secure, but the platform is designed with the sensitivity of identity in this region in mind."
+      },
+      "rights": {
+        "heading": "Your rights and choices",
+        "body": "You can edit or remove profile details you have added. Account deletion and data-export options will be described here as they become available. You can also contact us to ask about the information we hold about you."
+      },
+      "children": {
+        "heading": "Children's privacy",
+        "body": "The platform is not intended for children under 13, and we do not knowingly collect their information. If you believe a child has given us personal information, please contact us so we can remove it."
+      },
+      "changes": {
+        "heading": "Changes to this policy",
+        "body": "This policy may change as the platform grows. Material changes will be noted here."
+      },
+      "contact": {
+        "heading": "Contact",
+        "body": "Questions about privacy can be raised through the community channels listed on the About page."
+      }
+    }
   }
 }

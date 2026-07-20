@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| **Status** | Proposed |
+| **Status** | InProgress |
 | **Created** | 2026-07-20 |
 | **Depends on** | — (uses the shipped layout, nav, and sign-in dialog) |
 | **Blocks** | — |

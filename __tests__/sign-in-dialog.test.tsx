@@ -46,6 +46,19 @@ test("the dialog states that the email stays private", () => {
   expect(screen.getByText(en.Auth.privacy)).toBeDefined();
 });
 
+// The consent the visitor agrees to must point at the real documents, not 404s
+// (PBI-015). Both links resolve to their locale-aware routes.
+test("the consent line links to the Terms and Privacy pages", () => {
+  open();
+
+  expect(
+    screen.getByRole("link", { name: /Terms of Service/ }).getAttribute("href")
+  ).toBe("/terms");
+  expect(
+    screen.getByRole("link", { name: /Privacy Policy/ }).getAttribute("href")
+  ).toBe("/privacy");
+});
+
 // Consent is a precondition, not a footnote: neither provider can be used until the
 // visitor has actively agreed.
 test("both providers stay disabled until consent is given", () => {
@@ -77,7 +90,9 @@ test("no localized text in the dialog carries a bold weight", () => {
     screen.getByText(en.Auth.description),
     screen.getByRole("button", { name: en.Auth.google }),
     screen.getByRole("button", { name: en.Auth.github }),
-    screen.getByText(en.Auth.consent),
+    // Consent renders as rich text (links), so match its leading run, not the raw
+    // string with tags.
+    screen.getByText(/I agree to the/),
     screen.getByText(en.Auth.privacy),
   ];
 

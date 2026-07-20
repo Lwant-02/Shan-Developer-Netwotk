@@ -33,7 +33,7 @@
     "github": "Continue with GitHub",
     "or": "or",
     "privacy": "Your email is never shown publicly. You can use a display name instead of your real one.",
-    "consent": "I agree to the Terms of Service and Privacy Policy."
+    "consent": "I agree to the <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>."
   },
   "Home": {
     "sortBest": "Best",
@@ -60,5 +60,147 @@
     "sectionPosts": "Posts",
     "switchTo": "Switch to {locale}",
     "noResults": "No results"
+  },
+  "About": {
+    "title": "About Shan Developer Network",
+    "intro": "Shan Developer Network is a community platform for Shan developers, where language and locality come first. It is a place for Shan youth to learn, grow, and build, and for experienced developers to share their knowledge and mentor — so the Shan tech community grows together.",
+    "sections": {
+      "purpose": {
+        "heading": "Why this exists",
+        "body": "Shan Developer Network exists to keep the Shan language and community present in a world of English-first developer platforms — language and locality come first. It is a home built by and for Shan developers, and for the next generation of Shan youth looking for a place to belong, to learn, and to build. It is also where Shan-made apps and products can be gathered in one place, so this community's work stays visible for the youth who come after."
+      },
+      "learn": {
+        "heading": "Learn, connect, and grow",
+        "body": "Whether you are just starting out or years into your career, this is a place to find what you need and the people who can help. Newcomers can browse posts, projects, and events and learn in their own language, and reach senior developers for mentorship, guidance, and the motivation to keep going. Reading is open to everyone with no account, and signing in with Google or GitHub lets you join in, ask, and share."
+      },
+      "language": {
+        "heading": "Built for Shan",
+        "body": "The interface is available in Shan and English, and any post can carry its own language. Shan text is rendered with fonts made by and for the Shan community, so tone marks and stacked characters display correctly."
+      },
+      "safety": {
+        "heading": "Your identity is yours",
+        "body": "You can take part under a display name instead of your real one. The email from your Google or GitHub sign-in is never shown publicly, and any location you share is coarse and optional. Pseudonymity is a supported way to use this community."
+      },
+      "contact": {
+        "heading": "Get in touch",
+        "body": "Have a question, a correction, or want to help build this? Community and contact channels will be listed here as they open up."
+      }
+    }
+  },
+  "Terms": {
+    "title": "Terms of Service",
+    "intro": "These terms govern your use of Shan Developer Network. By signing in and taking part, you agree to them. Please read them alongside the Privacy Policy. Reading the site needs no account, so these terms mainly concern members who sign in to contribute.",
+    "sections": {
+      "acceptance": {
+        "heading": "Acceptance of these terms",
+        "body": "By accessing or using Shan Developer Network, you agree to these terms. If you do not agree, please do not sign in or contribute. Anyone may read the site without an account and without accepting these terms."
+      },
+      "eligibility": {
+        "heading": "Who can use the platform",
+        "body": "You must be at least 13 years old to create an account and contribute. By signing in, you confirm that you meet this minimum age and that the information you provide is accurate."
+      },
+      "account": {
+        "heading": "Your account",
+        "body": "Accounts are created by signing in with Google or GitHub. You are responsible for the activity under your account and for keeping access to it secure. Let us know if you believe your account has been used without your permission."
+      },
+      "content": {
+        "heading": "Your content",
+        "body": "You keep ownership of what you post. By posting, you grant the community a non-exclusive licence to display and distribute your content on the platform so that others can read it. Do not post content you do not have the right to share."
+      },
+      "conduct": {
+        "heading": "Acceptable use",
+        "body": "Be respectful. Do not post spam, harassment, hateful content, or anything unlawful, and do not impersonate others. Do not attempt to disrupt the service, evade rate limits, scrape at scale, or misuse other members' identities or information."
+      },
+      "ip": {
+        "heading": "Our intellectual property",
+        "body": "The platform itself — its name, design, and software — belongs to the project and its contributors. These terms do not grant you rights to it beyond ordinary use of the site. Your own content remains yours."
+      },
+      "moderation": {
+        "heading": "Moderation and termination",
+        "body": "Content that breaks these terms may be removed, and accounts that repeatedly or seriously break them may be suspended or closed. A fuller code of conduct and moderation policy is in progress. You may stop using the platform at any time."
+      },
+      "thirdParty": {
+        "heading": "Third-party services and links",
+        "body": "Signing in relies on Google and GitHub, and the platform may link to outside sites. Those services are governed by their own terms, and we are not responsible for their content or practices."
+      },
+      "warranty": {
+        "heading": "Disclaimer",
+        "body": "The platform is provided as-is and as-available, without warranties of any kind, express or implied. It is early-stage software, and features may change, be interrupted, or break."
+      },
+      "liability": {
+        "heading": "Limitation of liability",
+        "body": "To the extent permitted by law, Shan Developer Network and its contributors are not liable for indirect, incidental, or consequential damages arising from your use of the platform, or for content posted by others."
+      },
+      "changes": {
+        "heading": "Changes to these terms",
+        "body": "These terms may change as the platform grows. Material changes will be noted here. Continuing to use the platform after a change means you accept the updated terms."
+      },
+      "contact": {
+        "heading": "Contact",
+        "body": "Questions about these terms can be raised through the community channels listed on the About page."
+      }
+    }
+  },
+  "Privacy": {
+    "title": "Privacy Policy",
+    "intro": "This policy explains what information Shan Developer Network handles and how. Protecting the identity of people in this community is a safety matter, not an afterthought — and this policy reflects that.",
+    "sections": {
+      "scope": {
+        "heading": "About this policy",
+        "body": "This policy covers the information handled when you read the site, sign in, and take part. Reading is possible without an account and without giving us personal information."
+      },
+      "collect": {
+        "heading": "Information we collect",
+        "body": "When you sign in with Google or GitHub, we receive a basic profile and an email address to identify your account. We store what you choose to add — a display name, a short bio, other profile details — and the posts, comments, and events you create. We also keep limited technical data such as IP address and request logs to keep the service secure and to enforce rate limits."
+      },
+      "use": {
+        "heading": "How we use your information",
+        "body": "We use your information to run the platform: to sign you in, attribute your posts, let others reach your public profile, and keep the community safe from spam and abuse. We do not sell your information or use it for advertising."
+      },
+      "public": {
+        "heading": "What is public — and what is never",
+        "body": "Posts, projects, profiles, and events are public and readable by anyone. Your sign-in email address is never shown publicly. You can take part under a display name rather than your real name."
+      },
+      "location": {
+        "heading": "Location",
+        "body": "Any location you share is coarse and optional. The platform does not require or track precise location."
+      },
+      "cookies": {
+        "heading": "Cookies",
+        "body": "We use essential cookies to keep you signed in and to keep the site secure. These are needed for the platform to work; we do not use advertising or third-party tracking cookies."
+      },
+      "sharing": {
+        "heading": "How information is shared",
+        "body": "We do not sell your information. It is shared only with the service providers that help us run the platform, or where we are required to by law. Anything you post publicly is, by design, visible to everyone."
+      },
+      "providers": {
+        "heading": "Sign-in providers",
+        "body": "Authentication is handled through Google and GitHub. Their handling of your data is governed by their own privacy policies. We receive only what is needed to identify your account."
+      },
+      "retention": {
+        "heading": "Data retention",
+        "body": "We keep your account information for as long as your account exists, and your public content for as long as it stays posted. If you delete your account, we remove or anonymise your personal information, except where we must keep some of it to meet legal or security obligations."
+      },
+      "security": {
+        "heading": "Security",
+        "body": "We take reasonable measures to protect your information. No online service can be perfectly secure, but the platform is designed with the sensitivity of identity in this region in mind."
+      },
+      "rights": {
+        "heading": "Your rights and choices",
+        "body": "You can edit or remove profile details you have added. Account deletion and data-export options will be described here as they become available. You can also contact us to ask about the information we hold about you."
+      },
+      "children": {
+        "heading": "Children's privacy",
+        "body": "The platform is not intended for children under 13, and we do not knowingly collect their information. If you believe a child has given us personal information, please contact us so we can remove it."
+      },
+      "changes": {
+        "heading": "Changes to this policy",
+        "body": "This policy may change as the platform grows. Material changes will be noted here."
+      },
+      "contact": {
+        "heading": "Contact",
+        "body": "Questions about privacy can be raised through the community channels listed on the About page."
+      }
+    }
   }
 }

@@ -105,3 +105,9 @@ export const mockPosts: Post[] = [
 export function getPostBySlug(slug: string): Post | undefined {
   return mockPosts.find((post) => post.slug === slug);
 }
+
+// A member's posts, for their profile page (PBI-017). Keeps the profile and the feed
+// consistent — the same author's posts in both.
+export function postsByAuthor(author: string): Post[] {
+  return mockPosts.filter((post) => post.author === author);
+}

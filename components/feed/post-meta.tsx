@@ -2,6 +2,7 @@ import { useFormatter } from "next-intl";
 
 import type { Post } from "@/lib/feed";
 import { cn } from "@/lib/utils";
+import { HandleLink } from "./handle-link";
 import { PostMenu } from "./post-menu";
 
 // Author avatar + handle + relative time, with the post's ⋯ menu. Shared by the feed
@@ -29,7 +30,11 @@ export function PostMeta({
       >
         {post.author.slice(0, 2)}
       </span>
-      <span className="text-foreground">{post.author}</span>
+      {/* z-10 keeps the handle clickable above the card's stretched title link. */}
+      <HandleLink
+        handle={post.author}
+        className="text-foreground hover:text-muted-foreground relative z-10 transition-colors"
+      />
       <span aria-hidden className="opacity-50">
         ·
       </span>

@@ -44,14 +44,18 @@
     "recentTitle": "Recent activity"
   },
   "Post": {
-    "upvote": "Upvote",
-    "downvote": "Downvote",
+    "like": "Like",
     "comments": "comments",
     "share": "Share",
     "more": "More actions",
     "report": "Report",
     "edit": "Edit",
     "delete": "Delete"
+  },
+  "PostDetail": {
+    "backToFeed": "Back to feed",
+    "composerHint": "Reading is open to everyone. Sign in to join the discussion.",
+    "signInToComment": "Sign in to comment"
   },
   "Search": {
     "placeholder": "Search posts and actions…",

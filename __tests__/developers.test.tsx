@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from "next-intl";
 
 import { DeveloperDirectory } from "@/components/developers/developer-directory";
 import { ProfileHeader } from "@/components/developers/profile-header";
+import { ShareProfileDialog } from "@/components/developers/share-profile-dialog";
 import { getDeveloperByHandle, mockDevelopers } from "@/lib/developers";
 import en from "@/messages/en.json";
 import shn from "@/messages/shn.json";
@@ -49,6 +50,26 @@ test("a profile never renders an email address", () => {
   const { container } = renderAt("en", en, <ProfileHeader developer={developer} />);
 
   expect(container.textContent).not.toMatch(/\S+@\S+\.\S+/);
+});
+
+// Sharing needs no account, like reading: the trigger renders with no session. (The
+// dialog body, canvas export, and QR are browser-only — jsdom cannot rasterise a canvas.)
+test("the share trigger renders for an anonymous visitor", () => {
+  const developer = getDeveloperByHandle("tai_builds")!;
+
+  renderAt(
+    "en",
+    en,
+    <ShareProfileDialog
+      developer={developer}
+      profileUrl="https://example.com/en/developers/tai_builds"
+      stats={{ posts: 1, projects: 1, events: 1 }}
+    >
+      <button type="button">Share</button>
+    </ShareProfileDialog>,
+  );
+
+  expect(screen.getByRole("button", { name: "Share" })).toBeDefined();
 });
 
 // Location is coarse and optional: a member who shares none must still render.

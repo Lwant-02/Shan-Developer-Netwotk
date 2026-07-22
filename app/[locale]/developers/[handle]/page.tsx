@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Share2 } from "lucide-react";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { ProfileHeader } from "@/components/developers/profile-header";
 import { ProfileTabs } from "@/components/developers/profile-tabs";
+import { ShareProfileDialog } from "@/components/developers/share-profile-dialog";
+import { buttonVariants } from "@/components/ui/button";
 import { EventCard } from "@/components/events/event-card";
 import { PostList } from "@/components/feed/post-list";
 import { ProjectCard } from "@/components/projects/project-card";
@@ -14,7 +16,8 @@ import { getDeveloperByHandle, listDevelopers } from "@/lib/developers";
 import { getEventsByHost } from "@/lib/events";
 import { postsByAuthor } from "@/lib/feed";
 import { getProjectsByAuthor } from "@/lib/projects";
-import { localeAlternates } from "@/lib/site";
+import { localeAlternates, siteUrl } from "@/lib/site";
+import { cn } from "@/lib/utils";
 
 // Prerender every known member at build time (one per handle, per locale from the parent
 // layout). An unknown handle falls through to notFound() → the localised 404.
@@ -64,13 +67,38 @@ export default async function ProfilePage({
   return (
     <AppShell>
       <div className="flex flex-col gap-6 py-2">
-        <Link
-          href="/developers"
-          className="text-muted-foreground hover:text-foreground flex w-fit items-center gap-1.5 text-sm transition-colors"
-        >
-          <ArrowLeft className="size-4" />
-          {t("backToDirectory")}
-        </Link>
+        <div className="flex items-center justify-between gap-3">
+          <Link
+            href="/developers"
+            className="text-muted-foreground hover:text-foreground flex w-fit items-center gap-1.5 text-sm transition-colors"
+          >
+            <ArrowLeft className="size-4" />
+            {t("backToDirectory")}
+          </Link>
+
+          {/* The absolute URL is built here, server-side, so it matches the page's
+              canonical rather than being reassembled on the client. */}
+          <ShareProfileDialog
+            developer={developer}
+            profileUrl={`${siteUrl()}/${locale}/developers/${developer.handle}`}
+            stats={{
+              posts: posts.length,
+              projects: projects.length,
+              events: events.length,
+            }}
+          >
+            <button
+              type="button"
+              className={cn(
+                buttonVariants({ variant: "outline" }),
+                "shrink-0 cursor-pointer gap-2 font-normal",
+              )}
+            >
+              <Share2 className="size-4" />
+              {t("share")}
+            </button>
+          </ShareProfileDialog>
+        </div>
 
         <ProfileHeader developer={developer} />
 

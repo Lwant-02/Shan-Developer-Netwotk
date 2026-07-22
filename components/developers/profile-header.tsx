@@ -1,5 +1,6 @@
-import { Globe, MapPin } from "lucide-react";
+import { CalendarDays, Globe, MapPin } from "lucide-react";
 import Image from "next/image";
+import { useFormatter, useTranslations } from "next-intl";
 
 import { buttonVariants } from "@/components/ui/button";
 import { type Developer, SOCIAL } from "@/lib/developers";
@@ -9,7 +10,16 @@ import { cn } from "@/lib/utils";
 // links. Identity safety is binding here — no email is ever rendered, location is coarse
 // and optional (omitted when absent), and the avatar is initials only.
 export function ProfileHeader({ developer }: { developer: Developer }) {
+  const t = useTranslations("Developers");
+  const format = useFormatter();
   const name = developer.displayName ?? developer.handle;
+
+  // Month + year only: an exact join date is a correlation handle, and coarse is the
+  // house style for anything identifying.
+  const joined = format.dateTime(new Date(developer.joinedAtISO), {
+    month: "long",
+    year: "numeric",
+  });
 
   return (
     <header className="flex flex-col gap-4">
@@ -28,12 +38,20 @@ export function ProfileHeader({ developer }: { developer: Developer }) {
               {developer.handle}
             </span>
           )}
-          {developer.location && (
-            <span className="text-muted-foreground flex items-center gap-1 text-xs">
-              <MapPin className="size-3.5" />
-              {developer.location}
+          <div className="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+            {developer.location && (
+              <span className="flex items-center gap-1">
+                <MapPin className="size-3.5" />
+                {developer.location}
+              </span>
+            )}
+            <span className="flex items-center gap-1">
+              <CalendarDays className="size-3.5" />
+              <time dateTime={developer.joinedAtISO}>
+                {t("joined", { date: joined })}
+              </time>
             </span>
-          )}
+          </div>
         </div>
       </div>
 

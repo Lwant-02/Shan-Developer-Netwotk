@@ -47,6 +47,9 @@ export type Developer = {
   displayName?: string;
   /** Self-described role, e.g. "Learner" or "Senior Frontend Developer". Free text. */
   role: string;
+  /** When they joined the community. Rendered as month + year only — a join *date* is
+   *  precise enough to correlate accounts, and coarse is the house style for identity. */
+  joinedAtISO: string;
   bio: string;
   /** Coarse and optional. Region or town, never precise; omitted for members who
    *  share none. */
@@ -60,6 +63,7 @@ export const mockDevelopers: Developer[] = [
   {
     handle: "tai_builds",
     role: "Keyboard & Input Developer",
+    joinedAtISO: "2025-11-03T00:00:00Z",
     bio: "Working on Shan input methods and keyboard layouts. Council-tone correctness is the hill I die on.",
     location: "Taunggyi, Shan State",
     links: [
@@ -71,6 +75,7 @@ export const mockDevelopers: Developer[] = [
   {
     handle: "namkham_codes",
     role: "Backend Engineer",
+    joinedAtISO: "2025-12-14T00:00:00Z",
     bio: "Backend and search. Currently deep in Shan text tokenization for Postgres.",
     location: "Lashio, Shan State",
     links: [
@@ -82,6 +87,7 @@ export const mockDevelopers: Developer[] = [
   {
     handle: "mongla_dev",
     role: "Open-Source Developer",
+    joinedAtISO: "2026-01-20T00:00:00Z",
     // No location — a member who shares none. Must render cleanly (CoS 5).
     bio: "Open-source odds and ends for Shan — dates, numbers, small libraries. MIT everything.",
     links: [
@@ -92,6 +98,7 @@ export const mockDevelopers: Developer[] = [
   {
     handle: "lasho_online",
     role: "Developer & Educator",
+    joinedAtISO: "2026-02-08T00:00:00Z",
     bio: "Teaching beginners and running online sessions in Shan. Community over code.",
     location: "Chiang Mai, Thailand",
     links: [
@@ -103,6 +110,7 @@ export const mockDevelopers: Developer[] = [
   {
     handle: "keng_tung_js",
     role: "Senior Frontend Developer",
+    joinedAtISO: "2026-03-15T00:00:00Z",
     bio: "Frontend developer building a Shan learning app, and caring far too much about typography.",
     location: "Kengtung, Shan State",
     links: [
@@ -115,6 +123,7 @@ export const mockDevelopers: Developer[] = [
     handle: "panglong_pixels",
     displayName: "Panglong Pixels",
     role: "Product Designer",
+    joinedAtISO: "2026-04-02T00:00:00Z",
     bio: "Designer and type nerd. Making Shan render cleanly wherever it's broken.",
     location: "Yangon",
     links: [
@@ -126,6 +135,7 @@ export const mockDevelopers: Developer[] = [
   {
     handle: "nam_oo",
     role: "Android Developer",
+    joinedAtISO: "2026-05-19T00:00:00Z",
     bio: "Android developer. I test everything on a Redmi Note so it works on the phones people actually have.",
     location: "Muse, Shan State",
     links: [
@@ -136,6 +146,7 @@ export const mockDevelopers: Developer[] = [
   {
     handle: "sengfah",
     role: "QA Engineer",
+    joinedAtISO: "2026-06-11T00:00:00Z",
     // No location.
     bio: "QA, and the person who asks 'did you test that logged out?'",
     links: [{ platform: "github", href: "https://github.com/sengfah" }],

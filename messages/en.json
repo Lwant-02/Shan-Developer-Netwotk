@@ -65,7 +65,11 @@
     "projects": "Projects",
     "noProjects": "No projects yet.",
     "events": "Events",
-    "noEvents": "No events yet."
+    "noEvents": "No events yet.",
+    "share": "Share",
+    "shareDescription": "Scan the code to open this profile, or download the card to share it.",
+    "download": "Download card",
+    "joined": "Joined {date}"
   },
   "Search": {
     "placeholder": "Search posts and actions…",

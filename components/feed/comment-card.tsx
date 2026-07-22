@@ -1,6 +1,7 @@
 import { useFormatter } from "next-intl";
 
 import type { Comment } from "@/lib/comments";
+import { HandleLink } from "./handle-link";
 
 // One comment: initials avatar, pseudonymous handle, relative time, and the body in its
 // own content language (`lang`), independent of the UI locale. Display-only — replying,
@@ -17,7 +18,10 @@ export function CommentCard({ comment }: { comment: Comment }) {
         >
           {comment.author.slice(0, 2)}
         </span>
-        <span className="text-foreground">{comment.author}</span>
+        <HandleLink
+          handle={comment.author}
+          className="text-foreground hover:text-muted-foreground transition-colors"
+        />
         <span aria-hidden className="opacity-50">
           ·
         </span>

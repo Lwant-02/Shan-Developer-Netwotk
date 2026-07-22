@@ -1,8 +1,7 @@
 import { useTranslations } from "next-intl";
-import { Fragment } from "react";
 
 import { mockPosts } from "@/lib/feed";
-import { PostCard } from "./post-card";
+import { PostList } from "./post-list";
 
 // Renders the mock feed. Swapping `mockPosts` for real data is the only change the
 // feed needs when a posts backend exists — the card is data-shaped, not hand-written.
@@ -21,14 +20,7 @@ export function PostFeed() {
         </span>
       </div>
 
-      <div className="flex flex-col gap-1">
-        {mockPosts.map((post, index) => (
-          <Fragment key={post.id}>
-            {index > 0 && <hr className="border-border mx-2 my-1" />}
-            <PostCard post={post} />
-          </Fragment>
-        ))}
-      </div>
+      <PostList posts={mockPosts} />
     </div>
   );
 }

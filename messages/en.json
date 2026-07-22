@@ -57,6 +57,16 @@
     "composerHint": "Reading is open to everyone. Sign in to join the discussion.",
     "signInToComment": "Sign in to comment"
   },
+  "Developers": {
+    "subtitle": "Shan developers building and sharing their work. Browse the community — no account needed.",
+    "backToDirectory": "Back to developers",
+    "posts": "Posts",
+    "noPosts": "No posts yet.",
+    "projects": "Projects",
+    "noProjects": "No projects yet.",
+    "events": "Events",
+    "noEvents": "No events yet."
+  },
   "Search": {
     "placeholder": "Search posts and actions…",
     "sectionGo": "Go to",

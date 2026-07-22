@@ -1,11 +1,16 @@
 import type { MetadataRoute } from "next";
 
 import { routing } from "@/i18n/routing";
+import { mockPosts } from "@/lib/feed";
 import { siteUrl } from "@/lib/site";
 
 // Routes are listed once, without a locale; every locale is expanded from
-// routing.locales so adding one cannot silently omit it from the sitemap.
-const routes = ["", "/about", "/terms", "/privacy"] as const;
+// routing.locales so adding one cannot silently omit it from the sitemap. Post detail
+// pages are public content and part of the recruiting reach, so they are indexed too;
+// they come from the same mock source that renders them (PBI-016).
+const staticRoutes = ["", "/about", "/terms", "/privacy"];
+const postRoutes = mockPosts.map((post) => `/post/${post.slug}`);
+const routes = [...staticRoutes, ...postRoutes];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = siteUrl();

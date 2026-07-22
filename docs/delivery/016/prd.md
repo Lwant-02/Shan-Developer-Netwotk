@@ -2,10 +2,24 @@
 
 | | |
 | --- | --- |
-| **Status** | Agreed |
+| **Status** | Done |
 | **Created** | 2026-07-22 |
+| **Completed** | 2026-07-22 |
 | **Depends on** | PBI-010 (home feed + mock `Post` shape, Done) |
 | **Relates to** | PBI-005 (moderation/report, Deferred), PBI-014 (sign-in dialog, Done) |
+
+> **Closed.** The post detail page ships at `/[locale]/post/[slug]`, prerendered as SSG
+> for all 6 mock posts × 2 locales. The feed card's dead comment `<button>` is gone — a
+> stretched title link and a comment `Link` both resolve to the detail page. Comments are
+> a typed mock (`lib/comments.ts`, 24 items) with per-comment `lang`; the composer is a
+> sign-in gate, not a working composer. `lint`/`build`/`test` (32) pass; verified logged
+> out via `curl` (200s, unknown slug → 404, feed links out, sitemap indexes posts). Two
+> new chrome strings ship as `TODO(shn):` and are handed to the translation pass for
+> owner review **before merge**; the count heading reuses the translated `Post.comments`
+> so `/shn` renders Shan regardless. As with PBI-010, "Done" = merged + verified (Vercel
+> unlinked, so not deployed); the ~360px layout and the click-through are browser-only
+> checks left for the owner. Comment bodies stay English (`lang: "en"`) — the mixed-
+> language mechanism is built, but real Shan content isn't fabricated.
 
 ## Problem
 

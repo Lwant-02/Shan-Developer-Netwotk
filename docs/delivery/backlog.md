@@ -49,7 +49,7 @@ every branch, so a PBI filed on an unmerged branch still holds its number.
 | [013](./013/prd.md) | Dark-only theme | Done | Supersedes [011](./011/prd.md) — the owner reversed light+dark to **dark only** for the developer aesthetic. Removes `next-themes`, the toggle, and the `DevConsoleFilter` workaround; the greyscale palette moves into `:root`. |
 | [014](./014/prd.md) | Sign-in dialog (frontend only) | Done | The nav's "Sign in" now opens a dialog with Google + GitHub OAuth options. **UI only** — no Better Auth, no session, no DB; the two provider buttons are where wiring attaches. |
 | [015](./015/prd.md) | Static informational pages — About, Terms, Privacy | Done | About/Terms/Privacy shipped on a shared static-page shell (merged `f5d69a2`). Footer/nav links now resolve; PBI-014's consent line links out. About is translated; Terms/Privacy are English-only by design (`ENGLISH_ONLY`). Relates to [014](./014/prd.md), [005](./005/prd.md), [007](./007/prd.md). |
-| [016](./016/prd.md) | Post detail page (shell + mock data) | Agreed | Gives the feed's dead comment button (`post-card.tsx`) a destination — a single-post view with the full body + a mock comment thread. UI shell + typed mock data only, per the [010](./010/prd.md) precedent. Anonymous-readable. No DB/auth/voting/comment-submission. URL keys on a **slug**. |
+| [016](./016/prd.md) | Post detail page (shell + mock data) | Done | Gives the feed's dead comment button (`post-card.tsx`) a destination — a single-post view with the full body + a mock comment thread. UI shell + typed mock data only, per the [010](./010/prd.md) precedent. Anonymous-readable. No DB/auth/voting/comment-submission. URL keys on a **slug**. |
 
 ## Open questions — not yet PBIs
 
@@ -67,8 +67,9 @@ not before. The reasoning behind each lives in `design.md`.
   Database is Neon.
 - **Rate limiting on write endpoints.** Required by `AGENTS.md` before any write path
   ships — and with moderation deferred (005), it is currently the whole spam defense.
-- **Real posts feed** (replaces PBI-010's mock `lib/feed.ts`), and the **voting
-  mechanic** decision the post card left a slot for — both need the DB + auth first.
+- **Real posts feed** (replaces PBI-010's mock `lib/feed.ts`). The interaction model is
+  **decided — a single like, not voting** (`design.md`, PBI-016); making it *function*
+  (and any ranking by likes) still needs the DB + auth + a rate limit.
 - **Contributor onboarding** — `CONTRIBUTING.md`, issue templates, a `good first
   issue` path. Needed before inviting collaborators.
 - **Image and file storage.** Neon is Postgres only; unlike Supabase it bundles none.

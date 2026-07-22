@@ -67,6 +67,22 @@ which is a chunk of the intended audience.
 > projects, and events ship together. That decision stands; the residual cold-start
 > risk is addressed under *Seeding* below rather than by delaying features.
 
+### Post interactions 🟢 (decided)
+
+**A single like, not up/down voting.** Posts (and later, comments) carry one
+appreciation signal — a like, shown with a heart and a count — not a Reddit-style
+up/down score or karma. PBI-010 deliberately left this open and shipped only a
+display *slot*; the owner has now decided **like-only**, and PBI-016 replaced the
+slot with a like control on both the feed card and the post detail page.
+
+A like fits the thesis better than a vote: this is one small community trying to
+encourage each other's work, not a ranking machine that buries the unpopular.
+Downvotes invite exactly the pile-on dynamic the safety requirements exist to avoid.
+
+Still **display-only until auth** — the count renders, but liking (like every write)
+needs a signed-in user and a rate-limited endpoint. Whether the feed ever *ranks* by
+likes is a separate, still-open question; the like is an expression, not yet a sort key.
+
 ## Language and script
 
 This section is the product, not a localization checklist.

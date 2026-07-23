@@ -55,7 +55,7 @@ export function LeftNav({ className }: { className?: string }) {
         ))}
       </div>
 
-      <div className="text-muted-foreground/70 mt-6 flex flex-col items-center gap-1 px-3 text-center text-xs leading-relaxed group-data-[collapsed=true]/nav:hidden">
+      <div className="text-muted-foreground/70 mt-6 flex flex-col items-center gap-2 px-3 text-center text-xs leading-relaxed group-data-[collapsed=true]/nav:hidden">
         <p>
           © {new Date().getFullYear()} {siteConfig.name}
         </p>

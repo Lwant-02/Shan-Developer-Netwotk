@@ -71,6 +71,25 @@
     "download": "Download card",
     "joined": "Joined {date}"
   },
+  "Feedback": {
+    "launch": "Send feedback",
+    "title": "Send feedback",
+    "description": "Found a bug or have an idea? Tell us — it helps shape the platform.",
+    "typeLabel": "Feedback type",
+    "typeBug": "Bug",
+    "typeIdea": "Idea",
+    "fieldTitle": "Title",
+    "fieldTitlePlaceholder": "A short summary",
+    "fieldDescription": "Description",
+    "fieldDescriptionPlaceholder": "What happened, or what would you like to see?",
+    "addImage": "Add image (optional)",
+    "removeImage": "Remove image",
+    "imageError": "Please choose an image under 5 MB.",
+    "submit": "Send",
+    "successTitle": "Thanks!",
+    "successBody": "Sending isn't wired up yet — this is a preview, so nothing was submitted.",
+    "done": "Done"
+  },
   "Search": {
     "placeholder": "Search posts and actions…",
     "sectionGo": "Go to",

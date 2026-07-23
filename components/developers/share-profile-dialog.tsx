@@ -1,6 +1,7 @@
 "use client";
 
 import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
+import Image from "next/image";
 import { useFormatter, useTranslations } from "next-intl";
 import { useRef, type ReactElement } from "react";
 
@@ -102,6 +103,18 @@ export function ShareProfileDialog({
     // back to a fallback face and distort tone marks.
     await document.fonts.ready;
 
+    // Brand logo for the header. `document.createElement` because next/image's `Image`
+    // shadows the global here. Best-effort — if it fails to decode, the name still prints.
+    const logo = document.createElement("img");
+    logo.src = siteConfig.logo;
+    let logoOk = false;
+    try {
+      await logo.decode();
+      logoOk = true;
+    } catch {
+      logoOk = false;
+    }
+
     const canvas = document.createElement("canvas");
     canvas.width = CARD_W * EXPORT_SCALE;
     canvas.height = CARD_H * EXPORT_SCALE;
@@ -138,7 +151,28 @@ export function ShareProfileDialog({
       ctx.globalAlpha = 1;
     };
 
-    write(siteConfig.name, 40, 12, 0.55);
+    // Header: logo + wordmark on one centred row, matching the DOM preview (drawing the
+    // logo above the name made it "jump up" on download).
+    const brandBaseline = 40;
+    const logoSize = 16;
+    const logoGap = 6;
+    ctx.font = `12px ${font}`;
+    const brandTextW = ctx.measureText(siteConfig.name).width;
+    const rowW = (logoOk ? logoSize + logoGap : 0) + brandTextW;
+    const rowLeft = centre - rowW / 2;
+    if (logoOk) {
+      ctx.drawImage(logo, rowLeft, brandBaseline - 13, logoSize, logoSize);
+    }
+    ctx.textAlign = "left";
+    ctx.globalAlpha = 0.55;
+    ctx.fillStyle = foreground;
+    ctx.fillText(
+      siteConfig.name,
+      rowLeft + (logoOk ? logoSize + logoGap : 0),
+      brandBaseline,
+    );
+    ctx.globalAlpha = 1;
+    ctx.textAlign = "center";
     rule(56);
 
     // Avatar: a tinted disc with the handle's initials, never a photo or identity claim.
@@ -225,9 +259,20 @@ export function ShareProfileDialog({
           ref={cardRef}
           className="border-border bg-card text-foreground flex flex-col items-center gap-3 rounded-lg border px-6 py-5 text-center"
         >
-          <span className="text-muted-foreground text-[10px] tracking-widest uppercase">
-            {siteConfig.name}
-          </span>
+          <div className="flex items-center gap-2">
+            {/* The logo is white strokes on transparent — it sits on the dark card as-is. */}
+            <Image
+              src={siteConfig.logo}
+              alt=""
+              width={16}
+              height={16}
+              unoptimized
+              className="size-4"
+            />
+            <span className="text-muted-foreground text-[10px] tracking-widest uppercase">
+              {siteConfig.name}
+            </span>
+          </div>
           <hr className="border-border w-full" />
 
           <span

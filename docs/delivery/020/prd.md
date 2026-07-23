@@ -2,8 +2,9 @@
 
 | | |
 | --- | --- |
-| **Status** | Proposed |
+| **Status** | Done |
 | **Created** | 2026-07-23 |
+| **Completed** | 2026-07-24 |
 | **Depends on** | PBI-017 (mock `lib/projects.ts` + provisional `project-card.tsx`, Done) |
 | **Relates to** | PBI-010 (home feed pattern, Done), PBI-016 (detail-page precedent, Done), PBI-018 (profile links/QR, Done) |
 

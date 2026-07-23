@@ -28,6 +28,7 @@ See [prd.md](./prd.md). Status: `Proposed` → `Agreed` → `InProgress` → `Do
 | 8 | Verify: `lint`, `build`, `test`; logged-out render; close-out | Done | — | CoS 1–10. See below. |
 | 9 | **(owner add)** `joinedAtISO` on `Developer` + all 8 mocks; rendered as **month + year only** on the profile header and the share card | Done | — | Scope addition. Coarse on purpose — an exact join date is a correlation handle. |
 | 10 | **(owner add)** Enrich the share card ("too simple"): brand rule, avatar, name, role, `location · joined` meta, wrapped bio, an activity stat row (posts/projects/events), then the QR and handle — mirrored in the canvas export with a word-wrap helper | Done | — | Scope addition. Counts arrive as a `stats` prop so the mock data modules stay out of the client bundle. |
+| 11 | **(owner add, follow-up)** Add the site **logo** to the card header — in the DOM preview and drawn into the PNG export (`document.createElement("img")` + `decode()`, since next/image shadows the global `Image`) | Done | — | Post-merge follow-up. Logo is white-on-transparent, so it sits on the dark card as-is; PNG draw is best-effort + browser-only. |
 
 ## Verified vs browser-only
 

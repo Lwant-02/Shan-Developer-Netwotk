@@ -71,6 +71,22 @@
     "download": "Download card",
     "joined": "Joined {date}"
   },
+  "Projects": {
+    "title": "Projects",
+    "subtitle": "Open-source work and apps built by Shan developers. Browse the community — no account needed.",
+    "backToProjects": "Back to projects",
+    "by": "by <handle></handle>",
+    "star": "Star",
+    "links": "Links",
+    "linkSource": "Source",
+    "linkLive": "Live",
+    "linkAppStore": "App Store",
+    "linkPlayStore": "Play Store",
+    "more": "More",
+    "edit": "Edit",
+    "delete": "Delete",
+    "empty": "No projects yet."
+  },
   "Feedback": {
     "launch": "Send feedback",
     "title": "Send feedback",

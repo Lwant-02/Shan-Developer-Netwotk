@@ -14,13 +14,13 @@ import { siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { NavItem } from "./nav-item";
 
-// Home, Developers, About, Terms, and Privacy have pages. The rest are disabled with a
-// "soon" cue rather than shipping links that 404 (agreed at PBI-010 time).
+// Home, Developers, Projects, About, Terms, and Privacy have pages. The rest are disabled
+// with a "soon" cue rather than shipping links that 404 (agreed at PBI-010 time).
 const items = [
   { key: "home", icon: House, href: "/" },
   { key: "developers", icon: CodeXml, href: "/developers" },
   { key: "community", icon: Users },
-  { key: "projects", icon: FolderGit2 },
+  { key: "projects", icon: FolderGit2, href: "/projects" },
   { key: "events", icon: Calendar },
 ] as const;
 

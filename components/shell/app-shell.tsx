@@ -1,3 +1,4 @@
+import { FeedbackLauncher } from "@/components/feedback/feedback-launcher";
 import { LeftNav } from "./left-nav";
 import { NavCollapse } from "./nav-collapse";
 import { RightRail } from "./right-rail";
@@ -31,6 +32,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </aside>
         </div>
       </div>
+
+      <FeedbackLauncher />
     </>
   );
 }

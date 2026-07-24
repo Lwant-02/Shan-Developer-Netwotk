@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
 
 import { HandleLink } from "@/components/feed/handle-link";
 import { ProjectLinks } from "@/components/projects/project-links";
@@ -53,6 +53,7 @@ export default async function ProjectPage({
   if (!project) notFound();
 
   const t = await getTranslations("Projects");
+  const format = await getFormatter();
   const hasLinks = Boolean(
     project.repo || project.website || project.appStore || project.playStore,
   );
@@ -90,6 +91,11 @@ export default async function ProjectPage({
                 })}
               </span>
               <StarButton stars={project.stars} />
+              <time dateTime={project.createdAtISO}>
+                {t("posted", {
+                  time: format.relativeTime(new Date(project.createdAtISO)),
+                })}
+              </time>
             </div>
             <p className="text-muted-foreground text-base leading-relaxed">
               {project.description}

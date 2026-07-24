@@ -11,12 +11,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-// The project's ⋯ menu, mirroring the feed's PostMenu. Display only, like the rest of the
+// The event's ⋯ menu, mirroring the feed's PostMenu. Display only, like the rest of the
 // controls — report needs moderation (PBI-005, deferred) and edit/delete need auth plus
 // ownership (owner-only when auth lands). The menu exists so the affordance is designed;
 // nothing is wired.
-export function ProjectMenu() {
-  const t = useTranslations("Projects");
+export function EventMenu() {
+  const t = useTranslations("Events");
 
   return (
     <DropdownMenu>

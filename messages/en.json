@@ -9,7 +9,7 @@
     "home": "Back to home"
   },
   "Nav": {
-    "home": "Home",
+    "home": "Feed",
     "projects": "Projects",
     "community": "Community",
     "events": "Events",
@@ -83,9 +83,30 @@
     "linkAppStore": "App Store",
     "linkPlayStore": "Play Store",
     "more": "More",
+    "report": "Report",
     "edit": "Edit",
     "delete": "Delete",
+    "posted": "Posted {time}",
     "empty": "No projects yet."
+  },
+  "Events": {
+    "title": "Events",
+    "subtitle": "Online sessions and meetups hosted by Shan developers. Browse the community — no account needed.",
+    "backToEvents": "Back to events",
+    "by": "Hosted by <handle></handle>",
+    "upcoming": "Upcoming",
+    "past": "Past",
+    "online": "Online",
+    "join": "Join online",
+    "register": "Register",
+    "posted": "Posted {time}",
+    "more": "More",
+    "report": "Report",
+    "edit": "Edit",
+    "delete": "Delete",
+    "emptyUpcoming": "No upcoming events.",
+    "emptyPast": "No past events.",
+    "empty": "No events yet."
   },
   "Feedback": {
     "launch": "Send feedback",

@@ -2,9 +2,9 @@ import {
   Calendar,
   CodeXml,
   FolderGit2,
-  House,
   Info,
   type LucideIcon,
+  MessageSquareText,
   Users,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -14,14 +14,14 @@ import { siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { NavItem } from "./nav-item";
 
-// Home, Developers, Projects, About, Terms, and Privacy have pages. The rest are disabled
+// Home, Developers, Projects, Events, About, Terms, and Privacy have pages. The rest are disabled
 // with a "soon" cue rather than shipping links that 404 (agreed at PBI-010 time).
 const items = [
-  { key: "home", icon: House, href: "/" },
+  { key: "home", icon: MessageSquareText, href: "/" },
   { key: "developers", icon: CodeXml, href: "/developers" },
   { key: "community", icon: Users },
   { key: "projects", icon: FolderGit2, href: "/projects" },
-  { key: "events", icon: Calendar },
+  { key: "events", icon: Calendar, href: "/events" },
 ] as const;
 
 const secondary = [{ key: "about", icon: Info, href: "/about" }] as const;

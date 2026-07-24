@@ -12,5 +12,10 @@ export default getRequestConfig(async ({ requestLocale }) => {
   return {
     locale,
     messages: (await import(`../messages/${locale}.json`)).default,
+    // A single reference time for all `relativeTime` formatting, shared by Server and
+    // Client Components (NextIntlClientProvider inherits it). Without it next-intl falls
+    // back to render-time per call — warning noise, and a server/client hydration drift
+    // for relative times rendered on both sides (e.g. the event card in EventsBrowser).
+    now: new Date(),
   };
 });

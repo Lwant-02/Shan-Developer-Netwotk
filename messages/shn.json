@@ -9,7 +9,7 @@
     "home": "ပွၵ်ႈၶိုၼ်းၼႃႈႁူဝ်ႁႅၵ်ႈ"
   },
   "Nav": {
-    "home": "TODO(shn): Feed",
+    "home": "ၼႃႈႁူဝ်ႁႅၵ်ႈ",
     "projects": "ၶူင်းၵၢၼ်",
     "community": "တူင်ႇဝိူင်း",
     "events": "ပၢင်ႁူပ်ႉထူပ်း",
@@ -86,7 +86,7 @@
     "report": "ပွင်ႇတိုင်ႇ",
     "edit": "မႄး",
     "delete": "မွတ်ႇပႅတ်ႈ",
-    "posted": "TODO(shn): Posted {time}",
+    "posted": "တၢင်ႇမိူဝ်ႈ {time}",
     "empty": "ပႆႇမီးၶူင်းၵၢၼ်။"
   },
   "Events": {
@@ -99,13 +99,13 @@
     "online": "ဢွၼ်ႇလၢႆး",
     "join": "ၶဝ်ႈႁူမ်ႈ ဢွၼ်ႇလၢႆး",
     "register": "တၢင်ႇသဵၼ်ႈၸိုဝ်ႈ",
-    "posted": "TODO(shn): Posted {time}",
+    "posted": "တၢင်ႇမိူဝ်ႈ {time}",
     "more": "တၢင်ႇၸိူဝ်း",
     "report": "ပွင်ႇတိုင်ႇ",
     "edit": "မႄး",
     "delete": "မွတ်ႇပႅတ်ႈ",
-    "emptyUpcoming": "TODO(shn): No upcoming events.",
-    "emptyPast": "TODO(shn): No past events.",
+    "emptyUpcoming": "ပႆႇမီးပၢင်ႁူပ်ႉထူပ်း ၸိူဝ်းတေမႃး။",
+    "emptyPast": "ပႆႇမီးပၢင်ႁူပ်ႉထူပ်း ၸိူဝ်းပူၼ်ႉမႃး။",
     "empty": "ပႆႇမီးပၢင်ႁူပ်ႉထူပ်း။"
   },
   "Feedback": {

@@ -19,6 +19,8 @@ export type Project = {
   title: string;
   description: string;
   lang: PostLang;
+  /** When the project was posted. UTC ISO. */
+  createdAtISO: string;
   /** Optional project image. Real projects need storage (Neon bundles none) — a later PBI. */
   image?: string;
   /** Outbound links, each optional — not every project has all four. */
@@ -40,6 +42,7 @@ export const mockProjects: Project[] = [
     description:
       "A Shan keyboard layout for GBoard with the Council tones mapped where fast typists expect them.",
     lang: "en",
+    createdAtISO: "2026-06-30T09:00:00Z",
     image: "/icons/icon-512.png",
     repo: "https://github.com/tai_builds/shan-gboard-layout",
     playStore:
@@ -55,6 +58,7 @@ export const mockProjects: Project[] = [
     description:
       "Shan digit and date formatting for JavaScript. Handles Shan numerals and the Gregorian mapping. MIT.",
     lang: "en",
+    createdAtISO: "2026-07-06T09:00:00Z",
     repo: "https://github.com/mongla_dev/shan-dates",
     stars: 132,
     tags: ["library", "i18n"],
@@ -67,6 +71,7 @@ export const mockProjects: Project[] = [
     description:
       "An open Shan wordlist salvaged from an old spellchecker, cleaned up for reuse in search and tokenizers.",
     lang: "en",
+    createdAtISO: "2026-07-09T09:00:00Z",
     repo: "https://github.com/mongla_dev/shan-wordlist",
     stars: 47,
     tags: ["data", "nlp"],
@@ -79,6 +84,7 @@ export const mockProjects: Project[] = [
     description:
       "A Postgres tokenizer experiment for Shan text, which is written without spaces between words.",
     lang: "en",
+    createdAtISO: "2026-07-12T09:00:00Z",
     repo: "https://github.com/namkham_codes/shan-search",
     stars: 68,
     tags: ["search", "postgres", "nlp"],
@@ -91,6 +97,7 @@ export const mockProjects: Project[] = [
     description:
       "A learning app for Shan youth, taught in Shan. React front end, still very much a work in progress.",
     lang: "en",
+    createdAtISO: "2026-07-15T09:00:00Z",
     image: "/icons/icon-512.png",
     repo: "https://github.com/keng_tung_js/saolearn",
     website: "https://saolearn.app",
@@ -107,6 +114,7 @@ export const mockProjects: Project[] = [
     description:
       "An interactive specimen for the AJ Shan fonts — set tone marks and stacked characters and see them render.",
     lang: "en",
+    createdAtISO: "2026-07-18T09:00:00Z",
     image: "/icons/icon-512.png",
     website: "https://panglong.design/tai-type",
     stars: 39,
@@ -120,6 +128,7 @@ export const mockProjects: Project[] = [
     description:
       "A tiny offline notes app for Android, tested on a Redmi Note so it runs on the phones people actually own.",
     lang: "en",
+    createdAtISO: "2026-07-21T09:00:00Z",
     repo: "https://github.com/nam_oo/shan-notes",
     playStore: "https://play.google.com/store/apps/details?id=oo.nam.shannotes",
     stars: 22,

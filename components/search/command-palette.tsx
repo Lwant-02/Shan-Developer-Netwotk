@@ -12,7 +12,14 @@ import {
   VisualState,
   type Action,
 } from "kbar";
-import { FileText, House, Languages } from "lucide-react";
+import {
+  Calendar,
+  CodeXml,
+  FileText,
+  FolderGit2,
+  Languages,
+  MessageSquareText,
+} from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect } from "react";
 
@@ -109,16 +116,40 @@ export function CommandPalette({ openSignal }: { openSignal: number }) {
   const pathname = usePathname();
   const locale = useLocale();
 
-  // Only destinations that exist. Projects/Posts/Events/People are omitted until
-  // their pages land — a palette of dead ends is worse than a short one.
+  // Only destinations that exist. Community is still omitted until its page lands —
+  // a palette of dead ends is worse than a short one.
   const actions: Action[] = [
     {
       id: "home",
       name: tNav("home"),
       section: t("sectionGo"),
       keywords: "home feed",
-      icon: <House className={icon} />,
+      icon: <MessageSquareText className={icon} />,
       perform: () => router.push("/"),
+    },
+    {
+      id: "developers",
+      name: tNav("developers"),
+      section: t("sectionGo"),
+      keywords: "developers people profiles",
+      icon: <CodeXml className={icon} />,
+      perform: () => router.push("/developers"),
+    },
+    {
+      id: "projects",
+      name: tNav("projects"),
+      section: t("sectionGo"),
+      keywords: "projects apps repos",
+      icon: <FolderGit2 className={icon} />,
+      perform: () => router.push("/projects"),
+    },
+    {
+      id: "events",
+      name: tNav("events"),
+      section: t("sectionGo"),
+      keywords: "events meetups sessions",
+      icon: <Calendar className={icon} />,
+      perform: () => router.push("/events"),
     },
     ...routing.locales
       .filter((it) => it !== locale)

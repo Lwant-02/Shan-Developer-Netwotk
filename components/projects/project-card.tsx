@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useFormatter, useTranslations } from "next-intl";
 
 import { Link } from "@/i18n/navigation";
 import type { Project } from "@/lib/projects";
@@ -17,6 +18,8 @@ export function ProjectCard({
   project: Project;
   className?: string;
 }) {
+  const format = useFormatter();
+  const t = useTranslations("Projects");
   const href = `/projects/${project.slug}`;
 
   return (
@@ -70,11 +73,16 @@ export function ProjectCard({
         </div>
       )}
 
-      <footer className="flex items-center gap-1 text-xs">
+      <footer className="text-muted-foreground flex items-center gap-3 text-xs">
         <StarButton
           stars={project.stars}
           className="group-hover/project:bg-background relative z-10"
         />
+        <time dateTime={project.createdAtISO}>
+          {t("posted", {
+            time: format.relativeTime(new Date(project.createdAtISO)),
+          })}
+        </time>
       </footer>
     </article>
   );

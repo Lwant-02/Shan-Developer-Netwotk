@@ -103,6 +103,9 @@
   }
   body {
     @apply bg-background text-foreground transition-colors duration-200;
+    background-image: radial-gradient(var(--border) 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-attachment: fixed;
   }
   html {
     @apply font-sans;

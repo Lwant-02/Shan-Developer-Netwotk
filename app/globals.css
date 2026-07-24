@@ -113,6 +113,12 @@
     scrollbar-color: var(--border) transparent;
   }
 
+  .dot-grid {
+    background-image: radial-gradient(var(--border) 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-attachment: fixed;
+  }
+
   /* The default scrollbar is a hard grey slab that reads as chrome from another app.
      Tied to --border so it follows the theme instead of being a fixed colour. */
   ::-webkit-scrollbar {

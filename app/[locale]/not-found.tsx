@@ -27,11 +27,11 @@ export default function NotFound() {
       lang={locale}
       className={cn(
         fontVariables,
-        "font-sans bg-background text-foreground flex min-h-dvh flex-col antialiased"
+        "dot-grid font-sans text-foreground flex min-h-dvh flex-col antialiased",
       )}
     >
       <main className="flex flex-1 items-center justify-center px-6 py-16">
-        <div className="border-border bg-card flex w-full max-w-sm flex-col items-center gap-6 rounded-lg border px-8 py-12 text-center shadow-sm">
+        <div className="flex w-full max-w-sm flex-col items-center gap-6 px-8 py-12 text-center">
           <Reveal className="flex flex-col items-center gap-3">
             <span className="text-6xl leading-none tracking-tight tabular-nums sm:text-7xl">
               404

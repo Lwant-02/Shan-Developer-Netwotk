@@ -2,7 +2,7 @@
 
 import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
 import Image from "next/image";
-import { useFormatter, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useRef, type ReactElement } from "react";
 
 import { buttonVariants } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { formatDateEn } from "@/lib/datetime";
 import type { Developer } from "@/lib/developers";
 import { siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -76,13 +77,12 @@ export function ShareProfileDialog({
   children: ReactElement;
 }) {
   const t = useTranslations("Developers");
-  const format = useFormatter();
   const cardRef = useRef<HTMLDivElement>(null);
   const exportQrRef = useRef<HTMLDivElement>(null);
 
   const name = developer.displayName ?? developer.handle;
   const joined = t("joined", {
-    date: format.dateTime(new Date(developer.joinedAtISO), {
+    date: formatDateEn(developer.joinedAtISO, {
       month: "long",
       year: "numeric",
     }),

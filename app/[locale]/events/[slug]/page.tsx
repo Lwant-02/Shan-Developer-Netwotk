@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
+import { getNow, getTranslations, setRequestLocale } from "next-intl/server";
 
 import { ShareButton } from "@/components/content/share-button";
 import { EventMenu } from "@/components/events/event-menu";
@@ -20,6 +20,7 @@ import { AppShell } from "@/components/shell/app-shell";
 import { buttonVariants } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { getCommentsFor } from "@/lib/comments";
+import { formatDateEn, relativeTimeEn } from "@/lib/datetime";
 import { getEventBySlug, mockEvents } from "@/lib/events";
 import { localeAlternates } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -64,7 +65,7 @@ export default async function EventPage({
   if (!event) notFound();
 
   const t = await getTranslations("Events");
-  const format = await getFormatter();
+  const now = await getNow();
   const comments = getCommentsFor(event.slug);
 
   return (
@@ -118,7 +119,7 @@ export default async function EventPage({
               {/* Stored UTC, rendered in the reader's locale; timeZoneName makes the
                   offset (Myanmar UTC+06:30) legible rather than ambiguous. */}
               <time dateTime={event.startsAtISO}>
-                {format.dateTime(new Date(event.startsAtISO), {
+                {formatDateEn(event.startsAtISO, {
                   weekday: "long",
                   year: "numeric",
                   month: "long",
@@ -140,7 +141,7 @@ export default async function EventPage({
             <div className="text-xs opacity-80">
               <time dateTime={event.createdAtISO}>
                 {t("posted", {
-                  time: format.relativeTime(new Date(event.createdAtISO)),
+                  time: relativeTimeEn(event.createdAtISO, now),
                 })}
               </time>
             </div>

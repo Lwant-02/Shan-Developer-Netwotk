@@ -1,11 +1,12 @@
 import { Calendar, MapPin } from "lucide-react";
 import Image from "next/image";
-import { useFormatter, useTranslations } from "next-intl";
+import { useNow, useTranslations } from "next-intl";
 
 import { CommentButton } from "@/components/content/comment-button";
 import { ShareButton } from "@/components/content/share-button";
 import { StarButton } from "@/components/projects/star-button";
 import { Link } from "@/i18n/navigation";
+import { formatDateEn, relativeTimeEn } from "@/lib/datetime";
 import type { EventItem } from "@/lib/events";
 import { cn } from "@/lib/utils";
 import { EventMenu } from "./event-menu";
@@ -26,7 +27,7 @@ export function EventCard({
   status?: EventStatus;
   className?: string;
 }) {
-  const format = useFormatter();
+  const now = useNow();
   const t = useTranslations("Events");
   const href = `/events/${event.slug}`;
 
@@ -84,7 +85,7 @@ export function EventCard({
         <span className="flex items-center gap-1">
           <Calendar className="size-3.5" />
           <time dateTime={event.startsAtISO}>
-            {format.dateTime(new Date(event.startsAtISO), {
+            {formatDateEn(event.startsAtISO, {
               dateStyle: "medium",
               timeStyle: "short",
             })}
@@ -98,9 +99,7 @@ export function EventCard({
           ·
         </span>
         <time dateTime={event.createdAtISO}>
-          {t("posted", {
-            time: format.relativeTime(new Date(event.createdAtISO)),
-          })}
+          {t("posted", { time: relativeTimeEn(event.createdAtISO, now) })}
         </time>
       </div>
 

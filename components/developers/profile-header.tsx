@@ -1,8 +1,9 @@
 import { CalendarDays, Globe, MapPin } from "lucide-react";
 import Image from "next/image";
-import { useFormatter, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
 import { buttonVariants } from "@/components/ui/button";
+import { formatDateEn } from "@/lib/datetime";
 import { type Developer, SOCIAL } from "@/lib/developers";
 import { cn } from "@/lib/utils";
 import { FollowControls } from "./follow-controls";
@@ -12,12 +13,11 @@ import { FollowControls } from "./follow-controls";
 // and optional (omitted when absent), and the avatar is initials only.
 export function ProfileHeader({ developer }: { developer: Developer }) {
   const t = useTranslations("Developers");
-  const format = useFormatter();
   const name = developer.displayName ?? developer.handle;
 
   // Month + year only: an exact join date is a correlation handle, and coarse is the
   // house style for anything identifying.
-  const joined = format.dateTime(new Date(developer.joinedAtISO), {
+  const joined = formatDateEn(developer.joinedAtISO, {
     month: "long",
     year: "numeric",
   });

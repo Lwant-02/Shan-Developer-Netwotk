@@ -1,9 +1,10 @@
 import Image from "next/image";
-import { useFormatter, useTranslations } from "next-intl";
+import { useNow, useTranslations } from "next-intl";
 
 import { CommentButton } from "@/components/content/comment-button";
 import { ShareButton } from "@/components/content/share-button";
 import { Link } from "@/i18n/navigation";
+import { relativeTimeEn } from "@/lib/datetime";
 import type { Project } from "@/lib/projects";
 import { cn } from "@/lib/utils";
 import { ProjectMenu } from "./project-menu";
@@ -20,7 +21,7 @@ export function ProjectCard({
   project: Project;
   className?: string;
 }) {
-  const format = useFormatter();
+  const now = useNow();
   const t = useTranslations("Projects");
   const href = `/projects/${project.slug}`;
 
@@ -92,7 +93,7 @@ export function ProjectCard({
         />
         <time className="ml-1.5" dateTime={project.createdAtISO}>
           {t("posted", {
-            time: format.relativeTime(new Date(project.createdAtISO)),
+            time: relativeTimeEn(project.createdAtISO, now),
           })}
         </time>
       </footer>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ArrowLeft, MessageSquare } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
+import { getNow, getTranslations, setRequestLocale } from "next-intl/server";
 
 import { ShareButton } from "@/components/content/share-button";
 import { CommentThread } from "@/components/feed/comment-thread";
@@ -13,6 +13,7 @@ import { StarButton } from "@/components/projects/star-button";
 import { AppShell } from "@/components/shell/app-shell";
 import { Link } from "@/i18n/navigation";
 import { getCommentsFor } from "@/lib/comments";
+import { relativeTimeEn } from "@/lib/datetime";
 import { getProjectBySlug, mockProjects } from "@/lib/projects";
 import { localeAlternates } from "@/lib/site";
 
@@ -56,7 +57,7 @@ export default async function ProjectPage({
   if (!project) notFound();
 
   const t = await getTranslations("Projects");
-  const format = await getFormatter();
+  const now = await getNow();
   const comments = getCommentsFor(project.slug);
   const hasLinks = Boolean(
     project.repo || project.website || project.appStore || project.playStore,
@@ -105,7 +106,7 @@ export default async function ProjectPage({
               <ShareButton label={t("share")} />
               <time dateTime={project.createdAtISO}>
                 {t("posted", {
-                  time: format.relativeTime(new Date(project.createdAtISO)),
+                  time: relativeTimeEn(project.createdAtISO, now),
                 })}
               </time>
             </div>

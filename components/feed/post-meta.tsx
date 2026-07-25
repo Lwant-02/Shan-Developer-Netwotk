@@ -1,5 +1,6 @@
-import { useFormatter } from "next-intl";
+import { useNow } from "next-intl";
 
+import { relativeTimeEn } from "@/lib/datetime";
 import type { Post } from "@/lib/feed";
 import { cn } from "@/lib/utils";
 import { HandleLink } from "./handle-link";
@@ -15,7 +16,7 @@ export function PostMeta({
   post: Post;
   className?: string;
 }) {
-  const format = useFormatter();
+  const now = useNow();
 
   return (
     <header
@@ -39,7 +40,7 @@ export function PostMeta({
         ·
       </span>
       <time dateTime={post.createdAtISO}>
-        {format.relativeTime(new Date(post.createdAtISO))}
+        {relativeTimeEn(post.createdAtISO, now)}
       </time>
       {/* z-10 keeps the menu clickable above the card's stretched title link. */}
       <div className="relative z-10 ml-auto">

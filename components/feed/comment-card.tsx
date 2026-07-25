@@ -1,13 +1,14 @@
-import { useFormatter } from "next-intl";
+import { useNow } from "next-intl";
 
 import type { Comment } from "@/lib/comments";
+import { relativeTimeEn } from "@/lib/datetime";
 import { HandleLink } from "./handle-link";
 
 // One comment: initials avatar, pseudonymous handle, relative time, and the body in its
 // own content language (`lang`), independent of the UI locale. Display-only — replying,
 // liking, and reporting need auth and a write path (later PBIs).
 export function CommentCard({ comment }: { comment: Comment }) {
-  const format = useFormatter();
+  const now = useNow();
 
   return (
     <article className="flex flex-col gap-1.5">
@@ -26,7 +27,7 @@ export function CommentCard({ comment }: { comment: Comment }) {
           ·
         </span>
         <time dateTime={comment.createdAtISO}>
-          {format.relativeTime(new Date(comment.createdAtISO))}
+          {relativeTimeEn(comment.createdAtISO, now)}
         </time>
       </header>
       <p

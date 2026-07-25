@@ -212,13 +212,25 @@ Styling rules, which are not negotiable because theming depends on them:
 Rules that fall out of already-built work. What is built, mocked, or still open is
 *status* — read it from `design.md` and the backlog, not here.
 
-- **The top-nav Create control routes to the composers; notifications / account are
-  still display-only until auth.** Create opens a menu to `/create/{post,project,event}`
-  (PBI-022) — but **publishing is still gated**: the composer's Publish opens the sign-in
-  dialog and persists nothing, so it asserts no identity. The avatar is a generic icon
-  and **must never assert a logged-in identity or presence** — no name, no photo, no
-  presence dot — while "Sign in" shows. Post `⋯` actions are the same: when auth lands,
+- **The top-nav Create control routes to the composers and the bell to the
+  notifications page; the account control stays display-only until auth.** Create opens
+  a menu to `/create/{post,project,event}` (PBI-022); the bell links to `/notifications`
+  (PBI-023). Both are **frontend-only** and **must never assert a logged-in identity or
+  presence** — no name, no photo, no presence dot, no session-derived count — while "Sign
+  in" shows. Publishing is still gated (Publish opens the sign-in dialog and persists
+  nothing); the notifications list is mock, and "mark all as read" clears the unread dots
+  in local state only (persists nothing). The
+  account avatar is a generic icon. Post `⋯` actions are the same: when auth lands,
   edit/delete become owner-only and report needs moderation (PBI-005).
+- **The notifications surface (`app/[locale]/notifications/`, `components/notifications/`)
+  is frontend-only (PBI-023).** The list comes from mock `lib/notifications.ts`; a real
+  per-user feed needs Better Auth **and** the write paths that generate the events
+  (like/comment/star/follow). Notification kinds are fixed by those existing interactions
+  — don't add generic-platform types. Times use the `en` helpers in `lib/datetime.ts`
+  (`relativeTimeEn` / `formatDateEn`), **not** `useFormatter`/`getFormatter`: relative and
+  absolute dates are rendered in a fixed `en` locale because `Intl` has full `shn` data in
+  Node but not the browser, so a Shan-locale date drifts on hydration. Any date shown
+  inside a client tree must use these helpers.
 - **The create composer (`components/create/`) is frontend-only (PBI-022).** One shared
   `CreateForm` for all three types; the body is a **markdown textarea with a formatting
   toolbar**, deliberately not a WYSIWYG editor library (client-JS budget). Publish is the

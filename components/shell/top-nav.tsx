@@ -44,18 +44,18 @@ export function TopNav() {
         <SearchTrigger />
 
         <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
-          {/* Create routes to the composers (PBI-022); publishing there is still gated by
-              sign-in. Notifications and account stay disabled — they need auth to mean
-              anything, so a signed-out visitor gets "Sign in" as the one live action. */}
+          {/* Create routes to the composers (PBI-022) and the bell to the notifications
+              page (PBI-023); both are frontend-only and assert no logged-in identity.
+              Account stays disabled — it needs auth to mean anything, so a signed-out
+              visitor gets "Sign in" as the one live action. */}
           <CreateMenu />
-          <button
-            type="button"
-            disabled
+          <Link
+            href="/notifications"
             aria-label={t("notifications")}
-            className="text-muted-foreground hover:bg-muted flex size-9 items-center justify-center rounded-lg transition-colors disabled:pointer-events-none disabled:opacity-60"
+            className="text-muted-foreground hover:bg-muted flex size-9 items-center justify-center rounded-lg transition-colors"
           >
             <Bell className="size-5" />
-          </button>
+          </Link>
           <button
             type="button"
             disabled

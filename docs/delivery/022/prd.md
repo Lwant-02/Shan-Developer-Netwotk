@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| **Status** | Proposed |
+| **Status** | InProgress |
 | **Created** | 2026-07-25 |
 | **Depends on** | Better Auth + rate limiting (Open Questions) for the real write path; PBI-014 (sign-in dialog — the auth gate) as the attach point |
 | **Relates to** | PBI-010/016 (Post), PBI-020 (Project), PBI-021 (Event) — the read shapes this creates into; PBI-019 (frontend-only submit precedent); PBI-005 (moderation, deferred) |
@@ -72,8 +72,10 @@ the top nav is a dead affordance.
   and survives mixed Shan/Latin content. **This is the key open decision — see Notes.**
 - **Type-specific fields** map the existing models above. Event start time gets explicit
   timezone handling and is represented as **UTC** (PBI-021's store-UTC / Myanmar
-  +06:30 rule — the half-hour offset naive code mangles). No image upload (storage is an
-  Open Question); no draft persistence.
+  +06:30 rule — the half-hour offset naive code mangles). An **optional photo** is a
+  client-side picker only (preview + remove, 5 MB cap), mirroring the feedback dialog —
+  nothing is uploaded, since server-side image **storage** is still an Open Question. No
+  draft persistence.
 - **Frontend-only:** Publish persists nothing and is the documented seam for a later
   rate-limited write endpoint. Anonymous visitors are routed to the sign-in gate
   (PBI-014), not a working publish.
@@ -83,13 +85,17 @@ the top nav is a dead affordance.
 1. A create surface exists for each of the three types (post, project, event),
    reachable from the top-nav Create control; that control is no longer a dead
    affordance.
-2. The three share one composer shell — consistent layout, body editor, language
-   selector, publish/cancel — differing only in their type-specific fields.
+2. The three share one composer shell — consistent layout, body editor, publish/cancel —
+   differing only in their type-specific fields.
 3. The body editor offers a formatting toolbar whose controls — at minimum bullet list,
    ordered list, blockquote, inline code, and code block — insert the corresponding
    markdown into the field, and plain typing works unchanged.
 4. Each form collects exactly the fields its data model needs (`Post` / `Project` /
-   `EventItem`), including a **per-content language tag** distinct from the UI locale.
+   `EventItem`). **Update:** the owner removed the visible per-content **language
+   selector** from the composer; content language is not set here for now. The models
+   still carry `lang`, so a language control can return without a data change — but note
+   this drops, for now, the "show me Shan-language posts" affordance that `design.md`
+   marks 🟢 (per-content language tagging). Revisit when real posting lands.
 5. Event start time is captured with explicit timezone handling and represented as UTC;
    no naive local-time bug (verifiable against the PBI-021 rule).
 6. Creating is **frontend-only**: Publish persists nothing and asserts no logged-in
@@ -128,7 +134,8 @@ the top nav is a dead affordance.
 ## Out of scope
 
 - Any persistence, database, session, or write endpoint.
-- Image/file upload (blocked on storage — Open Question).
+- Server-side image/file **storage** and upload (Open Question) — the composer's photo
+  field is a client-side preview only, delivered nowhere.
 - Draft saving, autosave, or edit-after-publish.
 - Moderation / spam handling (PBI-005, deferred) beyond noting the rate-limit
   dependency.

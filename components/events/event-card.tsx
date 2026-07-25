@@ -2,6 +2,9 @@ import { Calendar, MapPin } from "lucide-react";
 import Image from "next/image";
 import { useFormatter, useTranslations } from "next-intl";
 
+import { CommentButton } from "@/components/content/comment-button";
+import { ShareButton } from "@/components/content/share-button";
+import { StarButton } from "@/components/projects/star-button";
 import { Link } from "@/i18n/navigation";
 import type { EventItem } from "@/lib/events";
 import { cn } from "@/lib/utils";
@@ -100,6 +103,23 @@ export function EventCard({
           })}
         </time>
       </div>
+
+      <footer className="flex flex-wrap items-center gap-1 text-xs">
+        <StarButton
+          stars={event.stars}
+          className="group-hover/event:bg-background relative z-10"
+        />
+        <CommentButton
+          href={href}
+          count={event.comments}
+          label={t("comments")}
+          className="group-hover/event:bg-background"
+        />
+        <ShareButton
+          label={t("share")}
+          className="group-hover/event:bg-background relative z-10"
+        />
+      </footer>
     </article>
   );
 }

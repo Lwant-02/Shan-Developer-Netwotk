@@ -1,4 +1,4 @@
-import { Calendar, FileText, FolderGit2, MapPin } from "lucide-react";
+import { Calendar, FileText, FolderGit2, MapPin, Users } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Link } from "@/i18n/navigation";
@@ -27,6 +27,7 @@ export function DeveloperCard({ developer }: { developer: Developer }) {
       label: t("events"),
       count: getEventsByHost(developer.handle).length,
     },
+    { icon: Users, label: t("followers"), count: developer.followers },
   ];
 
   return (

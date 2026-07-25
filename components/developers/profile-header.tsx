@@ -5,6 +5,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import { buttonVariants } from "@/components/ui/button";
 import { type Developer, SOCIAL } from "@/lib/developers";
 import { cn } from "@/lib/utils";
+import { FollowControls } from "./follow-controls";
 
 // The profile header: avatar, name/handle, optional coarse location, bio, and external
 // links. Identity safety is binding here — no email is ever rendered, location is coarse
@@ -54,6 +55,11 @@ export function ProfileHeader({ developer }: { developer: Developer }) {
           </div>
         </div>
       </div>
+
+      <FollowControls
+        followers={developer.followers}
+        following={developer.following}
+      />
 
       <p className="text-muted-foreground text-sm leading-relaxed">
         {developer.bio}

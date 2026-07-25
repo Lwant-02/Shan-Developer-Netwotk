@@ -33,6 +33,10 @@ export type EventItem = {
   joinUrl?: string;
   /** Outbound link to a registration / attendance form, when the host uses one. */
   registerUrl?: string;
+  /** Display-only appreciation signal (stars), mirroring projects — not wired. */
+  stars: number;
+  /** Display-only comment count, mirroring the feed card — not wired. */
+  comments: number;
 };
 
 export const mockEvents: EventItem[] = [
@@ -51,6 +55,8 @@ export const mockEvents: EventItem[] = [
     image: "/icons/icon-512.png",
     joinUrl: "https://meet.example.com/intro-to-react-in-shan",
     registerUrl: "https://forms.example.com/intro-to-react-in-shan",
+    stars: 46,
+    comments: 3,
   },
   {
     id: "e2",
@@ -65,6 +71,8 @@ export const mockEvents: EventItem[] = [
     location: "Online",
     online: true,
     joinUrl: "https://meet.example.com/beginner-git-workshop",
+    stars: 31,
+    comments: 2,
   },
   {
     id: "e3",
@@ -80,6 +88,8 @@ export const mockEvents: EventItem[] = [
     online: false,
     image: "/icons/icon-512.png",
     registerUrl: "https://forms.example.com/shan-dev-meetup-kengtung",
+    stars: 58,
+    comments: 2,
   },
   {
     id: "e4",
@@ -94,6 +104,8 @@ export const mockEvents: EventItem[] = [
     location: "Online",
     online: true,
     joinUrl: "https://meet.example.com/keyboard-testing-sprint",
+    stars: 27,
+    comments: 2,
   },
   {
     id: "e5",
@@ -108,6 +120,8 @@ export const mockEvents: EventItem[] = [
     location: "Online",
     online: true,
     joinUrl: "https://meet.example.com/shan-unicode-clinic",
+    stars: 39,
+    comments: 2,
   },
 ];
 

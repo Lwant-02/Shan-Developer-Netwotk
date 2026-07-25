@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, MessageSquare } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
 
+import { ShareButton } from "@/components/content/share-button";
+import { CommentThread } from "@/components/feed/comment-thread";
 import { HandleLink } from "@/components/feed/handle-link";
 import { ProjectLinks } from "@/components/projects/project-links";
 import { ProjectMenu } from "@/components/projects/project-menu";
 import { StarButton } from "@/components/projects/star-button";
 import { AppShell } from "@/components/shell/app-shell";
 import { Link } from "@/i18n/navigation";
+import { getCommentsFor } from "@/lib/comments";
 import { getProjectBySlug, mockProjects } from "@/lib/projects";
 import { localeAlternates } from "@/lib/site";
 
@@ -54,6 +57,7 @@ export default async function ProjectPage({
 
   const t = await getTranslations("Projects");
   const format = await getFormatter();
+  const comments = getCommentsFor(project.slug);
   const hasLinks = Boolean(
     project.repo || project.website || project.appStore || project.playStore,
   );
@@ -91,6 +95,14 @@ export default async function ProjectPage({
                 })}
               </span>
               <StarButton stars={project.stars} />
+              <span
+                aria-label={t("comments")}
+                className="text-muted-foreground bg-muted flex items-center gap-1.5 rounded-lg px-2.5 py-1.5"
+              >
+                <MessageSquare className="size-4" />
+                <span className="tabular-nums">{comments.length}</span>
+              </span>
+              <ShareButton label={t("share")} />
               <time dateTime={project.createdAtISO}>
                 {t("posted", {
                   time: format.relativeTime(new Date(project.createdAtISO)),
@@ -134,6 +146,10 @@ export default async function ProjectPage({
             </div>
           )}
         </article>
+
+        <hr className="border-border" />
+
+        <CommentThread comments={comments} />
       </div>
     </AppShell>
   );

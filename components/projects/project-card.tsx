@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { useFormatter, useTranslations } from "next-intl";
 
+import { CommentButton } from "@/components/content/comment-button";
+import { ShareButton } from "@/components/content/share-button";
 import { Link } from "@/i18n/navigation";
 import type { Project } from "@/lib/projects";
 import { cn } from "@/lib/utils";
@@ -73,12 +75,22 @@ export function ProjectCard({
         </div>
       )}
 
-      <footer className="text-muted-foreground flex items-center gap-3 text-xs">
+      <footer className="text-muted-foreground flex flex-wrap items-center gap-1 text-xs">
         <StarButton
           stars={project.stars}
           className="group-hover/project:bg-background relative z-10"
         />
-        <time dateTime={project.createdAtISO}>
+        <CommentButton
+          href={href}
+          count={project.comments}
+          label={t("comments")}
+          className="group-hover/project:bg-background"
+        />
+        <ShareButton
+          label={t("share")}
+          className="group-hover/project:bg-background relative z-10"
+        />
+        <time className="ml-1.5" dateTime={project.createdAtISO}>
           {t("posted", {
             time: format.relativeTime(new Date(project.createdAtISO)),
           })}

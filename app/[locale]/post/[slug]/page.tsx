@@ -9,7 +9,7 @@ import { LikeButton } from "@/components/feed/like-button";
 import { PostMeta } from "@/components/feed/post-meta";
 import { AppShell } from "@/components/shell/app-shell";
 import { Link } from "@/i18n/navigation";
-import { getCommentsForPost } from "@/lib/comments";
+import { getCommentsFor } from "@/lib/comments";
 import { getPostBySlug, mockPosts } from "@/lib/feed";
 import { localeAlternates } from "@/lib/site";
 
@@ -52,7 +52,7 @@ export default async function PostPage({
   const post = getPostBySlug(slug);
   if (!post) notFound();
 
-  const comments = getCommentsForPost(post.slug);
+  const comments = getCommentsFor(post.slug);
   const t = await getTranslations("Post");
   const tDetail = await getTranslations("PostDetail");
 

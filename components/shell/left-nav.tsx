@@ -1,15 +1,16 @@
 import {
   Calendar,
   CodeXml,
+  FileText,
   FolderGit2,
   Info,
   type LucideIcon,
   MessageSquareText,
+  Shield,
   Users,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { Link } from "@/i18n/navigation";
 import { siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { NavItem } from "./nav-item";
@@ -24,7 +25,11 @@ const items = [
   { key: "events", icon: Calendar, href: "/events" },
 ] as const;
 
-const secondary = [{ key: "about", icon: Info, href: "/about" }] as const;
+const secondary = [
+  { key: "terms", icon: FileText, href: "/terms" },
+  { key: "privacy", icon: Shield, href: "/privacy" },
+  { key: "about", icon: Info, href: "/about" },
+] as const;
 
 function icon(Icon: LucideIcon) {
   return <Icon className="size-5" />;
@@ -58,18 +63,6 @@ export function LeftNav({ className }: { className?: string }) {
       <div className="text-muted-foreground/70 mt-6 flex flex-col items-center gap-2 px-3 text-center text-xs leading-relaxed group-data-[collapsed=true]/nav:hidden">
         <p>
           © {new Date().getFullYear()} {siteConfig.name}
-        </p>
-        <p className="flex items-center gap-1.5">
-          <Link href="/terms" className="hover:text-foreground transition-colors">
-            {t("terms")}
-          </Link>
-          <span aria-hidden="true">·</span>
-          <Link
-            href="/privacy"
-            className="hover:text-foreground transition-colors"
-          >
-            {t("privacy")}
-          </Link>
         </p>
       </div>
     </nav>

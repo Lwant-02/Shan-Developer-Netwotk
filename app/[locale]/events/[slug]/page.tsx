@@ -1,14 +1,25 @@
 import type { Metadata } from "next";
-import { ArrowLeft, Calendar, ClipboardList, MapPin, Video } from "lucide-react";
+import {
+  ArrowLeft,
+  Calendar,
+  ClipboardList,
+  MapPin,
+  MessageSquare,
+  Video,
+} from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
 
+import { ShareButton } from "@/components/content/share-button";
 import { EventMenu } from "@/components/events/event-menu";
+import { CommentThread } from "@/components/feed/comment-thread";
 import { HandleLink } from "@/components/feed/handle-link";
+import { StarButton } from "@/components/projects/star-button";
 import { AppShell } from "@/components/shell/app-shell";
 import { buttonVariants } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
+import { getCommentsFor } from "@/lib/comments";
 import { getEventBySlug, mockEvents } from "@/lib/events";
 import { localeAlternates } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -54,6 +65,7 @@ export default async function EventPage({
 
   const t = await getTranslations("Events");
   const format = await getFormatter();
+  const comments = getCommentsFor(event.slug);
 
   return (
     <AppShell>
@@ -141,6 +153,18 @@ export default async function EventPage({
             {event.description}
           </p>
 
+          <footer className="flex flex-wrap items-center gap-1 text-sm">
+            <StarButton stars={event.stars} />
+            <span
+              aria-label={t("comments")}
+              className="text-muted-foreground bg-muted flex items-center gap-1.5 rounded-lg px-2.5 py-1.5"
+            >
+              <MessageSquare className="size-4" />
+              <span className="tabular-nums">{comments.length}</span>
+            </span>
+            <ShareButton label={t("share")} />
+          </footer>
+
           {(event.registerUrl || (event.online && event.joinUrl)) && (
             <div className="flex flex-wrap gap-2">
               {event.registerUrl && (
@@ -174,6 +198,10 @@ export default async function EventPage({
             </div>
           )}
         </article>
+
+        <hr className="border-border" />
+
+        <CommentThread comments={comments} />
       </div>
     </AppShell>
   );

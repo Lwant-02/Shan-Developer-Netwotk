@@ -30,6 +30,8 @@ export type Project = {
   playStore?: string;
   /** Display-only appreciation signal (stars) — the mechanic is not wired. */
   stars: number;
+  /** Display-only comment count, mirroring the feed card — not wired. */
+  comments: number;
   tags: string[];
 };
 
@@ -48,6 +50,7 @@ export const mockProjects: Project[] = [
     playStore:
       "https://play.google.com/store/apps/details?id=com.taibuilds.shangboard",
     stars: 84,
+    comments: 3,
     tags: ["keyboard", "android", "input"],
   },
   {
@@ -61,6 +64,7 @@ export const mockProjects: Project[] = [
     createdAtISO: "2026-07-06T09:00:00Z",
     repo: "https://github.com/mongla_dev/shan-dates",
     stars: 132,
+    comments: 2,
     tags: ["library", "i18n"],
   },
   {
@@ -74,6 +78,7 @@ export const mockProjects: Project[] = [
     createdAtISO: "2026-07-09T09:00:00Z",
     repo: "https://github.com/mongla_dev/shan-wordlist",
     stars: 47,
+    comments: 2,
     tags: ["data", "nlp"],
   },
   {
@@ -87,6 +92,7 @@ export const mockProjects: Project[] = [
     createdAtISO: "2026-07-12T09:00:00Z",
     repo: "https://github.com/namkham_codes/shan-search",
     stars: 68,
+    comments: 3,
     tags: ["search", "postgres", "nlp"],
   },
   {
@@ -104,6 +110,7 @@ export const mockProjects: Project[] = [
     appStore: "https://apps.apple.com/app/saolearn/id0000000000",
     playStore: "https://play.google.com/store/apps/details?id=app.saolearn",
     stars: 156,
+    comments: 2,
     tags: ["react", "education"],
   },
   {
@@ -118,6 +125,7 @@ export const mockProjects: Project[] = [
     image: "/icons/icon-512.png",
     website: "https://panglong.design/tai-type",
     stars: 39,
+    comments: 2,
     tags: ["design", "fonts", "typography"],
   },
   {
@@ -132,6 +140,7 @@ export const mockProjects: Project[] = [
     repo: "https://github.com/nam_oo/shan-notes",
     playStore: "https://play.google.com/store/apps/details?id=oo.nam.shannotes",
     stars: 22,
+    comments: 1,
     tags: ["android", "offline"],
   },
 ];

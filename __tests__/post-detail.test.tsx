@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 
 import { CommentThread } from "@/components/feed/comment-thread";
-import { getCommentsForPost } from "@/lib/comments";
+import { getCommentsFor } from "@/lib/comments";
 import en from "@/messages/en.json";
 import shn from "@/messages/shn.json";
 
@@ -21,7 +21,7 @@ function renderAt(
   );
 }
 
-const thread = getCommentsForPost("shan-word-segmentation-search");
+const thread = getCommentsFor("shan-word-segmentation-search");
 
 // Anonymous read access is a product requirement: the thread renders with no session
 // and no auth provider.

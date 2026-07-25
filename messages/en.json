@@ -69,7 +69,10 @@
     "share": "Share",
     "shareDescription": "Scan the code to open this profile, or download the card to share it.",
     "download": "Download card",
-    "joined": "Joined {date}"
+    "joined": "Joined {date}",
+    "follow": "Follow",
+    "following": "Following",
+    "followers": "Followers"
   },
   "Projects": {
     "title": "Projects",
@@ -77,6 +80,8 @@
     "backToProjects": "Back to projects",
     "by": "by <handle></handle>",
     "star": "Star",
+    "comments": "comments",
+    "share": "Share",
     "links": "Links",
     "linkSource": "Source",
     "linkLive": "Live",
@@ -99,6 +104,9 @@
     "online": "Online",
     "join": "Join online",
     "register": "Register",
+    "star": "Star",
+    "comments": "comments",
+    "share": "Share",
     "posted": "Posted {time}",
     "more": "More",
     "report": "Report",

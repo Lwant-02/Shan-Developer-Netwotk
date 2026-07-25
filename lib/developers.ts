@@ -55,6 +55,11 @@ export type Developer = {
    *  share none. */
   location?: string;
   links: DeveloperLink[];
+  /** Display-only follower / following counts. Frontend-only: following is a write and
+   *  needs auth plus a rate limit, and a public social graph is identity-sensitive
+   *  (design.md) — the counts render, the mechanic is not wired. */
+  followers: number;
+  following: number;
 };
 
 // English mock bios/locations (fabricated, like PBI-010 post bodies) — never a Shan
@@ -71,6 +76,8 @@ export const mockDevelopers: Developer[] = [
       { platform: "facebook", href: "https://facebook.com/tai_builds" },
       { platform: "website", href: "https://tai.build" },
     ],
+    followers: 142,
+    following: 38,
   },
   {
     handle: "namkham_codes",
@@ -83,6 +90,8 @@ export const mockDevelopers: Developer[] = [
       { platform: "linkedin", href: "https://linkedin.com/in/namkham" },
       { platform: "website", href: "https://namkham.dev" },
     ],
+    followers: 96,
+    following: 51,
   },
   {
     handle: "mongla_dev",
@@ -94,6 +103,8 @@ export const mockDevelopers: Developer[] = [
       { platform: "github", href: "https://github.com/mongla_dev" },
       { platform: "telegram", href: "https://t.me/mongla_dev" },
     ],
+    followers: 74,
+    following: 29,
   },
   {
     handle: "lasho_online",
@@ -106,6 +117,8 @@ export const mockDevelopers: Developer[] = [
       { platform: "line", href: "https://line.me/ti/p/~lasho_online" },
       { platform: "telegram", href: "https://t.me/lasho_online" },
     ],
+    followers: 210,
+    following: 63,
   },
   {
     handle: "keng_tung_js",
@@ -118,6 +131,8 @@ export const mockDevelopers: Developer[] = [
       { platform: "linkedin", href: "https://linkedin.com/in/kengtung" },
       { platform: "website", href: "https://kengtung.dev" },
     ],
+    followers: 128,
+    following: 44,
   },
   {
     handle: "panglong_pixels",
@@ -131,6 +146,8 @@ export const mockDevelopers: Developer[] = [
       { platform: "facebook", href: "https://facebook.com/panglong.pixels" },
       { platform: "website", href: "https://panglong.design" },
     ],
+    followers: 156,
+    following: 72,
   },
   {
     handle: "nam_oo",
@@ -142,6 +159,8 @@ export const mockDevelopers: Developer[] = [
       { platform: "github", href: "https://github.com/nam_oo" },
       { platform: "telegram", href: "https://t.me/nam_oo" },
     ],
+    followers: 61,
+    following: 40,
   },
   {
     handle: "sengfah",
@@ -150,6 +169,8 @@ export const mockDevelopers: Developer[] = [
     // No location.
     bio: "QA, and the person who asks 'did you test that logged out?'",
     links: [{ platform: "github", href: "https://github.com/sengfah" }],
+    followers: 33,
+    following: 22,
   },
 ];
 

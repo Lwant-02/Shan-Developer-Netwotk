@@ -72,8 +72,10 @@ the top nav is a dead affordance.
   and survives mixed Shan/Latin content. **This is the key open decision — see Notes.**
 - **Type-specific fields** map the existing models above. Event start time gets explicit
   timezone handling and is represented as **UTC** (PBI-021's store-UTC / Myanmar
-  +06:30 rule — the half-hour offset naive code mangles). No image upload (storage is an
-  Open Question); no draft persistence.
+  +06:30 rule — the half-hour offset naive code mangles). An **optional photo** is a
+  client-side picker only (preview + remove, 5 MB cap), mirroring the feedback dialog —
+  nothing is uploaded, since server-side image **storage** is still an Open Question. No
+  draft persistence.
 - **Frontend-only:** Publish persists nothing and is the documented seam for a later
   rate-limited write endpoint. Anonymous visitors are routed to the sign-in gate
   (PBI-014), not a working publish.
@@ -128,7 +130,8 @@ the top nav is a dead affordance.
 ## Out of scope
 
 - Any persistence, database, session, or write endpoint.
-- Image/file upload (blocked on storage — Open Question).
+- Server-side image/file **storage** and upload (Open Question) — the composer's photo
+  field is a client-side preview only, delivered nowhere.
 - Draft saving, autosave, or edit-after-publish.
 - Moderation / spam handling (PBI-005, deferred) beyond noting the rate-limit
   dependency.

@@ -21,7 +21,8 @@ no endpoint. Owner agreed the markdown-toolbar approach (not a WYSIWYG library).
   composer emits reaches a detail page (those still show plain mock text), so a markdown
   renderer is deliberately out of scope here — deferred to when real content persists
   (a sibling of the future write-endpoint PBI). Recorded in the PRD.
-- **No image upload** (project/event image) — storage is an Open Question; the field is
-  omitted, not stubbed.
+- **Optional photo is a client-side picker only** (preview + remove, 5 MB cap), mirroring
+  the feedback dialog — nothing is uploaded, because server-side image storage is an Open
+  Question. Each model already carries an optional `image` for when storage exists.
 - **The rate-limit dependency** for the eventual write endpoint is carried in the PRD,
   not implemented (no endpoint here).

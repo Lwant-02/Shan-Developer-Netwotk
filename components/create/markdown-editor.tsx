@@ -11,13 +11,14 @@ import { applyMarkdown, type MarkdownAction } from "@/lib/markdown";
 // selection, so authors can also just type. `"use client"` is forced by the selection ref
 // and the click handlers. No faux-bold anywhere — any label or body can be Shan, and the AJ
 // fonts are Regular-only.
-const TOOLS: { action: MarkdownAction; Icon: typeof Code; labelKey: string }[] = [
-  { action: "bullet-list", Icon: List, labelKey: "toolBulletList" },
-  { action: "ordered-list", Icon: ListOrdered, labelKey: "toolOrderedList" },
-  { action: "quote", Icon: Quote, labelKey: "toolQuote" },
-  { action: "inline-code", Icon: Code, labelKey: "toolInlineCode" },
-  { action: "code-block", Icon: SquareCode, labelKey: "toolCodeBlock" },
-];
+const TOOLS: { action: MarkdownAction; Icon: typeof Code; labelKey: string }[] =
+  [
+    { action: "bullet-list", Icon: List, labelKey: "toolBulletList" },
+    { action: "ordered-list", Icon: ListOrdered, labelKey: "toolOrderedList" },
+    { action: "quote", Icon: Quote, labelKey: "toolQuote" },
+    { action: "inline-code", Icon: Code, labelKey: "toolInlineCode" },
+    { action: "code-block", Icon: SquareCode, labelKey: "toolCodeBlock" },
+  ];
 
 export function MarkdownEditor({
   id,
@@ -38,7 +39,12 @@ export function MarkdownEditor({
   function apply(action: MarkdownAction) {
     const el = ref.current;
     if (!el) return;
-    const next = applyMarkdown(value, el.selectionStart, el.selectionEnd, action);
+    const next = applyMarkdown(
+      value,
+      el.selectionStart,
+      el.selectionEnd,
+      action,
+    );
     onChange(next.value);
     // Restore the selection after React has written the new value back to the textarea.
     requestAnimationFrame(() => {
@@ -70,7 +76,7 @@ export function MarkdownEditor({
         placeholder={placeholder}
         lang={lang}
         rows={8}
-        className="text-foreground placeholder:text-muted-foreground w-full resize-y bg-transparent px-3 py-2 text-sm leading-relaxed outline-none"
+        className="text-foreground placeholder:text-muted-foreground w-full resize-none bg-transparent px-3 py-2 text-sm leading-relaxed outline-none"
       />
     </div>
   );

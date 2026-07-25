@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Link } from "@/i18n/navigation";
 import { toUtcISO } from "@/lib/datetime";
 import { cn } from "@/lib/utils";
+import { ImageField } from "./image-field";
 import { MarkdownEditor } from "./markdown-editor";
 
 export type CreateType = "post" | "project" | "event";
@@ -44,7 +45,7 @@ export function CreateForm({ type }: { type: CreateType }) {
 
   return (
     <form className="flex flex-col gap-5" onSubmit={(event) => event.preventDefault()}>
-      <Field label={t("fieldLanguage")} hint={t("hintLanguage")}>
+      <Field label={t("fieldLanguage")}>
         <div className="bg-muted flex w-fit items-center gap-1 rounded-lg p-1 text-sm">
           {(["shn", "en"] as Lang[]).map((option) => (
             <button
@@ -87,6 +88,8 @@ export function CreateForm({ type }: { type: CreateType }) {
           placeholder={t(`phBody_${type}`)}
         />
       </Field>
+
+      <ImageField />
 
       {type === "project" && (
         <>

@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| **Status** | Proposed |
+| **Status** | InProgress |
 | **Created** | 2026-07-25 |
 | **Depends on** | Better Auth + rate limiting (Open Questions) for the real write path; PBI-014 (sign-in dialog — the auth gate) as the attach point |
 | **Relates to** | PBI-010/016 (Post), PBI-020 (Project), PBI-021 (Event) — the read shapes this creates into; PBI-019 (frontend-only submit precedent); PBI-005 (moderation, deferred) |

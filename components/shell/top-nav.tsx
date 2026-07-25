@@ -1,4 +1,4 @@
-import { Bell, SquarePlus, User } from "lucide-react";
+import { Bell, User } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
@@ -8,6 +8,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
+import { CreateMenu } from "./create-menu";
 import { LeftNav } from "./left-nav";
 import { LocaleSwitcher } from "./locale-switcher";
 import { MobileNav } from "./mobile-nav";
@@ -43,16 +44,10 @@ export function TopNav() {
         <SearchTrigger />
 
         <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
-          {/* Both need auth to do anything, so they are disabled rather than
-              routed — a signed-out visitor gets "Sign in" as the one live action. */}
-          <button
-            type="button"
-            disabled
-            className="text-muted-foreground hover:bg-muted flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors disabled:pointer-events-none disabled:opacity-60"
-          >
-            <SquarePlus className="size-5" />
-            <span className="hidden sm:inline">{t("create")}</span>
-          </button>
+          {/* Create routes to the composers (PBI-022); publishing there is still gated by
+              sign-in. Notifications and account stay disabled — they need auth to mean
+              anything, so a signed-out visitor gets "Sign in" as the one live action. */}
+          <CreateMenu />
           <button
             type="button"
             disabled

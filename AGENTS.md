@@ -212,11 +212,19 @@ Styling rules, which are not negotiable because theming depends on them:
 Rules that fall out of already-built work. What is built, mocked, or still open is
 *status* — read it from `design.md` and the backlog, not here.
 
-- **The top-nav Create / notifications / account controls are display-only until
-  auth.** The avatar is a generic icon and **must never assert a logged-in identity or
-  presence** — no name, no photo, no presence dot — while "Sign in" shows. Post `⋯`
-  actions are the same: when auth lands, edit/delete become owner-only and report needs
-  moderation (PBI-005).
+- **The top-nav Create control routes to the composers; notifications / account are
+  still display-only until auth.** Create opens a menu to `/create/{post,project,event}`
+  (PBI-022) — but **publishing is still gated**: the composer's Publish opens the sign-in
+  dialog and persists nothing, so it asserts no identity. The avatar is a generic icon
+  and **must never assert a logged-in identity or presence** — no name, no photo, no
+  presence dot — while "Sign in" shows. Post `⋯` actions are the same: when auth lands,
+  edit/delete become owner-only and report needs moderation (PBI-005).
+- **The create composer (`components/create/`) is frontend-only (PBI-022).** One shared
+  `CreateForm` for all three types; the body is a **markdown textarea with a formatting
+  toolbar**, deliberately not a WYSIWYG editor library (client-JS budget). Publish is the
+  attach point for a later rate-limited write endpoint — don't wire a working publish
+  without that endpoint **and** its rate limit. The read pages still render bodies as
+  plain text, so markdown rendering there is a later, separate concern.
 - **The command palette (`components/search/`) loads kbar lazily** — never hoist
   `KBarProvider` into a layout, or its bundle lands on every page. Its matching is
   provisional and does **not** settle Myanmar-script tokenisation (🔴 in `design.md`).

@@ -83,6 +83,30 @@ Still **display-only until auth** — the count renders, but liking (like every 
 needs a signed-in user and a rate-limited endpoint. Whether the feed ever *ranks* by
 likes is a separate, still-open question; the like is an expression, not yet a sort key.
 
+### Notifications 🟢 (decided 2026-07-25)
+
+**A notification is "someone engaged with your work" — a comment or like on your post,
+a star on your project, a new follower, an event reminder.** Nothing else.
+
+This is the one feature here that is *not* justified by language or locality directly —
+global platforms do notifications well, and "nicer notifications" is the unwinnable
+fight *The test* warns against. It earns its place on the **other** axis the thesis
+depends on: **cold-start survival.** A small Shan community has to give people a reason
+to come back, or it loses them to the Facebook group and dies of neglect — the same
+concern *Seeding* addresses. The return hook is knowing someone engaged with your
+Shan-language work. So notifications are **connective tissue for the already-decided
+community features** (like, comment, star, follow, events), not a new product pillar,
+and the notified-about set is fixed by those features — not by what a generic platform
+would push.
+
+**Display-only until auth**, like the like. Notifications are inherently per-user: a
+real feed needs Better Auth *and* the write paths that generate the events. The first
+cut (PBI-023) is a frontend-only `/notifications` page over typed mock data, with the
+top-nav bell made live — asserting no logged-in identity, exactly as Create did
+(PBI-022). "Mark all as read" clears the unread dots in local state only and persists
+nothing; no preferences, no push/email, and no *persistent* read-state until real data
+exists.
+
 ## Language and script
 
 This section is the product, not a localization checklist.

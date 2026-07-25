@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| **Status** | Proposed |
+| **Status** | InProgress |
 | **Created** | 2026-07-25 |
 | **Depends on** | Better Auth (Open Questions) for a real per-user feed; the write features that generate events — likes/comments (PBI-016), stars (PBI-020), follows (PBI-017/018), events (PBI-021) — for real notifications; PBI-014 (sign-in dialog) as the auth gate |
 | **Relates to** | PBI-022 (frontend-only shell precedent, and the top-nav controls it made live); PBI-010/016 (Post + like), PBI-020 (Projects + star), PBI-021 (Events), PBI-017/018 (Developers + follow) — the interactions notified about |
@@ -128,8 +128,10 @@ UI.
 
 ## Out of scope
 
-- Any persistence, database, session, real-time push, or write endpoint (including
-  "mark as read" / "mark all read", and email/push delivery).
+- Any persistence, database, session, real-time push, or write endpoint. **"Mark all as
+  read" is in scope only as a frontend-only clear** — it hides the unread dots in local
+  state and persists nothing (reloading restores them); the *persistent* per-user
+  read-state, and email/push delivery, stay out until auth + a rate limit exist.
 - Notification **preferences / settings** (per-type opt-out) — a later concern once real
   notifications exist.
 - A bell **dropdown panel** — this PBI is the dedicated page only (the owner chose the

@@ -170,6 +170,18 @@
     "emptyPast": "No past events.",
     "empty": "No events yet."
   },
+  "Notifications": {
+    "title": "Notifications",
+    "subtitle": "When someone engages with your work — a comment, a like, a star, a new follower — it shows up here.",
+    "actionComment": "commented on your post",
+    "actionLike": "liked your post",
+    "actionStar": "starred your project",
+    "actionFollow": "started following you",
+    "actionEvent": "Reminder: an event you saved is coming up",
+    "unread": "Unread",
+    "markAllRead": "Mark all as read",
+    "empty": "No notifications yet."
+  },
   "Feedback": {
     "launch": "Send feedback",
     "title": "Send feedback",

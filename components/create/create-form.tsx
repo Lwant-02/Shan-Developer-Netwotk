@@ -14,7 +14,6 @@ import { ImageField } from "./image-field";
 import { MarkdownEditor } from "./markdown-editor";
 
 export type CreateType = "post" | "project" | "event";
-type Lang = "shn" | "en";
 
 // The one composer shell shared by all three content types (PBI-022). Frontend-only: it
 // holds draft state and validates nothing to a server — Publish opens the sign-in gate,
@@ -25,7 +24,6 @@ export function CreateForm({ type }: { type: CreateType }) {
   const t = useTranslations("Create");
 
   // Shared across every type.
-  const [lang, setLang] = useState<Lang>("shn");
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
 
@@ -45,31 +43,9 @@ export function CreateForm({ type }: { type: CreateType }) {
 
   return (
     <form className="flex flex-col gap-5" onSubmit={(event) => event.preventDefault()}>
-      <Field label={t("fieldLanguage")}>
-        <div className="bg-muted flex w-fit items-center gap-1 rounded-lg p-1 text-sm">
-          {(["shn", "en"] as Lang[]).map((option) => (
-            <button
-              key={option}
-              type="button"
-              aria-pressed={lang === option}
-              onClick={() => setLang(option)}
-              className={cn(
-                "cursor-pointer rounded-lg px-3 py-1.5 transition-colors",
-                lang === option
-                  ? "bg-background text-foreground"
-                  : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              {t(option === "shn" ? "langShan" : "langEnglish")}
-            </button>
-          ))}
-        </div>
-      </Field>
-
       <Field label={t("fieldTitle")} htmlFor="create-title">
         <Input
           id="create-title"
-          lang={lang}
           value={title}
           onChange={(event) => setTitle(event.target.value)}
           placeholder={t(`phTitle_${type}`)}
@@ -82,7 +58,6 @@ export function CreateForm({ type }: { type: CreateType }) {
       >
         <MarkdownEditor
           id="create-body"
-          lang={lang}
           value={body}
           onChange={setBody}
           placeholder={t(`phBody_${type}`)}
@@ -155,7 +130,6 @@ export function CreateForm({ type }: { type: CreateType }) {
             >
               <Input
                 id="create-location"
-                lang={lang}
                 value={location}
                 onChange={(event) => setLocation(event.target.value)}
                 placeholder={t("phLocation")}

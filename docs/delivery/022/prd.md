@@ -85,13 +85,17 @@ the top nav is a dead affordance.
 1. A create surface exists for each of the three types (post, project, event),
    reachable from the top-nav Create control; that control is no longer a dead
    affordance.
-2. The three share one composer shell — consistent layout, body editor, language
-   selector, publish/cancel — differing only in their type-specific fields.
+2. The three share one composer shell — consistent layout, body editor, publish/cancel —
+   differing only in their type-specific fields.
 3. The body editor offers a formatting toolbar whose controls — at minimum bullet list,
    ordered list, blockquote, inline code, and code block — insert the corresponding
    markdown into the field, and plain typing works unchanged.
 4. Each form collects exactly the fields its data model needs (`Post` / `Project` /
-   `EventItem`), including a **per-content language tag** distinct from the UI locale.
+   `EventItem`). **Update:** the owner removed the visible per-content **language
+   selector** from the composer; content language is not set here for now. The models
+   still carry `lang`, so a language control can return without a data change — but note
+   this drops, for now, the "show me Shan-language posts" affordance that `design.md`
+   marks 🟢 (per-content language tagging). Revisit when real posting lands.
 5. Event start time is captured with explicit timezone handling and represented as UTC;
    no naive local-time bug (verifiable against the PBI-021 rule).
 6. Creating is **frontend-only**: Publish persists nothing and asserts no logged-in

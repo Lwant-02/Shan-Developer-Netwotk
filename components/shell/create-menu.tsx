@@ -25,7 +25,7 @@ export function CreateMenu() {
         <SquarePlus className="size-5" />
         <span className="hidden sm:inline">{tNav("create")}</span>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-44">
+      <DropdownMenuContent align="center" className="w-fit">
         <DropdownMenuItem render={<Link href="/create/post" />}>
           <FileText />
           {t("newPost")}

@@ -22,7 +22,7 @@ export function CommentComposer() {
           type="button"
           className={cn(
             buttonVariants({ size: "default" }),
-            "shrink-0 cursor-pointer font-normal",
+            "shrink-0 cursor-pointer font-normal h-9",
           )}
         >
           {t("signInToComment")}

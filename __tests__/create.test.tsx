@@ -34,12 +34,23 @@ test("Publish opens the sign-in gate rather than posting", () => {
   expect(screen.getByText("Continue with Google")).toBeDefined();
 });
 
-// Event-specific: the start field shows its value stored as a UTC instant, per PBI-021.
+// Event-specific: the start field stores its value as a UTC instant, per PBI-021. The
+// field is now a calendar + time picker, so drive it the way a user would — open it,
+// pick a day, set the time — and assert the UTC hint surfaces.
 test("the event composer surfaces the UTC-stored start time", () => {
   renderComposer(<CreateForm type="event" />);
 
-  const start = screen.getByLabelText("Start time");
-  fireEvent.change(start, { target: { value: "2026-08-02T13:00" } });
+  fireEvent.click(screen.getByLabelText("Start time"));
+
+  const day = screen
+    .getAllByRole("button")
+    .find((button) => button.hasAttribute("data-day"));
+  if (!day) throw new Error("calendar rendered no day buttons");
+  fireEvent.click(day);
+
+  fireEvent.change(screen.getByLabelText("Time of day"), {
+    target: { value: "13:00" },
+  });
 
   expect(screen.getByText(/Stored as UTC: .*Z/)).toBeDefined();
 });

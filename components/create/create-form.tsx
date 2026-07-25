@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Link } from "@/i18n/navigation";
 import { toUtcISO } from "@/lib/datetime";
 import { cn } from "@/lib/utils";
+import { DateTimeField } from "./date-time-field";
 import { ImageField } from "./image-field";
 import { MarkdownEditor } from "./markdown-editor";
 
@@ -42,13 +43,17 @@ export function CreateForm({ type }: { type: CreateType }) {
   const [registerUrl, setRegisterUrl] = useState("");
 
   return (
-    <form className="flex flex-col gap-5" onSubmit={(event) => event.preventDefault()}>
+    <form
+      className="flex flex-col gap-5"
+      onSubmit={(event) => event.preventDefault()}
+    >
       <Field label={t("fieldTitle")} htmlFor="create-title">
         <Input
           id="create-title"
           value={title}
           onChange={(event) => setTitle(event.target.value)}
           placeholder={t(`phTitle_${type}`)}
+          className="h-9"
         />
       </Field>
 
@@ -72,10 +77,18 @@ export function CreateForm({ type }: { type: CreateType }) {
             <UrlInput id="create-repo" value={repo} onChange={setRepo} />
           </Field>
           <Field label={t("fieldWebsite")} htmlFor="create-website">
-            <UrlInput id="create-website" value={website} onChange={setWebsite} />
+            <UrlInput
+              id="create-website"
+              value={website}
+              onChange={setWebsite}
+            />
           </Field>
           <Field label={t("fieldAppStore")} htmlFor="create-appstore">
-            <UrlInput id="create-appstore" value={appStore} onChange={setAppStore} />
+            <UrlInput
+              id="create-appstore"
+              value={appStore}
+              onChange={setAppStore}
+            />
           </Field>
           <Field label={t("fieldPlayStore")} htmlFor="create-playstore">
             <UrlInput
@@ -84,12 +97,17 @@ export function CreateForm({ type }: { type: CreateType }) {
               onChange={setPlayStore}
             />
           </Field>
-          <Field label={t("fieldTags")} htmlFor="create-tags" hint={t("hintTags")}>
+          <Field
+            label={t("fieldTags")}
+            htmlFor="create-tags"
+            hint={t("hintTags")}
+          >
             <Input
               id="create-tags"
               value={tags}
               onChange={(event) => setTags(event.target.value)}
               placeholder={t("phTags")}
+              className="h-9"
             />
           </Field>
         </>
@@ -100,13 +118,16 @@ export function CreateForm({ type }: { type: CreateType }) {
           <Field
             label={t("fieldStart")}
             htmlFor="create-start"
-            hint={startsLocal ? t("storedUtc", { iso: toUtcISO(startsLocal) }) : undefined}
+            hint={
+              startsLocal
+                ? t("storedUtc", { iso: toUtcISO(startsLocal) })
+                : undefined
+            }
           >
-            <Input
+            <DateTimeField
               id="create-start"
-              type="datetime-local"
               value={startsLocal}
-              onChange={(event) => setStartsLocal(event.target.value)}
+              onChange={setStartsLocal}
             />
           </Field>
 
@@ -120,7 +141,11 @@ export function CreateForm({ type }: { type: CreateType }) {
 
           {online ? (
             <Field label={t("fieldJoinUrl")} htmlFor="create-join">
-              <UrlInput id="create-join" value={joinUrl} onChange={setJoinUrl} />
+              <UrlInput
+                id="create-join"
+                value={joinUrl}
+                onChange={setJoinUrl}
+              />
             </Field>
           ) : (
             <Field
@@ -133,6 +158,7 @@ export function CreateForm({ type }: { type: CreateType }) {
                 value={location}
                 onChange={(event) => setLocation(event.target.value)}
                 placeholder={t("phLocation")}
+                className="h-9"
               />
             </Field>
           )}
@@ -151,14 +177,17 @@ export function CreateForm({ type }: { type: CreateType }) {
         </>
       )}
 
-      <div className="border-border flex flex-wrap items-center gap-3 border-t pt-4">
+      <div className="border-border flex flex-wrap justify-end items-center gap-3 border-t pt-4">
         {/* Publishing is a write: it needs a signed-in user and a rate-limited endpoint,
             neither of which exists. So Publish opens the sign-in gate rather than
             persisting anything, and never asserts a logged-in identity. */}
         <SignInDialog>
           <button
             type="button"
-            className={cn(buttonVariants(), "cursor-pointer font-normal")}
+            className={cn(
+              buttonVariants(),
+              "cursor-pointer font-normal w-32 h-9",
+            )}
           >
             {t("publish")}
           </button>
@@ -167,12 +196,11 @@ export function CreateForm({ type }: { type: CreateType }) {
           href="/"
           className={cn(
             buttonVariants({ variant: "outline" }),
-            "cursor-pointer font-normal",
+            "cursor-pointer font-normal w-32 h-9",
           )}
         >
           {t("cancel")}
         </Link>
-        <p className="text-muted-foreground text-xs">{t("publishHint")}</p>
       </div>
     </form>
   );
@@ -217,6 +245,7 @@ function UrlInput({
       value={value}
       onChange={(event) => onChange(event.target.value)}
       placeholder="https://"
+      className="h-9"
     />
   );
 }

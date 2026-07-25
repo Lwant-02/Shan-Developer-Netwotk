@@ -78,6 +78,8 @@
     "hintTags": "Comma separated.",
     "phTags": "keyboard, android, i18n",
     "fieldStart": "Start time",
+    "fieldStartTime": "Time of day",
+    "phStart": "Pick a date and time",
     "storedUtc": "Stored as UTC: {iso}",
     "fieldOnline": "This is an online event",
     "fieldJoinUrl": "Join link",

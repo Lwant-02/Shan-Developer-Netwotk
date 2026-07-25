@@ -175,6 +175,7 @@ export function FeedbackDialog({ children }: { children: ReactElement }) {
                 maxLength={TITLE_MAX}
                 placeholder={t("fieldTitlePlaceholder")}
                 required
+                className="h-9"
               />
             </div>
 

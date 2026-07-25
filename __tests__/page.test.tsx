@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from "next-intl";
 
 import { PostFeed } from "@/components/feed/post-feed";
 import { RightRail } from "@/components/shell/right-rail";
+import { mockPosts } from "@/lib/feed";
 import shn from "@/messages/shn.json";
 import en from "@/messages/en.json";
 
@@ -22,7 +23,7 @@ function renderAt(
 // Anonymous read access is a product requirement: the feed renders with no session
 // and no auth provider.
 test("the feed renders for an anonymous visitor", () => {
-  renderAt("en", en, <PostFeed />);
+  renderAt("en", en, <PostFeed posts={mockPosts} />);
 
   expect(
     screen.getByText(/Shipped my first Shan keyboard/)

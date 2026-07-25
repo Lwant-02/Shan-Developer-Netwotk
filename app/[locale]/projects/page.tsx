@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { ProjectList } from "@/components/projects/project-list";
+import { ProjectsBrowser } from "@/components/projects/projects-browser";
 import { AppShell } from "@/components/shell/app-shell";
 import { listProjects } from "@/lib/projects";
 import { localeAlternates } from "@/lib/site";
@@ -42,7 +42,7 @@ export default async function ProjectsPage({
         </header>
 
         {projects.length > 0 ? (
-          <ProjectList projects={projects} />
+          <ProjectsBrowser projects={projects} />
         ) : (
           <p className="text-muted-foreground text-sm">{t("empty")}</p>
         )}

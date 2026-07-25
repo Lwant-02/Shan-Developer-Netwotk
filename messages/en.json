@@ -36,12 +36,15 @@
     "consent": "I agree to the <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>."
   },
   "Home": {
-    "sortBest": "Best",
-    "sortNew": "New",
     "aboutTitle": "Welcome",
     "aboutBody": "A community for Shan-speaking developers — share projects, ask questions, and host events. Anyone can read; sign in to join in.",
     "signInToPost": "Sign in to post",
     "recentTitle": "Recent activity"
+  },
+  "Sort": {
+    "newest": "Newest",
+    "popular": "Popular",
+    "oldest": "Oldest"
   },
   "Post": {
     "like": "Like",

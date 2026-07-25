@@ -1,15 +1,16 @@
 "use client";
 
 import { Fragment, useState } from "react";
-import { useTranslations } from "next-intl";
 
+import { SortTabs } from "@/components/content/sort-tabs";
 import type { EventItem } from "@/lib/events";
-import { cn } from "@/lib/utils";
+import { sortItems, type SortKey } from "@/lib/sort";
 import { EventCard, type EventStatus } from "./event-card";
 
-// The /events directory browser (PBI-021). Events arrive already split into upcoming vs
-// past (partitionEventsByTime); this is the one interactive leaf — a filter between the two
-// — so it holds the selected tab in state. Each card carries an upcoming/past badge.
+// The /events directory browser (PBI-021). Uses the same sort control as the feed and
+// projects — no separate upcoming/past filter. Events still arrive server-partitioned so
+// each card keeps its correct upcoming/past badge without reading the clock on the client;
+// the browser merges them into one list and sorts across both.
 export function EventsBrowser({
   upcoming,
   past,
@@ -17,71 +18,29 @@ export function EventsBrowser({
   upcoming: EventItem[];
   past: EventItem[];
 }) {
-  const t = useTranslations("Events");
-  const [tab, setTab] = useState<EventStatus>(
-    upcoming.length > 0 ? "upcoming" : "past",
-  );
+  const [sort, setSort] = useState<SortKey>("newest");
 
-  const events = tab === "upcoming" ? upcoming : past;
+  const tagged = [
+    ...upcoming.map((event) => ({ event, status: "upcoming" as EventStatus })),
+    ...past.map((event) => ({ event, status: "past" as EventStatus })),
+  ];
+  const events = sortItems(tagged, sort, {
+    createdAtISO: (item) => item.event.createdAtISO,
+    score: (item) => item.event.stars,
+  });
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="bg-muted flex w-fit items-center gap-1 rounded-lg p-1 text-sm">
-        <Tab
-          active={tab === "upcoming"}
-          onClick={() => setTab("upcoming")}
-          label={t("upcoming")}
-          count={upcoming.length}
-        />
-        <Tab
-          active={tab === "past"}
-          onClick={() => setTab("past")}
-          label={t("past")}
-          count={past.length}
-        />
+      <SortTabs value={sort} onChange={setSort} />
+
+      <div className="flex flex-col gap-1">
+        {events.map(({ event, status }, index) => (
+          <Fragment key={event.id}>
+            {index > 0 && <hr className="border-border mx-2 my-1" />}
+            <EventCard event={event} status={status} />
+          </Fragment>
+        ))}
       </div>
-
-      {events.length > 0 ? (
-        <div className="flex flex-col gap-1">
-          {events.map((event, index) => (
-            <Fragment key={event.id}>
-              {index > 0 && <hr className="border-border mx-2 my-1" />}
-              <EventCard event={event} status={tab} />
-            </Fragment>
-          ))}
-        </div>
-      ) : (
-        <p className="text-muted-foreground px-2 text-sm">
-          {tab === "upcoming" ? t("emptyUpcoming") : t("emptyPast")}
-        </p>
-      )}
     </div>
-  );
-}
-
-function Tab({
-  active,
-  onClick,
-  label,
-  count,
-}: {
-  active: boolean;
-  onClick: () => void;
-  label: string;
-  count: number;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        "cursor-pointer rounded-lg px-3 py-1.5 transition-colors",
-        active
-          ? "bg-background text-foreground"
-          : "text-muted-foreground hover:text-foreground",
-      )}
-    >
-      {label} ({count})
-    </button>
   );
 }

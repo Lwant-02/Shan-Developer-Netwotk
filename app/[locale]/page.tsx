@@ -2,6 +2,7 @@ import { setRequestLocale } from "next-intl/server";
 
 import { PostFeed } from "@/components/feed/post-feed";
 import { AppShell } from "@/components/shell/app-shell";
+import { mockPosts } from "@/lib/feed";
 
 export default async function Page({
   params,
@@ -13,7 +14,7 @@ export default async function Page({
 
   return (
     <AppShell>
-      <PostFeed />
+      <PostFeed posts={mockPosts} />
     </AppShell>
   );
 }

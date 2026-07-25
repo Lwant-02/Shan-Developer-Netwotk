@@ -1,26 +1,27 @@
-import { useTranslations } from "next-intl";
+"use client";
 
-import { mockPosts } from "@/lib/feed";
+import { useState } from "react";
+
+import { SortTabs } from "@/components/content/sort-tabs";
+import type { Post } from "@/lib/feed";
+import { sortItems, type SortKey } from "@/lib/sort";
 import { PostList } from "./post-list";
 
-// Renders the mock feed. Swapping `mockPosts` for real data is the only change the
-// feed needs when a posts backend exists — the card is data-shaped, not hand-written.
-export function PostFeed() {
-  const t = useTranslations("Home");
+// The home feed with its sort control. `"use client"` is forced by the sort state; the posts
+// arrive from the server page as a prop (not imported here), so swapping the mock for real
+// data stays a server-side change. Sorting a small list on the client keeps the page
+// statically prerendered — the same tradeoff the events browser already makes.
+export function PostFeed({ posts }: { posts: Post[] }) {
+  const [sort, setSort] = useState<SortKey>("newest");
+  const sorted = sortItems(posts, sort, {
+    createdAtISO: (post) => post.createdAtISO,
+    score: (post) => post.likes,
+  });
 
   return (
     <div className="flex flex-col">
-      {/* Sort tabs are display-only for now — no ranking is wired. */}
-      <div className="bg-muted mb-2 flex w-fit items-center gap-1 rounded-lg p-1 text-sm">
-        <span className="bg-background text-foreground rounded-lg px-3 py-1.5">
-          {t("sortBest")}
-        </span>
-        <span className="text-muted-foreground rounded-lg px-3 py-1.5">
-          {t("sortNew")}
-        </span>
-      </div>
-
-      <PostList posts={mockPosts} />
+      <SortTabs value={sort} onChange={setSort} className="mb-3" />
+      <PostList posts={sorted} />
     </div>
   );
 }

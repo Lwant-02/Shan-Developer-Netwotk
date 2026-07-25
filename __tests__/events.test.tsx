@@ -39,16 +39,35 @@ test("an event card links to its detail page", () => {
   expect(link).not.toBeNull();
 });
 
-// The filter is the surface's one interactive control: switching to Past reveals the
-// past events, which start hidden behind the Upcoming tab.
-test("the filter switches between upcoming and past", () => {
-  renderAt("en", en, <EventsBrowser upcoming={[mockEvents[0]]} past={[mockEvents[4]]} />);
+// There is no upcoming/past tab any more — both render together in one sorted list, the
+// same control the feed and projects use.
+test("upcoming and past events render together", () => {
+  renderAt(
+    "en",
+    en,
+    <EventsBrowser upcoming={[mockEvents[0]]} past={[mockEvents[4]]} />,
+  );
 
-  expect(screen.queryByText(/Shan Unicode clinic/)).toBeNull();
-
-  fireEvent.click(screen.getByRole("button", { name: /Past/ }));
-
+  expect(screen.getByText(/Intro to React, taught in Shan/)).toBeDefined();
   expect(screen.getByText(/Shan Unicode clinic/)).toBeDefined();
+});
+
+// The sort control reorders the list. mockEvents[0] was posted after mockEvents[4], so the
+// default "Newest" leads with it and "Oldest" flips the two.
+test("the sort control reorders the list", () => {
+  const { container } = renderAt(
+    "en",
+    en,
+    <EventsBrowser upcoming={[mockEvents[0]]} past={[mockEvents[4]]} />,
+  );
+  const titles = () =>
+    [...container.querySelectorAll("h2")].map((h) => h.textContent);
+
+  expect(titles()[0]).toMatch(/Intro to React/);
+
+  fireEvent.click(screen.getByRole("button", { name: /Oldest/ }));
+
+  expect(titles()[0]).toMatch(/Shan Unicode clinic/);
 });
 
 // Upcoming/past split is derived from the start time, ordered soonest- and most-recent-first.

@@ -212,16 +212,30 @@ Styling rules, which are not negotiable because theming depends on them:
 Rules that fall out of already-built work. What is built, mocked, or still open is
 *status* — read it from `design.md` and the backlog, not here.
 
-- **The top-nav Create control routes to the composers and the bell to the
-  notifications page; the account control stays display-only until auth.** Create opens
-  a menu to `/create/{post,project,event}` (PBI-022); the bell links to `/notifications`
-  (PBI-023). Both are **frontend-only** and **must never assert a logged-in identity or
-  presence** — no name, no photo, no presence dot, no session-derived count — while "Sign
-  in" shows. Publishing is still gated (Publish opens the sign-in dialog and persists
-  nothing); the notifications list is mock, and "mark all as read" clears the unread dots
-  in local state only (persists nothing). The
-  account avatar is a generic icon. Post `⋯` actions are the same: when auth lands,
-  edit/delete become owner-only and report needs moderation (PBI-005).
+- **All three top-nav controls are live and all three are frontend-only.** Create opens a
+  menu to `/create/{post,project,event}` (PBI-022); the bell links to `/notifications`
+  (PBI-023); Account opens a dropdown (PBI-024). None may **assert a logged-in identity
+  or presence** — no name, no photo, no presence dot, no session-derived count — while
+  "Sign in" shows. Publishing is still gated (Publish opens the sign-in dialog and
+  persists nothing); the notifications list is mock, and "mark all as read" clears the
+  unread dots in local state only (persists nothing). Post `⋯` actions are the same: when
+  auth lands, edit/delete become owner-only and report needs moderation (PBI-005).
+- **`lib/viewer.ts` is a design preview, not a session (PBI-024).** `getViewer()` returns
+  `null` in production **and under test** — so what ships, and what tests assert against,
+  is the signed-out shell. It returns the mock viewer only under `next dev` (or with
+  `NEXT_PUBLIC_PREVIEW_VIEWER=1`), so the signed-in account menu can be reviewed. **Don't
+  widen that gate**, don't read it outside the shell components, and don't treat it as an
+  auth check — Better Auth replaces the body of `getViewer()`. Whenever a viewer exists
+  the nav's "Sign in" button disappears, so a sign-in prompt never sits beside a
+  signed-in avatar; the right rail's welcome card keeps its button in both states
+  (owner's call). **Avatars stay initials everywhere** — `Viewer.avatarUrl` is typed but
+  unset, because image storage is still an open question.
+- **`/settings` edits exactly the public-profile fields and nothing more (PBI-024).** The
+  form mirrors `Developer` (display name, handle, role, bio, coarse location, links), so
+  it can't become a second, richer identity store. It has **no email field** — never add
+  one. Save is disabled: saving is a write over identity data and needs Better Auth *and*
+  a rate limit. Anonymous visitors get the sign-in gate rather than a form; the route is
+  `noindex` and stays out of `app/sitemap.ts`, which is an explicit allowlist.
 - **The notifications surface (`app/[locale]/notifications/`, `components/notifications/`)
   is frontend-only (PBI-023).** The list comes from mock `lib/notifications.ts`; a real
   per-user feed needs Better Auth **and** the write paths that generate the events

@@ -41,13 +41,24 @@ const providerButton = cn(
 // worth widening for two static brand marks.
 const mark = { width: 18, height: 18, unoptimized: true } as const;
 
-export function SignInDialog({ children }: { children: ReactElement }) {
+// `children` is the trigger, and is omitted when a caller drives the dialog with
+// `open`/`onOpenChange` instead — the account menu does, because a `DialogTrigger`
+// inside the menu popup is unmounted the moment the menu closes.
+export function SignInDialog({
+  children,
+  open,
+  onOpenChange,
+}: {
+  children?: ReactElement;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}) {
   const [agreed, setAgreed] = useState(false);
   const t = useTranslations("Auth");
 
   return (
-    <Dialog>
-      <DialogTrigger render={children} />
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      {children ? <DialogTrigger render={children} /> : null}
 
       {/* `rounded-lg` and `font-normal` override the registry defaults (`rounded-xl`,
           `font-medium`) at the call site — one radius everywhere, and no faux-bold on

@@ -22,7 +22,7 @@ import { Link } from "@/i18n/navigation";
 import { getCommentsFor } from "@/lib/comments";
 import { formatDateEn, relativeTimeEn } from "@/lib/datetime";
 import { getEventBySlug, mockEvents } from "@/lib/events";
-import { localeAlternates } from "@/lib/site";
+import { localeAlternates, siteUrl } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 // Prerender every known event at build time (one per slug, per locale from the parent
@@ -163,7 +163,11 @@ export default async function EventPage({
               <MessageSquare className="size-4" />
               <span className="tabular-nums">{comments.length}</span>
             </span>
-            <ShareButton label={t("share")} />
+            <ShareButton
+              url={`${siteUrl()}/${locale}/events/${event.slug}`}
+              title={event.title}
+              label={t("share")}
+            />
           </footer>
 
           {(event.registerUrl || (event.online && event.joinUrl)) && (

@@ -9,7 +9,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { getDeveloperByHandle } from "@/lib/developers";
 import { cn } from "@/lib/utils";
-import { getViewer } from "@/lib/viewer";
+import { getCurrentUser } from "@/lib/auth/current-user";
 
 export async function generateMetadata({
   params,
@@ -36,10 +36,10 @@ export default async function SettingsPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("Settings");
-  const viewer = getViewer();
+  const user = await getCurrentUser();
   // Prefilled from the public profile, so the form starts from exactly what other
   // members currently see.
-  const developer = viewer ? getDeveloperByHandle(viewer.handle) : undefined;
+  const developer = user ? getDeveloperByHandle(user.handle) : undefined;
 
   return (
     <AppShell>
@@ -62,8 +62,8 @@ export default async function SettingsPage({
         {/* There is nothing to configure without an account, so the anonymous branch is
             the sign-in gate rather than an empty form. This is not a public read
             surface, so gating it here does not touch the anonymous-read rule. */}
-        {viewer ? (
-          <SettingsForm viewer={viewer} developer={developer} />
+        {user ? (
+          <SettingsForm user={user} developer={developer} />
         ) : (
           <div className="border-border flex flex-col items-start gap-3 rounded-lg border p-5">
             <p className="text-muted-foreground text-sm leading-relaxed">

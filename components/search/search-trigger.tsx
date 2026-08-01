@@ -9,6 +9,10 @@ import { cn } from "@/lib/utils";
 
 const importPalette = () => import("./command-palette");
 
+// One component, not two: a second instance would mount the palette twice.
+const bar =
+  "bg-muted text-muted-foreground hover:text-foreground flex h-10 cursor-text items-center gap-2 rounded-lg px-3 text-left text-sm transition-colors";
+
 // kbar is only fetched once someone actually reaches for search. Mounting its provider
 // app-wide would put the whole library on every page, including for the anonymous
 // reader on mobile data who never opens it (PBI-012, CoS 9).
@@ -51,17 +55,16 @@ export function SearchTrigger() {
 
   return (
     <>
+      {/* `order-last` + the header's `flex-wrap` drops this to its own row below `sm`. */}
       <button
         type="button"
         onClick={open}
         onPointerEnter={prefetch}
         onFocus={prefetch}
-        className={cn(
-          "text-muted-foreground hover:bg-muted hover:text-foreground flex size-9 items-center justify-center rounded-lg transition-colors sm:hidden",
-        )}
-        aria-label={t("search")}
+        className={cn(bar, "order-last w-full sm:hidden")}
       >
-        <Search className="size-5" />
+        <Search className="size-4 shrink-0" />
+        <span className="truncate">{t("search")}</span>
       </button>
 
       <button
@@ -69,7 +72,7 @@ export function SearchTrigger() {
         onClick={open}
         onPointerEnter={prefetch}
         onFocus={prefetch}
-        className="bg-muted text-muted-foreground hover:text-foreground mx-auto hidden h-10 w-full max-w-lg flex-1 cursor-text items-center gap-2 rounded-lg px-3 text-left text-sm transition-colors sm:flex"
+        className={cn(bar, "mx-auto hidden max-w-lg flex-1 sm:flex")}
       >
         <Search className="size-4 shrink-0" />
         <span className="truncate">{t("search")}</span>

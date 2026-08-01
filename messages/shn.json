@@ -103,7 +103,10 @@
     "github": "သိုပ်ႇလူၺ်ႈ GitHub",
     "or": "ဢမ်ႇၼၼ်",
     "privacy": "ဢီးမေးလ်သူ တေဢမ်ႇၼႄပၼ် တီႈၵူၼ်းတင်းၼမ် သေပွၵ်ႈ။ သူၸၢင်ႈၸႂ်ႉ ၸိုဝ်ႈၼႄ တႅၼ်းၸိုဝ်ႈတႄႉသူလႆႈယူႇ။",
-    "consent": "ၶႃႈလႆႈၸႂ်ၸွမ်း <terms>ၶေႃႈတူၵ်းလွင်ႈၸႂ်ႉတိုဝ်း</terms> လႄႈ <privacy>မူႇပိူင်လွင်ႈသုၼ်ႇတူဝ်</privacy>။"
+    "consent": "ၶႃႈလႆႈၸႂ်ၸွမ်း <terms>ၶေႃႈတူၵ်းလွင်ႈၸႂ်ႉတိုဝ်း</terms> လႄႈ <privacy>မူႇပိူင်လွင်ႈသုၼ်ႇတူဝ်</privacy>။",
+    "consentRemembered": "TODO(shn): You agreed to the <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>.",
+    "signedInToast": "TODO(shn): Signed in. Welcome back.",
+    "signInFailedToast": "TODO(shn): Sign-in didn't complete. Please try again."
   },
   "Account": {
     "signedOut": "ဢမ်ႇလႆႈၶဝ်ႈလွၵ်ႉဢိၼ်ႇ",
@@ -111,7 +114,8 @@
     "signedInVia": "ၶဝ်ႈလွၵ်ႉဢိၼ်ႇဝႆႉလူၺ်ႈ {provider}",
     "profile": "ပရူဝ်ႇၾၢႆႇသူ",
     "settings": "ၵၢၼ်တင်ႈၵႃႈ",
-    "signOut": "ဢွၵ်ႇလွၵ်ႉဢိၼ်ႇ"
+    "signOut": "ဢွၵ်ႇလွၵ်ႉဢိၼ်ႇ",
+    "signedOutToast": "TODO(shn): Signed out."
   },
   "Settings": {
     "back": "ပွၵ်ႈၶိုၼ်း",

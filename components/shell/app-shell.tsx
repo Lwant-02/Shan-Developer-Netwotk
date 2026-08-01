@@ -1,3 +1,5 @@
+import { CurrentUserProvider } from "@/components/auth/current-user";
+import { Toaster } from "@/components/ui/sonner";
 import { FeedbackLauncher } from "@/components/feedback/feedback-launcher";
 import { LeftNav } from "./left-nav";
 import { NavCollapse } from "./nav-collapse";
@@ -9,9 +11,11 @@ import { TopNav } from "./top-nav";
 // routes. Only the `children` in the main column change. The rails collapse out on
 // their existing breakpoints (left below `lg`, right below `xl`); on mobile the nav
 // lives in the TopNav drawer.
+// `CurrentUserProvider` takes `children` as a slot, so pages inside stay Server
+// Components and stay statically prerendered.
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
-    <>
+    <CurrentUserProvider>
       <TopNav />
       {/* Full-bleed shell: the sidebar is flush to the viewport edge and divided by a
           rule, rather than a centred container with gutters on both sides. */}
@@ -34,6 +38,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </div>
 
       <FeedbackLauncher />
-    </>
+      <Toaster position="bottom-center" />
+    </CurrentUserProvider>
   );
 }

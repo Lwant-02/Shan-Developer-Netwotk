@@ -6,7 +6,8 @@ import { AdminOverview } from "@/components/admin/admin-overview";
 import { ReportQueue } from "@/components/admin/report-queue";
 import { AppShell } from "@/components/shell/app-shell";
 import { listReports } from "@/lib/reports";
-import { getViewer } from "@/lib/viewer";
+import { getCurrentUser } from "@/lib/auth/current-user";
+import { isAdmin } from "@/lib/current-user";
 
 export async function generateMetadata({
   params,
@@ -30,11 +31,9 @@ export default async function AdminPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  // `getViewer()` is `null` in production, so this route renders the localised 404 on the
-  // live site and the page never reaches the HTML. It is a **preview gate, not
-  // authorization** — the real check arrives with Better Auth.
-  const viewer = getViewer();
-  if (!viewer?.moderator) notFound();
+  // 404 rather than a redirect: the same response an anonymous visitor gets, so the
+  // route's existence isn't disclosed by its own error.
+  if (!isAdmin(await getCurrentUser())) notFound();
 
   const t = await getTranslations("Admin");
   const now = new Date();

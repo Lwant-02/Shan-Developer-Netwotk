@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Link } from "@/i18n/navigation";
 import { type Developer, SOCIAL, type SocialPlatform } from "@/lib/developers";
 import { cn } from "@/lib/utils";
-import type { Viewer } from "@/lib/viewer";
+import type { CurrentUser } from "@/lib/current-user";
 
 // Editing for exactly the fields the public profile renders (PBI-017's `Developer`), so
 // what you change here is what other members see — nothing more. Identity safety is
@@ -24,19 +24,19 @@ import type { Viewer } from "@/lib/viewer";
 const PLATFORMS = Object.keys(SOCIAL) as SocialPlatform[];
 
 export function SettingsForm({
-  viewer,
+  user,
   developer,
 }: {
-  viewer: Viewer;
+  user: CurrentUser;
   developer?: Developer;
 }) {
   const t = useTranslations("Settings");
 
   const [displayName, setDisplayName] = useState(
-    developer?.displayName ?? viewer.displayName ?? "",
+    developer?.displayName ?? user.displayName ?? "",
   );
-  const [handle, setHandle] = useState(viewer.handle);
-  const [role, setRole] = useState(developer?.role ?? viewer.role);
+  const [handle, setHandle] = useState(user.handle);
+  const [role, setRole] = useState(developer?.role ?? user.role);
   const [bio, setBio] = useState(developer?.bio ?? "");
   const [location, setLocation] = useState(developer?.location ?? "");
   const [links, setLinks] = useState<Record<string, string>>(() =>
@@ -57,7 +57,7 @@ export function SettingsForm({
           aria-hidden
           className="bg-muted text-muted-foreground flex size-16 shrink-0 items-center justify-center rounded-full text-lg uppercase"
         >
-          {handle.slice(0, 2) || viewer.handle.slice(0, 2)}
+          {handle.slice(0, 2) || user.handle.slice(0, 2)}
         </span>
         <div className="flex flex-col gap-1">
           <span className="text-foreground text-sm">{t("photo")}</span>
@@ -84,7 +84,7 @@ export function SettingsForm({
       <Field
         label={t("fieldHandle")}
         htmlFor="settings-handle"
-        hint={t("hintHandle", { handle: handle || viewer.handle })}
+        hint={t("hintHandle", { handle: handle || user.handle })}
       >
         <Input
           id="settings-handle"
@@ -174,7 +174,7 @@ export function SettingsForm({
             {t("save")}
           </button>
           <Link
-            href={`/developers/${viewer.handle}`}
+            href={`/developers/${user.handle}`}
             className={cn(
               buttonVariants({ variant: "outline" }),
               "h-9 w-32 cursor-pointer font-normal",

@@ -307,6 +307,18 @@ shadcn `base-nova` on **Base UI** (not Radix). Gotchas: [`AGENTS.md`](./AGENTS.m
   `prisma migrate` creates is world-readable. See `prisma/sql/enable-rls.sql`.
   **Realtime or any browser-side query (chat) would flip this** — those bypass the server
   entirely, so they need real policies, not deny-all.
+- **The session is never read on a public page** (PBI-028). Every public page renders the
+  shell, and reading cookies there would opt home, posts, projects, events, and profiles
+  out of static generation together — the anonymous readers who are the recruiting
+  mechanism would lose their prerendered, edge-cacheable HTML. So the served HTML is always
+  the signed-out shell, and a small client island fetches `/api/me` afterwards, only
+  when an auth cookie exists. **No Supabase client ships to the browser at all.**
+  Partial Prerendering would let the nav read the session on the server and keep pages
+  static, but Next 16 removed the per-route flag: it now arrives only with
+  `cacheComponents: true`, which makes data fetching dynamic-by-default app-wide. That is
+  its own migration, and a reasonable one to take later.
+  **The island is presentation only** — `/admin` re-reads `profiles.moderator` server-side
+  and 404s, so nothing security-relevant depends on what the browser believes.
 - **Hosting: Vercel.** `main` deploys to production, `dev` to previews — see
   `AGENTS.md` and the `deploy-dev` / `deploy-prod` skills.
 - **Content:** posts/projects/events/profiles in Postgres. Curated resources and the

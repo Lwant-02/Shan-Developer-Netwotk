@@ -33,8 +33,9 @@ an agent is allowed to do.
   behind auth — public reach is the recruiting mechanism. Any signed-in user can post
   or interact; there is **no separate verification tier** ("verified" = OAuth
   email-verified), so don't invent a `verificationState`.
-- **Auth is Better Auth**, with Google and GitHub OAuth. Not NextAuth/Auth.js — don't
-  import patterns from it.
+- **Auth is Supabase Auth**, with Google and GitHub OAuth. Not NextAuth/Auth.js, and no
+  longer Better Auth — don't import patterns from either. Use `@supabase/ssr`; the
+  deprecated `auth-helpers` package is what most training data shows.
 - **Every write endpoint needs a rate limit.** Since sign-in is the only gate, rate
   limiting and moderation are the entire spam defense. Don't ship a write path
   without one.
@@ -63,6 +64,12 @@ All routes live under `app/[locale]/`. Locales are **`shn` (default) and `en`**,
   is deprecated and renamed in this Next version. next-intl's own docs and nearly all
   training data say `middleware.ts` — they are wrong for this repo.
 - **`params` is a Promise** and must be awaited.
+- **Never call `useTranslations`/`getTranslations` in a file that gets no `params`** —
+  `loading.tsx`, `not-found.tsx`, `error.tsx`. Without `setRequestLocale()` next-intl
+  reads headers to find the locale, and **every route under that segment turns dynamic**.
+  `app/[locale]/loading.tsx` cost all 14 prerendered routes before this was caught; its
+  label is a static English string for exactly that reason. Check the build output
+  (`●` → `ƒ`) after adding one of these files.
 - New pages go under `app/[locale]/`. Read strings with `useTranslations`, and call
   `setRequestLocale(locale)` so the route stays static.
 - **UI locale is not content language.** Posts/projects/events carry their own
@@ -167,6 +174,11 @@ re-derive this:
   reach for `"use client"`, be able to name which of the four triggers forced it.
 - **Radii: `rounded-lg` and nothing else.** One radius across the whole UI — cards, inputs, dialogs, images, buttons. Not `rounded-md`, not `rounded-xl`, not a pixel value. Mixed corner radii are the fastest way for a small design system to start looking accidental, and there is no visual justification for a second radius here. The exception is `components/ui/`, which is registry-managed: leave whatever `shadcn add` ships (`button.tsx` has two `rounded-[min(var(--radius-md),…)]` size variants) rather than forking those files from upstream.
 - **No bold on Shan text.** The AJ fonts are Regular-only (`usWeightClass 400`), so `font-bold` / `font-semibold` / `font-medium` synthesize faux-bold that distorts Myanmar tone marks. Express emphasis with size, color, or spacing. This binds nearly all UI, since any string can contain Shan.
+- **`shadcn add sonner` reinstalls `next-themes` — remove it again.** The registry's
+  `sonner.tsx` calls `useTheme()`, which this app deliberately does not have. The file is
+  edited to hardcode `theme="dark"` and the package is uninstalled; **keep that edit if the
+  component is ever re-pulled.** Toasts go through `sonner`'s `toast()` at the call site;
+  the `<Toaster />` lives in `AppShell`.
 - **Dark-only theme, in CSS with no React state.** The UI ships **one theme — dark** (PBI-013, which reversed the light+dark PBI-011). The greyscale palette lives in **`:root`** in `globals.css` — there is no `.dark` block and no theme class, so the 404 pages (which render outside the locale layout) inherit it for free. There is **no `next-themes`, no toggle, and no theme provider** — don't reintroduce them, and don't add a `prefers-color-scheme` read or a persisted preference; the theme is invariant per URL so pages stay statically prerendered. The `dark` variant is deliberately **unconditional** (`@custom-variant dark (&)`) because `components/ui/*` is registry-managed and ships `dark:` utilities that must keep applying — don't rescope it, and still don't edit those files.
 - **Comment sparingly.** Don't narrate what the code already says, and don't leave a running commentary explaining your reasoning. A comment earns its place only when it records something the reader cannot see — a non-obvious constraint, a deprecation, a workaround for an upstream limitation. Default to none.
 
@@ -238,19 +250,46 @@ Rules that fall out of already-built work. What is built, mocked, or still open 
   persists nothing); the notifications list is mock, and "mark all as read" clears the
   unread dots in local state only (persists nothing). Post `⋯` actions are the same: when
   auth lands, edit/delete become owner-only and report needs moderation (PBI-005).
-- **`lib/viewer.ts` is a design preview, not a session (PBI-024).** `getViewer()` returns
-  `null` in production **and under test** — so what ships, and what tests assert against,
-  is the signed-out shell. It returns the mock viewer only under `next dev` (or with
-  `NEXT_PUBLIC_PREVIEW_VIEWER=1`), so the signed-in account menu can be reviewed. **Don't
-  widen that gate**, don't read it outside the shell components, and don't treat it as an
-  auth check — Better Auth replaces the body of `getViewer()`. Whenever a viewer exists
-  the nav's "Sign in" button disappears, so a sign-in prompt never sits beside a
-  signed-in avatar; the right rail's welcome card keeps its button in both states
-  (owner's call). **Avatars stay initials everywhere** — `Viewer.avatarUrl` is typed but
-  unset, because image storage is still an open question.
-- **The `/admin` surface is a design ahead of its policy (PBI-025).** It is gated on
-  `viewer.moderator`, so it renders the localised 404 in production and exists only in the
-  `next dev` preview. Rows carry **Dismiss / Delete content / Ban author**, but acting
+- **Auth is Supabase Auth, and the session is never read on a public page (PBI-028).**
+  This is the rule most likely to be broken by accident, so read it before touching the
+  shell:
+  - **`getCurrentUser()` (`lib/auth/current-user.ts`) reads cookies**, which opts a route
+    out of static generation. Every public page renders `AppShell`, so calling it there
+    would de-static home, posts, projects, events, and profiles **together**. Use it only
+    on routes already dynamic and `noindex` — `/settings`, `/admin`, `/api/me`. Next 16
+    removed per-route PPR; the only escape hatch is `cacheComponents: true`, an app-wide
+    migration.
+  - **The nav gets the user from `CurrentUserProvider`**, which fetches `/api/me` — and
+    only when an auth cookie exists, so anonymous readers make no request. **No Supabase
+    client ships to the browser**; keep it that way.
+  - **Client answers decide what to draw, never what is allowed.** `useCurrentUser`,
+    `useIsAdmin`, `useIsOwner`, `AuthedOnly`, `AnonymousOnly` are presentation only —
+    a user can forge any of them. Gate on the server: `/admin` re-reads
+    `profiles.moderator` and calls `notFound()`. `AuthedOnly` also saves no bundle;
+    wrapped children still ship their chunks.
+  - **`lib/current-user.ts` must stay free of database and Supabase imports** — client
+    components import `PROVIDER` and `CurrentUser` from it, and a stray import would pull
+    Prisma into the browser. `lib/auth/current-user.ts` carries `import "server-only"` so
+    that mistake fails the build.
+  - **`proxy.ts` must keep excluding `/auth`** from the locale matcher, or next-intl
+    rewrites the OAuth callback to `/shn/auth/callback` and every sign-in breaks.
+  - **Handle, display name, and avatar are seeded from the OAuth profile** on first
+    sign-in (owner's call). The consequence to keep in mind: the provider's real name is
+    the public default, so **pseudonymity is something a member opts into** via
+    `/settings` rather than where they start. Don't quietly re-derive it the other way.
+  - **The email is the hard line.** It has no column in `profiles`, is never a fallback
+    for a handle — addresses are too often `firstname.lastname` — and never reaches a
+    public surface. Tests pin this.
+  - **Remote avatars need their host in `next.config.ts`.** `images.remotePatterns` lists
+    GitHub and Google by exact hostname; `next/image` 400s on anything else. Keep it to
+    exact hosts, not wildcards — that list is what stops the optimizer being used as an
+    open image proxy.
+  - **Consent is recorded twice, on purpose.** `profiles.terms_accepted_at` is the durable
+    record of who agreed and when; `localStorage` is what actually lets a returning member
+    skip the checkbox, because nobody is identified until *after* they authenticate.
+- **The `/admin` surface is a design ahead of its policy (PBI-025).** It is now gated on
+  `profiles.moderator` against a real session (PBI-028) and renders the localised 404 for
+  everyone else. Rows carry **Dismiss / Delete content / Ban author**, but acting
   **persists nothing** — the row clears in local state and the confirm dialog says so.
   **Do not wire these to a real endpoint before PBI-005 settles the moderation policy**
   they would enforce; a takedown control that works before the rules exist is how
@@ -260,12 +299,12 @@ Rules that fall out of already-built work. What is built, mocked, or still open 
 - **`/settings` edits exactly the public-profile fields and nothing more (PBI-024).** The
   form mirrors `Developer` (display name, handle, role, bio, coarse location, links), so
   it can't become a second, richer identity store. It has **no email field** — never add
-  one. Save is disabled: saving is a write over identity data and needs Better Auth *and*
-  a rate limit. Anonymous visitors get the sign-in gate rather than a form; the route is
+  one. Save is still disabled even now that auth exists: saving is a write over identity
+  data and needs a rate limit first. Anonymous visitors get the sign-in gate; the route is
   `noindex` and stays out of `app/sitemap.ts`, which is an explicit allowlist.
 - **The notifications surface (`app/[locale]/notifications/`, `components/notifications/`)
   is frontend-only (PBI-023).** The list comes from mock `lib/notifications.ts`; a real
-  per-user feed needs Better Auth **and** the write paths that generate the events
+  per-user feed needs the write paths that generate the events
   (like/comment/star/follow). Notification kinds are fixed by those existing interactions
   — don't add generic-platform types. Times use the `en` helpers in `lib/datetime.ts`
   (`relativeTimeEn` / `formatDateEn`), **not** `useFormatter`/`getFormatter`: relative and

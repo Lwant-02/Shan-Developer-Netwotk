@@ -5,7 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { ProfileHeader } from "@/components/developers/profile-header";
 import { SectionTabs } from "@/components/content/section-tabs";
-import { ProfileOwnerMenu } from "@/components/developers/profile-owner-menu";
+import { ProfileOwnerSlot } from "@/components/developers/profile-owner-slot";
 import { ShareProfileDialog } from "@/components/developers/share-profile-dialog";
 import { buttonVariants } from "@/components/ui/button";
 import { EventCard } from "@/components/events/event-card";
@@ -19,7 +19,6 @@ import { postsByAuthor } from "@/lib/feed";
 import { getProjectsByAuthor } from "@/lib/projects";
 import { localeAlternates, siteUrl } from "@/lib/site";
 import { cn } from "@/lib/utils";
-import { getViewer } from "@/lib/viewer";
 
 // Prerender every known member at build time (one per handle, per locale from the parent
 // layout). An unknown handle falls through to notFound() → the localised 404.
@@ -102,10 +101,10 @@ export default async function ProfilePage({
               </button>
             </ShareProfileDialog>
 
-            {/* Owner-only. `getViewer()` is null in production, so this ships nowhere on
-              the live site; when auth lands the comparison becomes a real ownership
-              check rather than a preview one. */}
-            {getViewer()?.handle === developer.handle && <ProfileOwnerMenu />}
+            {/* Owner-only, decided in the browser: this page is public and statically
+              prerendered, so reading the session here would de-static every profile
+              (PBI-028). The menu gates nothing — `/settings` does that on the server. */}
+            <ProfileOwnerSlot handle={developer.handle} />
           </div>
         </div>
 

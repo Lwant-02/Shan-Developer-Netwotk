@@ -8,7 +8,7 @@ import {
   deriveHandle,
   generateHandle,
   nextCandidate,
-} from "./handle";
+} from "./derive-profile";
 
 const MAX_ATTEMPTS = 6;
 

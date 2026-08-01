@@ -263,7 +263,7 @@ Rules that fall out of already-built work. What is built, mocked, or still open 
 - **Auth is Supabase Auth, and the session is never read on a public page (PBI-028).**
   This is the rule most likely to be broken by accident, so read it before touching the
   shell:
-  - **`getCurrentUser()` (`lib/auth/current-user.ts`) reads cookies**, which opts a route
+  - **`getCurrentUser()` (`lib/auth/get-current-user.ts`) reads cookies**, which opts a route
     out of static generation. Every public page renders `AppShell`, so calling it there
     would de-static home, posts, projects, events, and profiles **together**. Use it only
     on routes already dynamic and `noindex` — `/settings`, `/admin`, `/api/me`. Next 16
@@ -279,7 +279,7 @@ Rules that fall out of already-built work. What is built, mocked, or still open 
     wrapped children still ship their chunks.
   - **`lib/current-user.ts` must stay free of database and Supabase imports** — client
     components import `PROVIDER` and `CurrentUser` from it, and a stray import would pull
-    Prisma into the browser. `lib/auth/current-user.ts` carries `import "server-only"` so
+    Prisma into the browser. `lib/auth/get-current-user.ts` carries `import "server-only"` so
     that mistake fails the build.
   - **`proxy.ts` must keep excluding `/auth`** from the locale matcher, or next-intl
     rewrites the OAuth callback to `/shn/auth/callback` and every sign-in breaks.

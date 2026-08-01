@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { ensureProfile } from "@/lib/auth/profile";
+import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { createClient } from "@/lib/supabase/server";
 
 function safeNext(raw: string | null) {

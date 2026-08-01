@@ -22,55 +22,30 @@ export function NavItem({
   icon,
   label,
   href,
-  soon,
 }: {
   icon: ReactNode;
   label: string;
-  href?: string;
-  soon?: string;
+  href: string;
 }) {
   const pathname = usePathname();
 
-  if (href) {
-    const active = pathname === href;
-    return (
-      <CollapsedNavTooltip label={label}>
-        <Link
-          href={href}
-          aria-current={active ? "page" : undefined}
-          aria-label={label}
-          className={cn(
-            base,
-            active
-              ? "bg-muted text-foreground"
-              : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
-          )}
-        >
-          <span className="shrink-0">{icon}</span>
-          <span className={hideOnCollapse}>{label}</span>
-        </Link>
-      </CollapsedNavTooltip>
-    );
-  }
-
+  const active = pathname === href;
   return (
     <CollapsedNavTooltip label={label}>
-      <span
-        aria-disabled="true"
+      <Link
+        href={href}
+        aria-current={active ? "page" : undefined}
         aria-label={label}
-        className={cn(base, "text-muted-foreground hover:bg-muted/60")}
+        className={cn(
+          base,
+          active
+            ? "bg-muted text-foreground"
+            : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
+        )}
       >
-        <span className="shrink-0 opacity-70">{icon}</span>
+        <span className="shrink-0">{icon}</span>
         <span className={hideOnCollapse}>{label}</span>
-        <span
-          className={cn(
-            "text-muted-foreground/80 ml-auto text-[10px]",
-            hideOnCollapse,
-          )}
-        >
-          {soon}
-        </span>
-      </span>
+      </Link>
     </CollapsedNavTooltip>
   );
 }

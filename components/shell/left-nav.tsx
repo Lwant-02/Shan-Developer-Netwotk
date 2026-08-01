@@ -8,7 +8,6 @@ import {
   MessageSquareText,
   Shield,
   ShieldCheck,
-  Users,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -17,12 +16,12 @@ import { cn } from "@/lib/utils";
 import { getViewer } from "@/lib/viewer";
 import { NavItem } from "./nav-item";
 
-// Home, Developers, Projects, Events, About, Terms, and Privacy have pages. The rest are disabled
-// with a "soon" cue rather than shipping links that 404 (agreed at PBI-010 time).
+// Every entry here resolves to a real page. "Community" sat here disabled with a "soon"
+// cue from PBI-010 until it was dropped — it was a slot held by an undecided idea, and
+// everything it might have meant is already Feed, Developers, and Events.
 const items = [
   { key: "home", icon: MessageSquareText, href: "/" },
   { key: "developers", icon: CodeXml, href: "/developers" },
-  { key: "community", icon: Users },
   { key: "projects", icon: FolderGit2, href: "/projects" },
   { key: "events", icon: Calendar, href: "/events" },
 ] as const;
@@ -51,14 +50,8 @@ export function LeftNav({ className }: { className?: string }) {
   return (
     <nav className={cn("flex flex-col", className)}>
       <div className="flex flex-col gap-0.5 pb-3">
-        {items.map(({ key, icon: Icon, ...rest }) => (
-          <NavItem
-            key={key}
-            icon={icon(Icon)}
-            label={t(key)}
-            href={"href" in rest ? rest.href : undefined}
-            soon={t("comingSoon")}
-          />
+        {items.map(({ key, icon: Icon, href }) => (
+          <NavItem key={key} icon={icon(Icon)} label={t(key)} href={href} />
         ))}
       </div>
 

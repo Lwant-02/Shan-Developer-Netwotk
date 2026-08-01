@@ -1,9 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { type ReactNode, useState } from "react";
+import { useState } from "react";
 
 import { SignInDialog } from "@/components/auth/sign-in-dialog";
+import { Field, UrlInput } from "@/components/form/field";
 import { buttonVariants } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -203,49 +204,5 @@ export function CreateForm({ type }: { type: CreateType }) {
         </Link>
       </div>
     </form>
-  );
-}
-
-function Field({
-  label,
-  htmlFor,
-  hint,
-  children,
-}: {
-  label: string;
-  htmlFor?: string;
-  hint?: string;
-  children: ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor={htmlFor} className="text-foreground text-sm">
-        {label}
-      </label>
-      {children}
-      {hint && <p className="text-muted-foreground text-xs">{hint}</p>}
-    </div>
-  );
-}
-
-function UrlInput({
-  id,
-  value,
-  onChange,
-}: {
-  id: string;
-  value: string;
-  onChange: (value: string) => void;
-}) {
-  return (
-    <Input
-      id={id}
-      type="url"
-      inputMode="url"
-      value={value}
-      onChange={(event) => onChange(event.target.value)}
-      placeholder="https://"
-      className="h-9"
-    />
   );
 }

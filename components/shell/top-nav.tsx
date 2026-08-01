@@ -1,4 +1,4 @@
-import { Bell, User } from "lucide-react";
+import { Bell } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
@@ -8,6 +8,8 @@ import { buttonVariants } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
+import { getViewer } from "@/lib/viewer";
+import { AccountMenu } from "./account-menu";
 import { CreateMenu } from "./create-menu";
 import { LeftNav } from "./left-nav";
 import { LocaleSwitcher } from "./locale-switcher";
@@ -15,6 +17,7 @@ import { MobileNav } from "./mobile-nav";
 
 export function TopNav() {
   const t = useTranslations("Nav");
+  const viewer = getViewer();
 
   return (
     <header className="border-border bg-background/85 supports-backdrop-filter:bg-background/70 sticky top-0 z-40 border-b backdrop-blur">
@@ -44,10 +47,10 @@ export function TopNav() {
         <SearchTrigger />
 
         <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
-          {/* Create routes to the composers (PBI-022) and the bell to the notifications
-              page (PBI-023); both are frontend-only and assert no logged-in identity.
-              Account stays disabled — it needs auth to mean anything, so a signed-out
-              visitor gets "Sign in" as the one live action. */}
+          {/* Create routes to the composers (PBI-022), the bell to the notifications
+              page (PBI-023), and Account opens a menu (PBI-024). All three are
+              frontend-only. `getViewer()` is `null` in production, so what ships asserts
+              no logged-in identity. */}
           <CreateMenu />
           <Link
             href="/notifications"
@@ -56,30 +59,25 @@ export function TopNav() {
           >
             <Bell className="size-5" />
           </Link>
-          <button
-            type="button"
-            disabled
-            aria-label={t("account")}
-            className="text-muted-foreground hover:bg-muted flex size-9 items-center justify-center rounded-lg transition-colors disabled:pointer-events-none disabled:opacity-60"
-          >
-            <span className="bg-muted flex size-7 items-center justify-center rounded-full">
-              <User className="size-4" />
-            </span>
-          </button>
+          <AccountMenu viewer={viewer} />
           <LocaleSwitcher />
           {/* Hidden from `xl`, where the right rail's "Sign in to post" card takes
-              over — two sign-in buttons on one screen is one too many. */}
-          <SignInDialog>
-            <button
-              type="button"
-              className={cn(
-                buttonVariants({ size: "default" }),
-                "cursor-pointer font-normal xl:hidden",
-              )}
-            >
-              {t("signIn")}
-            </button>
-          </SignInDialog>
+              over — two sign-in buttons on one screen is one too many. Gone entirely
+              once there is a viewer: "Sign in" beside a signed-in avatar is the
+              contradiction the identity rule exists to prevent. */}
+          {!viewer && (
+            <SignInDialog>
+              <button
+                type="button"
+                className={cn(
+                  buttonVariants({ size: "default" }),
+                  "cursor-pointer font-normal xl:hidden",
+                )}
+              >
+                {t("signIn")}
+              </button>
+            </SignInDialog>
+          )}
         </div>
       </div>
     </header>

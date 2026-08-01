@@ -230,6 +230,15 @@ Rules that fall out of already-built work. What is built, mocked, or still open 
   signed-in avatar; the right rail's welcome card keeps its button in both states
   (owner's call). **Avatars stay initials everywhere** — `Viewer.avatarUrl` is typed but
   unset, because image storage is still an open question.
+- **The `/admin` surface is a design ahead of its policy (PBI-025).** It is gated on
+  `viewer.moderator`, so it renders the localised 404 in production and exists only in the
+  `next dev` preview. Rows carry **Dismiss / Delete content / Ban author**, but acting
+  **persists nothing** — the row clears in local state and the confirm dialog says so.
+  **Do not wire these to a real endpoint before PBI-005 settles the moderation policy**
+  they would enforce; a takedown control that works before the rules exist is how
+  moderation becomes arbitrary. Destructive actions must keep their confirm step, and the
+  queue must keep saying that nothing was saved. A report names two pseudonymous handles
+  and nothing else — never add an email or any identity fact the public profile lacks.
 - **`/settings` edits exactly the public-profile fields and nothing more (PBI-024).** The
   form mirrors `Developer` (display name, handle, role, bio, coarse location, links), so
   it can't become a second, richer identity store. It has **no email field** — never add

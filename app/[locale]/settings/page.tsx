@@ -9,7 +9,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { getDeveloperByHandle } from "@/lib/developers";
 import { cn } from "@/lib/utils";
-import { getCurrentUser } from "@/lib/auth/server";
+import { getCurrentUser } from "@/lib/auth/get-current-user";
 
 export async function generateMetadata({
   params,

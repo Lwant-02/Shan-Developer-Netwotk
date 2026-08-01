@@ -6,7 +6,7 @@ import {
   deriveDisplayName,
   deriveHandle,
   normalizeHandle,
-} from "@/lib/auth/handle";
+} from "@/lib/auth/derive-profile";
 
 function user(provider: string, metadata: Record<string, unknown> = {}) {
   return {

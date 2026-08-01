@@ -8,7 +8,7 @@ vi.mock("@/lib/db", () => ({
   db: { profile: { findUnique, create } },
 }));
 
-const { ensureProfile } = await import("@/lib/auth/profile");
+const { ensureProfile } = await import("@/lib/auth/ensure-profile");
 const { Prisma } = await import("@/lib/generated/prisma/client");
 
 function unique(target: string) {

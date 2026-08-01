@@ -4,19 +4,20 @@ import { useState, type ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
-// The profile's Posts / Projects / Events switcher. `"use client"` is forced by one thing
-// only — `useState` + the tab `onClick`. Each panel's content is rendered on the server and
-// passed in as `content`, so the heavy lists stay Server Components; only the toggle ships
-// as client JS. No bold on the active tab (labels can be Shan) — a border and colour carry
-// the selected state instead.
-export type ProfileTab = {
+// The shared label + count + panel switcher: the profile's Posts / Projects / Events tabs
+// (PBI-017) and the admin queue's type filter (PBI-025). `"use client"` is forced by one
+// thing only — `useState` + the tab `onClick`. Each panel's content is rendered on the
+// server and passed in as `content`, so the lists stay Server Components; only the toggle
+// ships as client JS. No bold on the active tab (labels can be Shan) — a border and colour
+// carry the selected state instead.
+export type SectionTab = {
   key: string;
   label: string;
   count: number;
   content: ReactNode;
 };
 
-export function ProfileTabs({ tabs }: { tabs: ProfileTab[] }) {
+export function SectionTabs({ tabs }: { tabs: SectionTab[] }) {
   const [active, setActive] = useState(tabs[0]?.key);
 
   return (

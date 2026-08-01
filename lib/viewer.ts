@@ -28,6 +28,10 @@ export type Viewer = Pick<Developer, "handle" | "displayName" | "role"> & {
    *  so every avatar in the UI falls back to initials. Typed now so the fallback has
    *  something to fall back *from* once storage lands. */
   avatarUrl?: string;
+  /** Gates the admin surface (PBI-025). A **preview flag, not an authorization system** —
+   *  it only ever reads true in the dev preview, because `getViewer()` is `null`
+   *  everywhere else. Better Auth replaces it with a real role check. */
+  moderator?: boolean;
 };
 
 // Keyed to a handle that exists in `mockDevelopers`, so "Your profile" leads somewhere
@@ -37,6 +41,7 @@ export const mockViewer: Viewer = {
   displayName: "Tai Builds",
   role: "Keyboard & Input Developer",
   provider: "github",
+  moderator: true,
 };
 
 // On for `next dev`, off everywhere else, and forceable on a preview deploy with

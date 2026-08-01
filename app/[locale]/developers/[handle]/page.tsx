@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { ProfileHeader } from "@/components/developers/profile-header";
-import { ProfileTabs } from "@/components/developers/profile-tabs";
+import { SectionTabs } from "@/components/content/section-tabs";
+import { ProfileOwnerMenu } from "@/components/developers/profile-owner-menu";
 import { ShareProfileDialog } from "@/components/developers/share-profile-dialog";
 import { buttonVariants } from "@/components/ui/button";
 import { EventCard } from "@/components/events/event-card";
@@ -18,6 +19,7 @@ import { postsByAuthor } from "@/lib/feed";
 import { getProjectsByAuthor } from "@/lib/projects";
 import { localeAlternates, siteUrl } from "@/lib/site";
 import { cn } from "@/lib/utils";
+import { getViewer } from "@/lib/viewer";
 
 // Prerender every known member at build time (one per handle, per locale from the parent
 // layout). An unknown handle falls through to notFound() → the localised 404.
@@ -76,35 +78,42 @@ export default async function ProfilePage({
             {t("backToDirectory")}
           </Link>
 
-          {/* The absolute URL is built here, server-side, so it matches the page's
+          <div className="flex shrink-0 items-center gap-2">
+            {/* The absolute URL is built here, server-side, so it matches the page's
               canonical rather than being reassembled on the client. */}
-          <ShareProfileDialog
-            developer={developer}
-            profileUrl={`${siteUrl()}/${locale}/developers/${developer.handle}`}
-            stats={{
-              posts: posts.length,
-              projects: projects.length,
-              events: events.length,
-            }}
-          >
-            <button
-              type="button"
-              className={cn(
-                buttonVariants({ variant: "outline" }),
-                "shrink-0 cursor-pointer gap-2 font-normal",
-              )}
+            <ShareProfileDialog
+              developer={developer}
+              profileUrl={`${siteUrl()}/${locale}/developers/${developer.handle}`}
+              stats={{
+                posts: posts.length,
+                projects: projects.length,
+                events: events.length,
+              }}
             >
-              <Share2 className="size-4" />
-              {t("share")}
-            </button>
-          </ShareProfileDialog>
+              <button
+                type="button"
+                className={cn(
+                  buttonVariants({ variant: "outline" }),
+                  "shrink-0 cursor-pointer gap-2 font-normal",
+                )}
+              >
+                <Share2 className="size-4" />
+                {t("share")}
+              </button>
+            </ShareProfileDialog>
+
+            {/* Owner-only. `getViewer()` is null in production, so this ships nowhere on
+              the live site; when auth lands the comparison becomes a real ownership
+              check rather than a preview one. */}
+            {getViewer()?.handle === developer.handle && <ProfileOwnerMenu />}
+          </div>
         </div>
 
         <ProfileHeader developer={developer} />
 
         <hr className="border-border" />
 
-        <ProfileTabs
+        <SectionTabs
           tabs={[
             {
               key: "posts",
@@ -114,7 +123,9 @@ export default async function ProfilePage({
                 posts.length > 0 ? (
                   <PostList posts={posts} />
                 ) : (
-                  <p className="text-muted-foreground text-sm">{t("noPosts")}</p>
+                  <p className="text-muted-foreground text-sm">
+                    {t("noPosts")}
+                  </p>
                 ),
             },
             {
@@ -123,7 +134,9 @@ export default async function ProfilePage({
               count: projects.length,
               content:
                 projects.length > 0 ? (
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  // Single column, matching the /projects directory (PBI-020) and the
+                  // events tab below — a project card is a feed-style card, not a tile.
+                  <div className="flex flex-col gap-3">
                     {projects.map((project) => (
                       <ProjectCard key={project.id} project={project} />
                     ))}

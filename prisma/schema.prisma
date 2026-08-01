@@ -1,0 +1,371 @@
+// Shan Developer Network — database schema (PBI-027).
+//
+// Mirrors the shapes the UI already renders from `lib/*.ts` mocks, so replacing a mock
+// with a query is a server-side change and the components stay untouched.
+//
+// Identity safety is structural here, not a convention (design.md, "Safety and
+// pseudonymity"): there is **no email column anywhere in this file**. The OAuth email
+// lives in Supabase's `auth.users` and never reaches the public schema. `profiles.handle`
+// is the identity the product exposes, `location` is coarse and optional, and
+// `joined_at` is rendered month-and-year only by the UI.
+//
+// Two conventions, both load-bearing on Supabase:
+//
+// 1. **Everything maps to snake_case.** Prisma would otherwise emit quoted mixed-case
+//    identifiers (`"Profile"."authorId"`), which then have to stay quoted forever — in
+//    RLS policies, in the Supabase SQL editor, in psql, and in every file under
+//    `prisma/sql/`. Postgres folds unquoted identifiers to lowercase, so snake_case is
+//    the portable choice.
+// 2. **UUIDv7, not v4.** Random v4 keys scatter inserts across the primary-key index and
+//    fragment it; v7 is time-ordered, so rows land together and the index stays compact.
+//
+// RLS is enabled on every table by `prisma/sql/enable-rls.sql`. Prisma connects with a
+// privileged role and bypasses it, so authorization lives in the server handlers — but
+// Supabase publishes these tables over PostgREST with a public anon key, and RLS
+// deny-by-default is what keeps that endpoint returning nothing.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// Content language, independent of UI locale — a Shan reader can see English posts and
+/// vice versa (design.md, per-content language tagging).
+enum ContentLang {
+  shn
+  en
+
+  @@map("content_lang")
+}
+
+enum SocialPlatform {
+  github
+  facebook
+  instagram
+  line
+  linkedin
+  telegram
+  website
+
+  @@map("social_platform")
+}
+
+/// Mirrors `ReportReason` in `lib/reports.ts`. `privateInfo` and `malware` exist for this
+/// product specifically — doxxing is the platform's most serious native harm given
+/// pseudonymity, and hostile links matter in a community that shares repos.
+enum ReportReason {
+  spam
+  harassment
+  hate
+  violence
+  privateInfo
+  impersonation
+  malware
+  sexual
+  offTopic
+  other
+
+  @@map("report_reason")
+}
+
+enum ReportState {
+  open
+  resolved
+  dismissed
+
+  @@map("report_state")
+}
+
+enum NotificationKind {
+  comment
+  like
+  star
+  follow
+  eventReminder
+
+  @@map("notification_kind")
+}
+
+/// A member as the product exposes them. Deliberately NOT the auth record: `auth_user_id`
+/// points at Supabase `auth.users.id`, which holds the email and provider identities.
+/// Prisma does not manage the `auth` schema, so this is a plain unique column rather than
+/// a foreign key; the row is created in the signup handler.
+model Profile {
+  id          String   @id @default(uuid(7)) @db.Uuid
+  authUserId  String   @unique @map("auth_user_id") @db.Uuid
+  /// Pseudonymous, and the URL key for /developers/[handle].
+  handle      String   @unique
+  /// Optional chosen name. Still pseudonymous — never the OAuth real name.
+  displayName String?  @map("display_name")
+  role        String   @default("")
+  bio         String   @default("")
+  /// Coarse and optional: a region or town, never a precise address.
+  location    String?
+  /// Supabase storage object path, never a full URL — so changing bucket or CDN is
+  /// config, not a data migration.
+  avatarPath  String?  @map("avatar_path")
+  /// Lets a member post while staying out of the public directory (design.md).
+  listed      Boolean  @default(true)
+  /// Gates the admin surface (PBI-025). Replaces the `viewer.moderator` preview flag.
+  moderator   Boolean  @default(false)
+  joinedAt    DateTime @default(now()) @map("joined_at")
+
+  links         SocialLink[]
+  posts         Post[]
+  projects      Project[]
+  events        Event[]
+  comments      Comment[]
+  likes         Like[]
+  stars         Star[]
+  following     Follow[]       @relation("Follower")
+  followers     Follow[]       @relation("Following")
+  notifications Notification[] @relation("Recipient")
+  actedOn       Notification[] @relation("Actor")
+  reportsFiled  Report[]       @relation("Reporter")
+  reportsClosed Report[]       @relation("ResolvedBy")
+
+  @@index([listed])
+  @@map("profiles")
+}
+
+model SocialLink {
+  id        String         @id @default(uuid(7)) @db.Uuid
+  profileId String         @map("profile_id") @db.Uuid
+  profile   Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  platform  SocialPlatform
+  href      String
+
+  @@unique([profileId, platform])
+  @@map("social_links")
+}
+
+model Post {
+  id        String      @id @default(uuid(7)) @db.Uuid
+  slug      String      @unique
+  authorId  String      @map("author_id") @db.Uuid
+  author    Profile     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  title     String
+  body      String
+  lang      ContentLang
+  imagePath String?     @map("image_path")
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
+
+  likes         Like[]
+  comments      Comment[]
+  notifications Notification[]
+  reports       Report[]
+
+  @@index([createdAt])
+  @@index([authorId])
+  @@map("posts")
+}
+
+model Project {
+  id           String      @id @default(uuid(7)) @db.Uuid
+  slug         String      @unique
+  authorId     String      @map("author_id") @db.Uuid
+  author       Profile     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  title        String
+  description  String
+  lang         ContentLang
+  imagePath    String?     @map("image_path")
+  repoUrl      String?     @map("repo_url")
+  websiteUrl   String?     @map("website_url")
+  appStoreUrl  String?     @map("app_store_url")
+  playStoreUrl String?     @map("play_store_url")
+  tags         String[]    @default([])
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
+
+  stars         Star[]
+  comments      Comment[]
+  notifications Notification[]
+  reports       Report[]
+
+  @@index([createdAt])
+  @@index([authorId])
+  @@map("projects")
+}
+
+model Event {
+  id          String      @id @default(uuid(7)) @db.Uuid
+  slug        String      @unique
+  hostId      String      @map("host_id") @db.Uuid
+  host        Profile     @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  lang        ContentLang
+  imagePath   String?     @map("image_path")
+  /// Always UTC. The UI renders it in the reader's zone — Myanmar is UTC+06:30, so a
+  /// naive local timestamp drifts by a half hour nobody notices until it is wrong.
+  startsAt    DateTime    @map("starts_at")
+  /// IANA zone the host chose, kept so the event can be shown in its own zone too.
+  timezone    String      @default("UTC")
+  online      Boolean     @default(true)
+  /// "Online", or a coarse place — never a precise address.
+  location    String      @default("")
+  joinUrl     String?     @map("join_url")
+  registerUrl String?     @map("register_url")
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  stars         Star[]
+  comments      Comment[]
+  notifications Notification[]
+  reports       Report[]
+
+  @@index([startsAt])
+  @@index([hostId])
+  @@map("events")
+}
+
+/// One comment table across all three surfaces. Exactly one of `post_id` / `project_id` /
+/// `event_id` is set — enforced by a CHECK constraint in
+/// `prisma/sql/polymorphic-checks.sql`, since Prisma cannot express it. Replies are one
+/// level deep only, matching the UI.
+model Comment {
+  id        String      @id @default(uuid(7)) @db.Uuid
+  authorId  String      @map("author_id") @db.Uuid
+  author    Profile     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  body      String
+  lang      ContentLang
+  createdAt DateTime    @default(now()) @map("created_at")
+
+  parentId String?   @map("parent_id") @db.Uuid
+  parent   Comment?  @relation("Replies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  Comment[] @relation("Replies")
+
+  postId    String?  @map("post_id") @db.Uuid
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  projectId String?  @map("project_id") @db.Uuid
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  eventId   String?  @map("event_id") @db.Uuid
+  event     Event?   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  notifications Notification[]
+
+  @@index([postId])
+  @@index([projectId])
+  @@index([eventId])
+  @@index([authorId])
+  @@index([parentId])
+  @@index([createdAt])
+  @@map("comments")
+}
+
+/// A single like, not up/down voting (design.md, decided) — one row per member per post,
+/// so the unique constraint *is* the rule.
+model Like {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  profileId String   @map("profile_id") @db.Uuid
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  postId    String   @map("post_id") @db.Uuid
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([profileId, postId])
+  @@index([postId])
+  @@map("likes")
+}
+
+/// Projects and events carry stars rather than likes. Exactly one target is set — the
+/// same CHECK constraint treatment as Comment.
+model Star {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  profileId String   @map("profile_id") @db.Uuid
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  projectId String?  @map("project_id") @db.Uuid
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  eventId   String?  @map("event_id") @db.Uuid
+  event     Event?   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([profileId, projectId])
+  @@unique([profileId, eventId])
+  @@index([projectId])
+  @@index([eventId])
+  @@map("stars")
+}
+
+/// A public social graph is identity-sensitive (design.md) — who follows whom is exposed
+/// only as counts today. The rows exist so that stays a product choice, not a data gap.
+model Follow {
+  id          String   @id @default(uuid(7)) @db.Uuid
+  followerId  String   @map("follower_id") @db.Uuid
+  follower    Profile  @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
+  followingId String   @map("following_id") @db.Uuid
+  following   Profile  @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@unique([followerId, followingId])
+  @@index([followingId])
+  @@map("follows")
+}
+
+/// Per-member and private — the one table where a browser-side query would need real RLS
+/// policies rather than deny-by-default.
+model Notification {
+  id          String           @id @default(uuid(7)) @db.Uuid
+  recipientId String           @map("recipient_id") @db.Uuid
+  recipient   Profile          @relation("Recipient", fields: [recipientId], references: [id], onDelete: Cascade)
+  kind        NotificationKind
+  /// Absent for `eventReminder`, which has no actor.
+  actorId     String?          @map("actor_id") @db.Uuid
+  actor       Profile?         @relation("Actor", fields: [actorId], references: [id], onDelete: Cascade)
+
+  postId    String?  @map("post_id") @db.Uuid
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  projectId String?  @map("project_id") @db.Uuid
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  eventId   String?  @map("event_id") @db.Uuid
+  event     Event?   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  commentId String?  @map("comment_id") @db.Uuid
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  readAt    DateTime? @map("read_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  @@index([recipientId, createdAt])
+  @@index([recipientId, readAt])
+  @@index([actorId])
+  @@index([postId])
+  @@index([projectId])
+  @@index([eventId])
+  @@index([commentId])
+  @@map("notifications")
+}
+
+/// Feeds the admin queue (PBI-025). Reasons are a fixed enum, not free text — free text in
+/// a moderation queue is itself somewhere abuse gets written.
+model Report {
+  id         String       @id @default(uuid(7)) @db.Uuid
+  reporterId String       @map("reporter_id") @db.Uuid
+  reporter   Profile      @relation("Reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  reason     ReportReason
+  state      ReportState  @default(open)
+
+  postId    String?  @map("post_id") @db.Uuid
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  projectId String?  @map("project_id") @db.Uuid
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  eventId   String?  @map("event_id") @db.Uuid
+  event     Event?   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  resolvedAt   DateTime? @map("resolved_at")
+  resolvedById String?   @map("resolved_by_id") @db.Uuid
+  resolvedBy   Profile?  @relation("ResolvedBy", fields: [resolvedById], references: [id], onDelete: SetNull)
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  @@index([state, createdAt])
+  @@index([reporterId])
+  @@index([resolvedById])
+  @@index([postId])
+  @@index([projectId])
+  @@index([eventId])
+  @@map("reports")
+}

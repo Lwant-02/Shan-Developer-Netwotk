@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 
 const importPalette = () => import("./command-palette");
 
-// One component, not two: a second instance would mount the palette twice.
 const bar =
   "bg-muted text-muted-foreground hover:text-foreground flex h-10 cursor-text items-center gap-2 rounded-lg px-3 text-left text-sm transition-colors";
 
@@ -55,7 +54,6 @@ export function SearchTrigger() {
 
   return (
     <>
-      {/* `order-last` + the header's `flex-wrap` drops this to its own row below `sm`. */}
       <button
         type="button"
         onClick={open}

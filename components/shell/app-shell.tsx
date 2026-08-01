@@ -11,8 +11,6 @@ import { TopNav } from "./top-nav";
 // routes. Only the `children` in the main column change. The rails collapse out on
 // their existing breakpoints (left below `lg`, right below `xl`); on mobile the nav
 // lives in the TopNav drawer.
-// `CurrentUserProvider` takes `children` as a slot, so pages inside stay Server
-// Components and stay statically prerendered.
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <CurrentUserProvider>

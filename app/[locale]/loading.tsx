@@ -1,9 +1,5 @@
 import { Swirling } from "@/components/ui/swirling";
 
-// No translations here on purpose. `loading.tsx` receives no `params`, so it cannot call
-// `setRequestLocale()`; next-intl then reads headers to find the locale and **every route
-// under this segment turns dynamic**. Same trap as the 404 title (AGENTS.md), so the label
-// is a static English string.
 export default function Loading() {
   return (
     <div

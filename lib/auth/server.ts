@@ -4,12 +4,9 @@ import { db } from "@/lib/db";
 import { createClient } from "@/lib/supabase/server";
 import type { AuthProvider, CurrentUser } from "@/lib/current-user";
 
-// Reads cookies, so any route that calls this stops being statically prerendered.
-// Safe on `/settings`, `/admin`, `/api/me` — all dynamic and noindex already.
 export async function getCurrentUser(): Promise<CurrentUser | null> {
   const supabase = await createClient();
 
-  // `getClaims()` verifies the token; `getSession()` does not reliably.
   const { data, error } = await supabase.auth.getClaims();
   if (error || !data?.claims?.sub) return null;
 

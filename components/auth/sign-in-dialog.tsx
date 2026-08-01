@@ -24,11 +24,6 @@ import {
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
-// The trigger arrives as `children` so the nav and right rail share one dialog — as a
-// named prop it would be a React element crossing the boundary, which breaks the
-// static prerender. Sign-in goes through a Server Action, so no auth library reaches
-// the browser; the redirect leaves the page, so there is no success state here.
-
 const providerButton = cn(
   buttonVariants({ variant: "outline", size: "lg" }),
   // `font-normal` is not cosmetic: `buttonVariants` ships `font-medium`, and the AJ
@@ -59,9 +54,6 @@ export function SignInDialog({
   const [pending, startTransition] = useTransition();
   const t = useTranslations("Auth");
 
-  // `profiles.terms_accepted_at` is the durable record, but it can't be read here —
-  // nobody is identified until after they authenticate. So the browser remembers too.
-  // `useSyncExternalStore` gives the server an explicit `false` rather than a mismatch.
   const remembered = useSyncExternalStore(
     () => () => {},
     () => localStorage.getItem(CONSENT_KEY) !== null,
@@ -70,8 +62,6 @@ export function SignInDialog({
 
   const agreed = ticked || remembered;
 
-  // Read at click time: the path must keep its locale prefix, which next-intl's
-  // `usePathname` strips.
   const start = (provider: AuthProvider) =>
     startTransition(async () => {
       localStorage.setItem(CONSENT_KEY, new Date().toISOString());
@@ -128,8 +118,6 @@ export function SignInDialog({
         </div>
 
         <div className="flex items-start gap-3">
-          {/* Gone once remembered, rather than pre-ticked — a box nobody ticked
-              reads as consent asserted on their behalf. */}
           {!remembered && (
             <Checkbox
               id="auth-consent"

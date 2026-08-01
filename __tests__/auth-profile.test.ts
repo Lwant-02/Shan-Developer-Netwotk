@@ -11,10 +11,6 @@ vi.mock("@/lib/db", () => ({
 const { ensureProfile } = await import("@/lib/auth/profile");
 const { Prisma } = await import("@/lib/generated/prisma/client");
 
-// Two members signing in for the first time at the same moment is not a hypothetical —
-// it is the launch-day case. `auth_user_id` and `handle` are both unique in the database,
-// so the only question is whether this recovers or 500s. These pin the recovery.
-
 function unique(target: string) {
   return new Prisma.PrismaClientKnownRequestError("Unique constraint failed", {
     code: "P2002",
@@ -54,8 +50,6 @@ test("a taken handle moves to the next candidate", async () => {
   expect(create.mock.calls[1][0].data.handle).toBe("tai_builds2");
 });
 
-// The dangerous one: losing this race must not produce a second profile or an error page
-// on someone's very first visit.
 test("losing the race for the same account yields the winner's row", async () => {
   findUnique
     .mockResolvedValueOnce(null)
@@ -68,9 +62,6 @@ test("losing the race for the same account yields the winner's row", async () =>
   expect(create).toHaveBeenCalledTimes(1);
 });
 
-// The name and avatar are copied on purpose (owner's call), so a new member arrives
-// recognisable. The **email is not, and has no column to go to** — that is the one part
-// of `design.md`'s identity rule this must never trade away.
 test("the name and avatar are copied, the email never is", async () => {
   findUnique.mockResolvedValue(null);
   create.mockResolvedValue({ handle: "sai_kham" });
@@ -94,8 +85,6 @@ test("the name and avatar are copied, the email never is", async () => {
   expect(Object.keys(data)).not.toContain("email");
 });
 
-// Reaching this function means the sign-in dialog's consent gate was satisfied, so the
-// acceptance is recorded — that record is what lets a returning member skip the checkbox.
 test("accepting the terms is recorded at creation", async () => {
   findUnique.mockResolvedValue(null);
   create.mockResolvedValue({ handle: "sai_kham" });

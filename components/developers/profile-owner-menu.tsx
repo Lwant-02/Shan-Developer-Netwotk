@@ -28,10 +28,6 @@ import { cn } from "@/lib/utils";
 // edits exactly the fields this page renders), **Delete account** is destructive and
 // confirms first.
 //
-// Rendered only when the user is looking at their *own* profile. The profile page is
-// public and statically prerendered, so it cannot read the session — `ProfileOwnerSlot`
-// makes the comparison client-side once `CurrentUserProvider` resolves (PBI-028). Nothing here
-// is an authorization boundary: the menu links to `/settings`, which gates on the server.
 //
 // FRONTEND ONLY: deleting does nothing. Account deletion is the most destructive write in
 // the product and needs auth, a rate limit, and a decision about what happens to the

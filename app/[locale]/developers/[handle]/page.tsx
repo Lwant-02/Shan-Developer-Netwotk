@@ -101,9 +101,6 @@ export default async function ProfilePage({
               </button>
             </ShareProfileDialog>
 
-            {/* Owner-only, decided in the browser: this page is public and statically
-              prerendered, so reading the session here would de-static every profile
-              (PBI-028). The menu gates nothing — `/settings` does that on the server. */}
             <ProfileOwnerSlot handle={developer.handle} />
           </div>
         </div>

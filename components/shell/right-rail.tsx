@@ -14,7 +14,6 @@ export function RightRail() {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* From `xl` up the nav's Sign in button is hidden, so this is the way in. */}
       <AnonymousOnly>
         <Card className="flex flex-col gap-4 p-5">
           <div className="flex flex-col gap-2">

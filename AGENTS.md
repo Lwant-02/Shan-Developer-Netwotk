@@ -180,7 +180,17 @@ re-derive this:
   component is ever re-pulled.** Toasts go through `sonner`'s `toast()` at the call site;
   the `<Toaster />` lives in `AppShell`.
 - **Dark-only theme, in CSS with no React state.** The UI ships **one theme — dark** (PBI-013, which reversed the light+dark PBI-011). The greyscale palette lives in **`:root`** in `globals.css` — there is no `.dark` block and no theme class, so the 404 pages (which render outside the locale layout) inherit it for free. There is **no `next-themes`, no toggle, and no theme provider** — don't reintroduce them, and don't add a `prefers-color-scheme` read or a persisted preference; the theme is invariant per URL so pages stay statically prerendered. The `dark` variant is deliberately **unconditional** (`@custom-variant dark (&)`) because `components/ui/*` is registry-managed and ships `dark:` utilities that must keep applying — don't rescope it, and still don't edit those files.
-- **Comment sparingly.** Don't narrate what the code already says, and don't leave a running commentary explaining your reasoning. A comment earns its place only when it records something the reader cannot see — a non-obvious constraint, a deprecation, a workaround for an upstream limitation. Default to none.
+- **Feature code carries no comments.** Not "few" — none. If a line needs explaining,
+  either the code is wrong or the explanation belongs in this file. This is a hard rule
+  because the alternative was tried here and produced files where the prose outweighed the
+  logic and the owner could no longer read his own codebase.
+  - **A constraint you would otherwise comment goes in `AGENTS.md`** — under the relevant
+    section, one line. That is what this file is for, and it survives the next refactor;
+    a comment does not.
+  - The only exceptions are `TODO(shn)` markers and machine-readable directives that must
+    be inline (`"use client"`, `"use server"`, `eslint-disable`). Those are not commentary.
+  - Applies to new and edited code. Don't sweep comments out of files you aren't otherwise
+    touching.
 
 ## Building and refactoring UI
 
@@ -287,6 +297,16 @@ Rules that fall out of already-built work. What is built, mocked, or still open 
   - **Consent is recorded twice, on purpose.** `profiles.terms_accepted_at` is the durable
     record of who agreed and when; `localStorage` is what actually lets a returning member
     skip the checkbox, because nobody is identified until *after* they authenticate.
+  - **`getClaims()`, never `getSession()`,** in server code — `getSession()` is not
+    guaranteed to revalidate the token, so it must not back any decision.
+  - **OAuth redirects use the request's own host,** not `siteUrl()`, which falls back to
+    `VERCEL_PROJECT_PRODUCTION_URL` and would land a preview sign-in on production.
+  - **A provider avatar URL is dropped unless it starts with `https://`** — it goes
+    straight into an `<img>` src.
+  - **`next` params on sign-in and the callback must be same-origin** (`/…`, never `//…`),
+    or a crafted link bounces someone off the site holding a fresh session.
+  - **A failed `ensureProfile` signs the user back out.** A session with no profile row is
+    a half-state every surface downstream assumes away.
 - **The `/admin` surface is a design ahead of its policy (PBI-025).** It is now gated on
   `profiles.moderator` against a real session (PBI-028) and renders the localised 404 for
   everyone else. Rows carry **Dismiss / Delete content / Ban author**, but acting

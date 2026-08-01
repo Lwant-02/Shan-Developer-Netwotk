@@ -22,12 +22,16 @@ function renderAt(node: React.ReactNode) {
 // The point of the PBI: Report has shipped on posts, projects, and events since
 // PBI-010/020/021 with nothing on the other end. Each row must reach the reported thing.
 test("the queue links each report to the content it is about", () => {
-  const { container } = renderAt(<ReportQueue reports={listReports()} now={now} />);
+  const { container } = renderAt(
+    <ReportQueue reports={listReports()} now={now} />,
+  );
 
   expect(
     container.querySelector('a[href$="/post/shan-word-segmentation-search"]'),
   ).not.toBeNull();
-  expect(container.querySelector('a[href$="/projects/shan-dates"]')).not.toBeNull();
+  expect(
+    container.querySelector('a[href$="/projects/shan-dates"]'),
+  ).not.toBeNull();
   expect(
     container.querySelector('a[href$="/events/beginner-git-workshop"]'),
   ).not.toBeNull();
@@ -37,7 +41,9 @@ test("the queue links each report to the content it is about", () => {
 // pseudonymous handles and nothing more — an admin screen must not become a richer
 // dossier than the public profile.
 test("the queue exposes no email", () => {
-  const { container } = renderAt(<ReportQueue reports={listReports()} now={now} />);
+  const { container } = renderAt(
+    <ReportQueue reports={listReports()} now={now} />,
+  );
 
   expect(container.textContent).not.toMatch(/@[\w-]+\.\w{2,}/);
   expect(container.querySelector('a[href^="mailto:"]')).toBeNull();
@@ -52,7 +58,9 @@ test("destructive actions confirm first and admit they persist nothing", () => {
   fireEvent.click(screen.getAllByRole("button", { name: en.Admin.actions })[0]);
   fireEvent.click(screen.getByRole("menuitem", { name: en.Admin.actionBan }));
 
-  expect(screen.getByRole("heading", { name: en.Admin.confirmBanTitle })).toBeDefined();
+  expect(
+    screen.getByRole("heading", { name: en.Admin.confirmBanTitle }),
+  ).toBeDefined();
   expect(screen.getByText(en.Admin.notWired)).toBeDefined();
 });
 
@@ -62,13 +70,18 @@ test("resolving a report clears it locally and says nothing was stored", () => {
   renderAt(<ReportQueue reports={listReports()} now={now} />);
 
   const before = listReports().length;
-  const allTab = () => screen.getByRole("tab", { name: new RegExp(`^${en.Admin.filterAll}`) });
+  const allTab = () =>
+    screen.getByRole("tab", { name: new RegExp(`^${en.Admin.filterAll}`) });
   expect(within(allTab()).getByText(/^\d+$/).textContent).toBe(String(before));
 
   fireEvent.click(screen.getAllByRole("button", { name: en.Admin.actions })[0]);
-  fireEvent.click(screen.getByRole("menuitem", { name: en.Admin.actionDismiss }));
+  fireEvent.click(
+    screen.getByRole("menuitem", { name: en.Admin.actionDismiss }),
+  );
 
-  expect(within(allTab()).getByText(/^\d+$/).textContent).toBe(String(before - 1));
+  expect(within(allTab()).getByText(/^\d+$/).textContent).toBe(
+    String(before - 1),
+  );
   expect(screen.getByText(/Nothing was saved/)).toBeDefined();
 });
 
@@ -87,7 +100,9 @@ test("the type filter counts match the reports of each type", () => {
   expect(count(en.Admin.filter_project)).toBe(
     String(listReports("project").length),
   );
-  expect(count(en.Admin.filter_event)).toBe(String(listReports("event").length));
+  expect(count(en.Admin.filter_event)).toBe(
+    String(listReports("event").length),
+  );
 });
 
 // The cold-start instrument — "is anyone here?" answered without browsing four pages.
@@ -98,7 +113,6 @@ test("the overview shows community counts and recent joins", () => {
   expect(screen.getByText(en.Admin.recentJoins)).toBeDefined();
 });
 
-// `getCurrentUser()` returns null under test exactly as it does in production, so this asserts
 // what the live site ships: no admin entry for anyone.
 test("the left nav shows no admin entry without a moderator user", () => {
   renderAt(<LeftNav />);

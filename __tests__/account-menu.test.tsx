@@ -16,9 +16,6 @@ function open() {
   fireEvent.click(screen.getByRole("button", { name: en.Nav.account }));
 }
 
-// Anonymous read access is a product requirement, and the served HTML is static — it
-// knows nothing about sessions. So the account control must be absent, not merely empty:
-// an account button with no account behind it is an invitation to assert one.
 test("nothing renders for a visitor with no session", () => {
   const { container } = render(
     <NextIntlClientProvider locale="en" messages={en}>
@@ -29,8 +26,6 @@ test("nothing renders for a visitor with no session", () => {
   expect(container.innerHTML).toBe("");
 });
 
-// Who you are, and which provider you came in through, so an account reachable by two
-// sign-in routes is unambiguous.
 test("the menu shows the identity and the sign-in provider", () => {
   open();
 
@@ -67,8 +62,6 @@ test("settings links to the settings page", () => {
   ).toBe("/settings");
 });
 
-// Sign-out was a disabled "soon" cue until PBI-028; it is the one control that must work
-// the moment sessions are real, or a member cannot leave a shared device.
 test("sign out is a live control, not a placeholder", () => {
   open();
 

@@ -7,8 +7,6 @@ import { createClient } from "@/lib/supabase/server";
 import { siteUrl } from "@/lib/site";
 import type { AuthProvider } from "@/lib/current-user";
 
-// `siteUrl()` falls back to `VERCEL_PROJECT_PRODUCTION_URL`, so a preview sign-in would
-// land on production. The request's own host is the only reliable origin.
 async function requestOrigin() {
   const headerList = await headers();
   const host = headerList.get("x-forwarded-host") ?? headerList.get("host");
@@ -21,7 +19,6 @@ async function requestOrigin() {
   return `${protocol}://${host}`;
 }
 
-// Same-origin only, so a crafted `next` can't bounce someone off the site.
 function safeNext(next: string | undefined) {
   if (!next || !next.startsWith("/") || next.startsWith("//")) return "/";
   return next;

@@ -54,13 +54,26 @@ Read-only-for-anonymous is a deliberate and correct fit for the thesis: the cont
 must be public and indexable, or nothing pulls new people in. Value locked behind a
 login can't recruit.
 
-### Authentication 🟢
+### Authentication 🟢 (reversed 2026-08-01 — now Supabase Auth)
 
-**Better Auth**, with **Google and GitHub OAuth**.
+**Supabase Auth**, with **Google and GitHub OAuth**.
 
 Google alongside GitHub is a better call than my earlier GitHub-only suggestion —
 GitHub-only would have quietly excluded students and less-established developers,
 which is a chunk of the intended audience.
+
+> **Supersedes: Better Auth.** The owner moved the whole backend to Supabase (see
+> *Architecture*), and Better Auth's advantage there evaporates: Supabase's storage
+> policies key off its own JWT, so keeping a second identity system would mean bridging
+> tokens for no gain. Decided at the cheapest possible moment — the sign-in dialog
+> (PBI-014) was built but entirely inert, so nothing had to be unpicked.
+>
+> Two things made the switch low-risk. **OAuth-only means no password hashes**, so the
+> usual auth-migration lock-in barely applies — leaving Supabase later would mean people
+> re-linking Google or GitHub, nothing more. And **Supabase's shape fits the product's
+> identity rule**: the email lives in `auth.users` and the public profile is a separate
+> table, so "the OAuth email is never public" is enforced by the architecture rather than
+> by remembering it.
 
 > **Supersedes:** an earlier draft of this doc proposed deferring posts and
 > discussion to a later phase on cold-start grounds. The owner has decided posts,
@@ -100,7 +113,7 @@ and the notified-about set is fixed by those features — not by what a generic 
 would push.
 
 **Display-only until auth**, like the like. Notifications are inherently per-user: a
-real feed needs Better Auth *and* the write paths that generate the events. The first
+real feed needs auth *and* the write paths that generate the events. The first
 cut (PBI-023) is a frontend-only `/notifications` page over typed mock data, with the
 top-nav bell made live — asserting no logged-in identity, exactly as Create did
 (PBI-022). "Mark all as read" clears the unread dots in local state only and persists
@@ -281,16 +294,38 @@ shadcn `base-nova` on **Base UI** (not Radix). Gotchas: [`AGENTS.md`](./AGENTS.m
 
 ### Decided 🟢
 
-- **Database: Neon** (Postgres). Better Auth needs a Postgres anyway.
+- **Database, auth, and storage: Supabase** (Postgres), region **Singapore** — closest to
+  the audience, and it should match the Vercel function region.
+- **Data layer: Prisma** (v7, `prisma-client` generator, `@prisma/adapter-pg`). Prisma
+  connects with a privileged role and therefore **bypasses RLS**, so authorization lives in
+  the server handlers beside the rate limits. That is a deliberate trade: this app is
+  Server-Component-first and never queries from the browser, which is the one thing RLS
+  exists to make safe.
+- **RLS is still enabled on every table, with no policies — deny by default.** Not as the
+  authorization model, but because Supabase publishes the `public` schema over PostgREST
+  with a public anon key, and Prisma migrations do not turn RLS on. Without it, every table
+  `prisma migrate` creates is world-readable. See `prisma/sql/enable-rls.sql`.
+  **Realtime or any browser-side query (chat) would flip this** — those bypass the server
+  entirely, so they need real policies, not deny-all.
 - **Hosting: Vercel.** `main` deploys to production, `dev` to previews — see
   `AGENTS.md` and the `deploy-dev` / `deploy-prod` skills.
 - **Content:** posts/projects/events/profiles in Postgres. Curated resources and the
   glossary can be MDX in-repo (free versioning and review via git). 🟡 — the MDX half
   is still a proposal.
 
-Neon over Supabase means storage and image handling are **not** bundled and will need
-a separate answer when profile avatars or post images arrive. Not urgent, but don't
-assume it's covered.
+> **Supersedes: Neon.** Neon was chosen when Better Auth was the plan and storage was a
+> problem for later. Once images became real, the bundled-storage question forced the
+> issue, and Supabase answers database, auth, and storage with one vendor and one bill —
+> which matters for a solo maintainer. Cloudinary alongside Neon was the alternative; it
+> wins on image transformation, but `next/image` over Supabase Storage covers that well
+> enough at this scale to not justify a third vendor.
+
+**Images are compressed in the browser before upload**, not just on the way out. The
+audience uploads *from* mid-range Android on mobile data, so a 4 MB photo is a
+failure-prone upload before it is ever a storage cost — resizing to ~1600 px WebP client
+side is a UX fix first. Re-encoding also strips EXIF, but the **server re-encodes anyway**
+(`sharp`), because GPS metadata defeating the coarse-location rule is a safety property
+and cannot rest on the client. Store the storage object path, never a full URL.
 
 ### Data model sketch 🟡
 
@@ -378,8 +413,12 @@ Still open:
 4. **Does a Shan technical-vocabulary effort already exist** to align the glossary
    with?
 5. **Is there an existing community to seed from**, or is this cold-start from zero?
-6. **Image and file storage.** Neon is Postgres only — unlike Supabase it doesn't
-   bundle storage. Needed before avatars or post images.
+6. **Chat / direct messages.** Feasible on Supabase Realtime, and the owner wants it.
+   Two things must be decided *before* the schema, because both are near-impossible to
+   reverse once people have used it: blocking has to exist from day one, and it must be
+   settled whether moderators can read a reported message. If they cannot, a harassment
+   report about a DM is unactionable; if they can, the privacy page has to say so. Lands
+   on Governance / PBI-005.
 
 ### Resolved
 
@@ -390,7 +429,7 @@ Still open:
 | Locale-prefixed URLs? Default locale? | **Yes, prefixed. Shan (`shn`) is the default.** |
 | Theme | **Dark only** (PBI-013, reversed 2026-07-20). Greyscale `.dark` pinned on, no toggle. Supersedes PBI-011 (light + dark), which superseded PBI-003 (light-only). |
 | Zawgyi detection/conversion | **No.** Store Unicode, period. |
-| Database | **Neon** (Postgres). |
+| Database, auth, storage | **Supabase** (Postgres), Singapore region — reversed from Neon + Better Auth on 2026-08-01. Data layer is **Prisma**; RLS on with no policies as a deny-by-default backstop. |
 | Hosting | **Vercel.** |
 | Per-content language tagging | **Yes** — content language is independent of UI locale. |
 | Who moderates, and how fast | **Deferred**, not answered. See Governance. |

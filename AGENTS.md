@@ -212,6 +212,24 @@ Styling rules, which are not negotiable because theming depends on them:
 Rules that fall out of already-built work. What is built, mocked, or still open is
 *status* — read it from `design.md` and the backlog, not here.
 
+- **The database is Supabase Postgres reached through Prisma 7 (PBI-027).** Schema only —
+  nothing reads or writes it yet. Rules that outlive that:
+  - **`prisma/sql/enable-rls.sql` must be re-run after any migration that adds a table.**
+    Supabase publishes `public` over PostgREST to anyone holding the publishable key, and
+    Prisma migrations do not enable RLS — so a new table is world-readable the moment it
+    lands, silently, with nothing in the app misbehaving.
+  - **RLS is not the authorization model.** Prisma connects as `postgres`, which has
+    `rolbypassrls`, so every app query ignores it. Authorization lives in the server
+    handlers next to the rate limits; the database will not catch a missing ownership
+    check.
+  - **No email column, in any table, ever.** The OAuth email stays in `auth.users`. This
+    is the same rule as the settings form, made structural.
+  - Migrations run on `DIRECT_URL`; the app runs on the pooled `DATABASE_URL`. Prisma 7
+    has no `directUrl` field, so the split lives in `prisma.config.ts`, which loads
+    `.env.local` explicitly because the Prisma CLI does not.
+  - `prisma/sql/polymorphic-checks.sql` holds the one-target CHECKs. **Adding a
+    commentable or reportable surface means adding its column to the matching
+    constraint** — Prisma has no polymorphic relation and will not do it for you.
 - **All three top-nav controls are live and all three are frontend-only.** Create opens a
   menu to `/create/{post,project,event}` (PBI-022); the bell links to `/notifications`
   (PBI-023); Account opens a dropdown (PBI-024). None may **assert a logged-in identity

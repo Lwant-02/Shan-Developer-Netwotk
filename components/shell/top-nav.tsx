@@ -17,9 +17,6 @@ export function TopNav() {
 
   return (
     <header className="border-border bg-background/85 supports-backdrop-filter:bg-background/70 sticky top-0 z-40 border-b backdrop-blur">
-      {/* `flex-wrap` lets the `w-full` search bar drop to its own row below `sm`. It also
-          defeats `min-h-16` once wrapped — the height comes from the rows — so the
-          vertical padding has to be explicit here. */}
       <div className="flex min-h-16 w-full flex-wrap items-center gap-3 px-4 py-3 sm:flex-nowrap sm:px-6 sm:py-0">
         <MobileNav>
           <LeftNav />
@@ -46,8 +43,6 @@ export function TopNav() {
         <SearchTrigger />
 
         <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
-          {/* Signed-in only. Hidden until `CurrentUserProvider` resolves, so the served
-              HTML stays the anonymous nav. */}
           <AuthedOnly>
             <CreateMenu />
             <Link
@@ -59,7 +54,6 @@ export function TopNav() {
             </Link>
           </AuthedOnly>
           <AccountMenuSlot />
-          {/* Below `sm` this lives in the drawer instead. */}
           <span className="hidden sm:contents">
             <LocaleSwitcher />
           </span>

@@ -8,11 +8,6 @@ import {
   normalizeHandle,
 } from "@/lib/auth/handle";
 
-// The handle and display name are seeded from the OAuth profile name (owner's call,
-// PBI-028), so a new member arrives recognisable. What must never leak is the **email** —
-// `design.md` forbids exposing it, and addresses are so often `firstname.lastname` that
-// using one as a fallback would publish the address itself.
-
 function user(provider: string, metadata: Record<string, unknown> = {}) {
   return {
     id: "00000000-0000-0000-0000-000000000000",
@@ -27,8 +22,6 @@ test("the handle comes from the provider's profile name", () => {
   );
 });
 
-// The load-bearing one. With no name to work from, the email is sitting right there in
-// the payload and must still never be reached for.
 test("the email is never used for a handle, even as a last resort", () => {
   const handle = deriveHandle(
     user("google", { email: "sai.kham@example.com" }),
@@ -39,7 +32,6 @@ test("the email is never used for a handle, even as a last resort", () => {
   expect(handle).not.toContain("kham");
 });
 
-// GitHub's login is the fallback when no name is set — it is already public there.
 test("a GitHub login is used when the provider gives no name", () => {
   expect(deriveHandle(user("github", { user_name: "Lwant-02" }))).toBe(
     "lwant_02",
@@ -60,11 +52,11 @@ test("the display name is the provider's name, never the email", () => {
   ).toBeNull();
 });
 
-// The avatar URL is rendered straight into an <img>. A provider-supplied `javascript:` or
-// `data:` string has no business getting there, so anything not plainly https is dropped.
 test("only an https avatar URL is accepted", () => {
   expect(
-    deriveAvatarUrl(user("github", { avatar_url: "https://example.com/a.png" })),
+    deriveAvatarUrl(
+      user("github", { avatar_url: "https://example.com/a.png" }),
+    ),
   ).toBe("https://example.com/a.png");
 
   expect(
@@ -75,7 +67,6 @@ test("only an https avatar URL is accepted", () => {
   ).toBeNull();
 });
 
-// A handle that reads as the platform itself is impossible to claw back once held.
 test("handles that impersonate the platform are rejected", () => {
   expect(normalizeHandle("admin")).toBeNull();
   expect(normalizeHandle("Moderator")).toBeNull();

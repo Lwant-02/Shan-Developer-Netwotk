@@ -18,10 +18,13 @@ import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { PROVIDER, type CurrentUser } from "@/lib/current-user";
 
-// Signed-in only. Never in the served HTML, which is static — it appears once
-// `CurrentUserProvider` resolves.
-
-function Avatar({ user, className }: { user: CurrentUser; className?: string }) {
+function Avatar({
+  user,
+  className,
+}: {
+  user: CurrentUser;
+  className?: string;
+}) {
   return user.avatarUrl ? (
     <Image
       src={user.avatarUrl}
@@ -69,7 +72,6 @@ export function AccountMenu({ user }: { user: CurrentUser }) {
             <span className="text-muted-foreground truncate text-xs">
               @{user.handle}
             </span>
-            {/* The email behind it is never shown — OAuth emails are not public. */}
             <span className="text-muted-foreground/80 mt-1 flex items-center gap-1.5 text-xs">
               <Image
                 src={provider.icon}
@@ -103,7 +105,6 @@ export function AccountMenu({ user }: { user: CurrentUser }) {
         <DropdownMenuItem
           onClick={() =>
             startTransition(async () => {
-              // Before the action: `signOut` redirects, so nothing after it runs.
               toast.success(t("signedOutToast"));
               await signOut(window.location.pathname);
             })

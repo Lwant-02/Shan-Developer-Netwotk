@@ -6,7 +6,7 @@ import { AdminOverview } from "@/components/admin/admin-overview";
 import { ReportQueue } from "@/components/admin/report-queue";
 import { AppShell } from "@/components/shell/app-shell";
 import { listReports } from "@/lib/reports";
-import { getCurrentUser } from "@/lib/auth/current-user";
+import { getCurrentUser } from "@/lib/auth/server";
 import { isAdmin } from "@/lib/current-user";
 
 export async function generateMetadata({
@@ -31,8 +31,6 @@ export default async function AdminPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  // 404 rather than a redirect: the same response an anonymous visitor gets, so the
-  // route's existence isn't disclosed by its own error.
   if (!isAdmin(await getCurrentUser())) notFound();
 
   const t = await getTranslations("Admin");

@@ -23,18 +23,14 @@ test("every activation sends a new open signal", async () => {
   render(
     <NextIntlClientProvider locale="en" messages={en}>
       <SearchTrigger />
-    </NextIntlClientProvider>
+    </NextIntlClientProvider>,
   );
 
-  // Two placements render — the narrow-screen bar that wraps below the nav and the
-  // inline one from `sm` up. Either must reopen the palette, so this drives the first.
   const [trigger] = screen.getAllByRole("button", {
     name: en.Nav.search,
   });
 
   fireEvent.click(trigger);
-  // The palette is a `next/dynamic` import, so it mounts a tick later. Without yielding
-  // here the assertions run before any signal is recorded.
   await screen.findAllByRole("button", { name: en.Nav.search });
   fireEvent.click(trigger);
   fireEvent.click(trigger);

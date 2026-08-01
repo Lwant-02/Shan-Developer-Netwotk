@@ -8,9 +8,6 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { AccountMenu } from "./account-menu";
 
-// Client leaves so `TopNav` stays a Server Component. `AccountMenu` keeps its user
-// prop so it stays directly testable.
-
 export function AccountMenuSlot() {
   const user = useCurrentUser();
   if (!user) return null;
@@ -22,7 +19,6 @@ export function NavSignInButton() {
   const t = useTranslations("Nav");
   const user = useCurrentUser();
 
-  // Hidden from `xl`, where the right rail's card takes over.
   if (user) return null;
 
   return (

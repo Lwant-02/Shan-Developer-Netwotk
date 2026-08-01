@@ -53,10 +53,6 @@ export function LeftNav({ className }: { className?: string }) {
         {secondary.map(({ key, icon: Icon, href }) => (
           <NavItem key={key} icon={icon(Icon)} label={t(key)} href={href} />
         ))}
-        {/* Sits with the secondary group rather than the content sections: it is not
-            somewhere members browse. Absent from the served HTML for everyone — it
-            appears only after the client learns the user is a moderator, and `/admin`
-            re-checks that on the server regardless (PBI-025). */}
         <AdminNavItem label={t("admin")} icon={icon(ShieldCheck)} />
       </div>
 

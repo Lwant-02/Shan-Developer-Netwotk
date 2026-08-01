@@ -40,7 +40,6 @@ export function MobileNav({ children }: { children: ReactNode }) {
         </SheetHeader>
         <div className="p-2">{children}</div>
 
-        {/* In the header from `sm` up; here below it. */}
         <div className="border-border mt-auto border-t p-4 sm:hidden">
           <LocaleSwitcher />
         </div>

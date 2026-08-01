@@ -36,7 +36,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </div>
 
       <FeedbackLauncher />
-      <Toaster position="bottom-center" />
+      <Toaster position="bottom-right" />
     </CurrentUserProvider>
   );
 }

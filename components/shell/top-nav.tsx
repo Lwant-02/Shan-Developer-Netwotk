@@ -2,26 +2,25 @@ import { Bell } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
-import { SignInDialog } from "@/components/auth/sign-in-dialog";
+import { AuthedOnly } from "@/components/auth/current-user";
 import { SearchTrigger } from "@/components/search/search-trigger";
-import { buttonVariants } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { siteConfig } from "@/lib/site";
-import { cn } from "@/lib/utils";
-import { getViewer } from "@/lib/viewer";
-import { AccountMenu } from "./account-menu";
 import { CreateMenu } from "./create-menu";
 import { LeftNav } from "./left-nav";
 import { LocaleSwitcher } from "./locale-switcher";
 import { MobileNav } from "./mobile-nav";
+import { AccountMenuSlot, NavSignInButton } from "./nav-account";
 
 export function TopNav() {
   const t = useTranslations("Nav");
-  const viewer = getViewer();
 
   return (
     <header className="border-border bg-background/85 supports-backdrop-filter:bg-background/70 sticky top-0 z-40 border-b backdrop-blur">
-      <div className="flex h-16 w-full items-center gap-3 px-4 sm:px-6">
+      {/* `flex-wrap` lets the `w-full` search bar drop to its own row below `sm`. It also
+          defeats `min-h-16` once wrapped — the height comes from the rows — so the
+          vertical padding has to be explicit here. */}
+      <div className="flex min-h-16 w-full flex-wrap items-center gap-3 px-4 py-3 sm:flex-nowrap sm:px-6 sm:py-0">
         <MobileNav>
           <LeftNav />
         </MobileNav>
@@ -47,37 +46,24 @@ export function TopNav() {
         <SearchTrigger />
 
         <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
-          {/* Create routes to the composers (PBI-022), the bell to the notifications
-              page (PBI-023), and Account opens a menu (PBI-024). All three are
-              frontend-only. `getViewer()` is `null` in production, so what ships asserts
-              no logged-in identity. */}
-          <CreateMenu />
-          <Link
-            href="/notifications"
-            aria-label={t("notifications")}
-            className="text-muted-foreground hover:bg-muted flex size-9 items-center justify-center rounded-lg transition-colors"
-          >
-            <Bell className="size-5" />
-          </Link>
-          <AccountMenu viewer={viewer} />
-          <LocaleSwitcher />
-          {/* Hidden from `xl`, where the right rail's "Sign in to post" card takes
-              over — two sign-in buttons on one screen is one too many. Gone entirely
-              once there is a viewer: "Sign in" beside a signed-in avatar is the
-              contradiction the identity rule exists to prevent. */}
-          {!viewer && (
-            <SignInDialog>
-              <button
-                type="button"
-                className={cn(
-                  buttonVariants({ size: "default" }),
-                  "cursor-pointer font-normal xl:hidden",
-                )}
-              >
-                {t("signIn")}
-              </button>
-            </SignInDialog>
-          )}
+          {/* Signed-in only. Hidden until `CurrentUserProvider` resolves, so the served
+              HTML stays the anonymous nav. */}
+          <AuthedOnly>
+            <CreateMenu />
+            <Link
+              href="/notifications"
+              aria-label={t("notifications")}
+              className="text-muted-foreground hover:bg-muted flex size-9 items-center justify-center rounded-lg transition-colors"
+            >
+              <Bell className="size-5" />
+            </Link>
+          </AuthedOnly>
+          <AccountMenuSlot />
+          {/* Below `sm` this lives in the drawer instead. */}
+          <span className="hidden sm:contents">
+            <LocaleSwitcher />
+          </span>
+          <NavSignInButton />
         </div>
       </div>
     </header>

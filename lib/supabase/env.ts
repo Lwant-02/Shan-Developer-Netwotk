@@ -1,0 +1,15 @@
+// Both are `NEXT_PUBLIC_` and reach the browser, which is correct: the publishable key
+// grants only what RLS allows. The secret key must never appear here.
+
+export function supabaseEnv() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+
+  if (!url || !key) {
+    throw new Error(
+      "NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY must be set — see .env.example.",
+    );
+  }
+
+  return { url, key };
+}

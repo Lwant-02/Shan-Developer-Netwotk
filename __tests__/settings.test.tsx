@@ -5,14 +5,14 @@ import { NextIntlClientProvider } from "next-intl";
 import { SettingsForm } from "@/components/settings/settings-form";
 import { getDeveloperByHandle } from "@/lib/developers";
 import en from "@/messages/en.json";
-import { mockViewer } from "@/lib/viewer";
+import { testUser } from "./fixtures/current-user";
 
-const developer = getDeveloperByHandle(mockViewer.handle);
+const developer = getDeveloperByHandle(testUser.handle);
 
 function renderForm() {
   return render(
     <NextIntlClientProvider locale="en" messages={en}>
-      <SettingsForm viewer={mockViewer} developer={developer} />
+      <SettingsForm user={testUser} developer={developer} />
     </NextIntlClientProvider>,
   );
 }

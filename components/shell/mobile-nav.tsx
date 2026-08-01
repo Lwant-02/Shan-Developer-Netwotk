@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/sheet";
 import { siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
+import { LocaleSwitcher } from "./locale-switcher";
 
 // The left nav is a server component passed in as children, so this client leaf only
 // owns the open/close of the drawer — the nav content stays on the server.
@@ -26,7 +27,7 @@ export function MobileNav({ children }: { children: ReactNode }) {
         aria-label={t("openMenu")}
         className={cn(
           buttonVariants({ variant: "ghost", size: "icon" }),
-          "cursor-pointer lg:hidden"
+          "cursor-pointer lg:hidden",
         )}
       >
         <Menu className="size-5" />
@@ -38,6 +39,11 @@ export function MobileNav({ children }: { children: ReactNode }) {
           </SheetTitle>
         </SheetHeader>
         <div className="p-2">{children}</div>
+
+        {/* In the header from `sm` up; here below it. */}
+        <div className="border-border mt-auto border-t p-4 sm:hidden">
+          <LocaleSwitcher />
+        </div>
       </SheetContent>
     </Sheet>
   );

@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 
+import { AnonymousOnly } from "@/components/auth/current-user";
 import { SignInDialog } from "@/components/auth/sign-in-dialog";
 import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -13,25 +14,28 @@ export function RightRail() {
 
   return (
     <div className="flex flex-col gap-4">
-      <Card className="flex flex-col gap-4 p-5">
-        <div className="flex flex-col gap-2">
-          <h2 className="text-foreground text-base">{tHome("aboutTitle")}</h2>
-          <p className="text-muted-foreground text-sm leading-relaxed">
-            {tHome("aboutBody")}
-          </p>
-        </div>
-        <SignInDialog>
-          <button
-            type="button"
-            className={cn(
-              buttonVariants({ size: "lg" }),
-              "w-full cursor-pointer font-normal",
-            )}
-          >
-            {tHome("signInToPost")}
-          </button>
-        </SignInDialog>
-      </Card>
+      {/* From `xl` up the nav's Sign in button is hidden, so this is the way in. */}
+      <AnonymousOnly>
+        <Card className="flex flex-col gap-4 p-5">
+          <div className="flex flex-col gap-2">
+            <h2 className="text-foreground text-base">{tHome("aboutTitle")}</h2>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              {tHome("aboutBody")}
+            </p>
+          </div>
+          <SignInDialog>
+            <button
+              type="button"
+              className={cn(
+                buttonVariants({ size: "lg" }),
+                "w-full cursor-pointer font-normal",
+              )}
+            >
+              {tHome("signInToPost")}
+            </button>
+          </SignInDialog>
+        </Card>
+      </AnonymousOnly>
 
       <Card className="flex flex-col gap-1 p-5">
         <h2 className="text-muted-foreground mb-2 text-xs tracking-wide uppercase">

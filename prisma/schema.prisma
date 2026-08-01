@@ -95,24 +95,30 @@ enum NotificationKind {
 /// Prisma does not manage the `auth` schema, so this is a plain unique column rather than
 /// a foreign key; the row is created in the signup handler.
 model Profile {
-  id          String   @id @default(uuid(7)) @db.Uuid
-  authUserId  String   @unique @map("auth_user_id") @db.Uuid
+  id              String    @id @default(uuid(7)) @db.Uuid
+  authUserId      String    @unique @map("auth_user_id") @db.Uuid
   /// Pseudonymous, and the URL key for /developers/[handle].
-  handle      String   @unique
-  /// Optional chosen name. Still pseudonymous — never the OAuth real name.
-  displayName String?  @map("display_name")
-  role        String   @default("")
-  bio         String   @default("")
+  handle          String    @unique
+  /// Seeded from the OAuth profile name on first sign-in (owner's call, PBI-028), and
+  /// editable in /settings. Note this makes the provider's real name the public default:
+  /// a member who wants pseudonymity has to change it rather than opt into it.
+  displayName     String?   @map("display_name")
+  role            String    @default("")
+  bio             String    @default("")
   /// Coarse and optional: a region or town, never a precise address.
-  location    String?
-  /// Supabase storage object path, never a full URL — so changing bucket or CDN is
-  /// config, not a data migration.
-  avatarPath  String?  @map("avatar_path")
+  location        String?
+  /// The member's avatar, as a full URL. Seeded from the OAuth provider on first sign-in
+  /// and overwritten by an upload once image storage lands.
+  avatarUrl       String?   @map("avatar_url")
+  /// When this member accepted the Terms and Privacy Policy, so they are never asked to
+  /// agree twice. Nullable because it records an event, not a setting — null means no
+  /// recorded acceptance, which is not the same as a refusal.
+  termsAcceptedAt DateTime? @map("terms_accepted_at")
   /// Lets a member post while staying out of the public directory (design.md).
-  listed      Boolean  @default(true)
+  listed          Boolean   @default(true)
   /// Gates the admin surface (PBI-025). Replaces the `viewer.moderator` preview flag.
-  moderator   Boolean  @default(false)
-  joinedAt    DateTime @default(now()) @map("joined_at")
+  moderator       Boolean   @default(false)
+  joinedAt        DateTime  @default(now()) @map("joined_at")
 
   links         SocialLink[]
   posts         Post[]

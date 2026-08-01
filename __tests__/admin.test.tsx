@@ -98,9 +98,9 @@ test("the overview shows community counts and recent joins", () => {
   expect(screen.getByText(en.Admin.recentJoins)).toBeDefined();
 });
 
-// `getViewer()` returns null under test exactly as it does in production, so this asserts
+// `getCurrentUser()` returns null under test exactly as it does in production, so this asserts
 // what the live site ships: no admin entry for anyone.
-test("the left nav shows no admin entry without a moderator viewer", () => {
+test("the left nav shows no admin entry without a moderator user", () => {
   renderAt(<LeftNav />);
 
   expect(screen.queryByText(en.Nav.admin)).toBeNull();

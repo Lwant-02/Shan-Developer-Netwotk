@@ -2,8 +2,15 @@
 
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { useState, type ReactElement } from "react";
+import {
+  useState,
+  useSyncExternalStore,
+  useTransition,
+  type ReactElement,
+} from "react";
 
+import { signIn } from "@/lib/auth/actions";
+import type { AuthProvider } from "@/lib/current-user";
 import { buttonVariants } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -17,17 +24,10 @@ import {
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
-// Sign-in is the only gate in the product, so this is the highest-stakes screen in the
-// UI: it has to say what becomes public *before* someone hands over an OAuth identity.
-//
-// `"use client"` is forced by one thing only — the consent checkbox gates the provider
-// buttons. The trigger arrives as `children` so the nav and the right rail can share a
-// single dialog; passing it as children rather than a named prop is deliberate, since a
-// React element crossing the server/client boundary as a prop breaks the static
-// prerender.
-//
-// The provider buttons are inert: PBI-014 is the surface only, and this is where Better
-// Auth attaches in a later PBI.
+// The trigger arrives as `children` so the nav and right rail share one dialog — as a
+// named prop it would be a React element crossing the boundary, which breaks the
+// static prerender. Sign-in goes through a Server Action, so no auth library reaches
+// the browser; the redirect leaves the page, so there is no success state here.
 
 const providerButton = cn(
   buttonVariants({ variant: "outline", size: "lg" }),
@@ -41,6 +41,8 @@ const providerButton = cn(
 // worth widening for two static brand marks.
 const mark = { width: 18, height: 18, unoptimized: true } as const;
 
+const CONSENT_KEY = "sdn.terms-accepted";
+
 // `children` is the trigger, and is omitted when a caller drives the dialog with
 // `open`/`onOpenChange` instead — the account menu does, because a `DialogTrigger`
 // inside the menu popup is unmounted the moment the menu closes.
@@ -53,8 +55,28 @@ export function SignInDialog({
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 }) {
-  const [agreed, setAgreed] = useState(false);
+  const [ticked, setTicked] = useState(false);
+  const [pending, startTransition] = useTransition();
   const t = useTranslations("Auth");
+
+  // `profiles.terms_accepted_at` is the durable record, but it can't be read here —
+  // nobody is identified until after they authenticate. So the browser remembers too.
+  // `useSyncExternalStore` gives the server an explicit `false` rather than a mismatch.
+  const remembered = useSyncExternalStore(
+    () => () => {},
+    () => localStorage.getItem(CONSENT_KEY) !== null,
+    () => false,
+  );
+
+  const agreed = ticked || remembered;
+
+  // Read at click time: the path must keep its locale prefix, which next-intl's
+  // `usePathname` strips.
+  const start = (provider: AuthProvider) =>
+    startTransition(async () => {
+      localStorage.setItem(CONSENT_KEY, new Date().toISOString());
+      await signIn(provider, window.location.pathname + window.location.search);
+    });
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -70,7 +92,12 @@ export function SignInDialog({
         </DialogHeader>
 
         <div className="flex flex-col gap-3">
-          <button type="button" disabled={!agreed} className={providerButton}>
+          <button
+            type="button"
+            disabled={!agreed || pending}
+            onClick={() => start("google")}
+            className={providerButton}
+          >
             <Image src="/icons/google.svg" alt="" {...mark} />
             {t("google")}
           </button>
@@ -84,20 +111,34 @@ export function SignInDialog({
           {/* The supplied mark is #161514 on a #0a0a0a surface — invisible without
               inverting. White-on-dark is what GitHub's brand guidance specifies. The
               Google mark stays unaltered, as Google's guidelines require. */}
-          <button type="button" disabled={!agreed} className={providerButton}>
-            <Image src="/icons/github.svg" alt="" {...mark} className="invert" />
+          <button
+            type="button"
+            disabled={!agreed || pending}
+            onClick={() => start("github")}
+            className={providerButton}
+          >
+            <Image
+              src="/icons/github.svg"
+              alt=""
+              {...mark}
+              className="invert"
+            />
             {t("github")}
           </button>
         </div>
 
         <div className="flex items-start gap-3">
-          <Checkbox
-            id="auth-consent"
-            checked={agreed}
-            onCheckedChange={(checked) => setAgreed(checked)}
-            aria-labelledby="auth-consent-label"
-            className="mt-0.5"
-          />
+          {/* Gone once remembered, rather than pre-ticked — a box nobody ticked
+              reads as consent asserted on their behalf. */}
+          {!remembered && (
+            <Checkbox
+              id="auth-consent"
+              checked={ticked}
+              onCheckedChange={(checked) => setTicked(checked)}
+              aria-labelledby="auth-consent-label"
+              className="mt-0.5"
+            />
+          )}
           {/* Not a <label htmlFor>: the sentence now carries links, and clicking a
               link inside a label would toggle the checkbox and nests interactive
               controls. `aria-labelledby` gives the checkbox its name instead. */}
@@ -105,7 +146,7 @@ export function SignInDialog({
             id="auth-consent-label"
             className="text-muted-foreground text-xs leading-relaxed"
           >
-            {t.rich("consent", {
+            {t.rich(remembered ? "consentRemembered" : "consent", {
               terms: (chunks) => (
                 <Link
                   href="/terms"

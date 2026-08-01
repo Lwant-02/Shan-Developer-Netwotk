@@ -1,9 +1,12 @@
-import { MessageSquare, Share2 } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
+import { ShareButton } from "@/components/content/share-button";
 import { Link } from "@/i18n/navigation";
 import type { Post } from "@/lib/feed";
+import { siteUrl } from "@/lib/site";
+import { cn } from "@/lib/utils";
 import { LikeButton } from "./like-button";
 import { PostMeta } from "./post-meta";
 
@@ -14,6 +17,7 @@ const action =
 
 export function PostCard({ post }: { post: Post }) {
   const t = useTranslations("Post");
+  const locale = useLocale();
   const href = `/post/${post.slug}`;
 
   return (
@@ -55,10 +59,12 @@ export function PostCard({ post }: { post: Post }) {
           <MessageSquare className="size-4" />
           <span className="tabular-nums">{post.comments}</span>
         </Link>
-        <button type="button" className={action}>
-          <Share2 className="size-4" />
-          <span>{t("share")}</span>
-        </button>
+        <ShareButton
+          url={`${siteUrl()}/${locale}${href}`}
+          title={post.title}
+          label={t("share")}
+          className={cn(action, "relative z-10")}
+        />
       </footer>
     </article>
   );

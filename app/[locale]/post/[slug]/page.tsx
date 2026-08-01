@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ArrowLeft, MessageSquare, Share2 } from "lucide-react";
+import { ArrowLeft, MessageSquare } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -7,11 +7,12 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CommentThread } from "@/components/feed/comment-thread";
 import { LikeButton } from "@/components/feed/like-button";
 import { PostMeta } from "@/components/feed/post-meta";
+import { ShareButton } from "@/components/content/share-button";
 import { AppShell } from "@/components/shell/app-shell";
 import { Link } from "@/i18n/navigation";
 import { getCommentsFor } from "@/lib/comments";
 import { getPostBySlug, mockPosts } from "@/lib/feed";
-import { localeAlternates } from "@/lib/site";
+import { localeAlternates, siteUrl } from "@/lib/site";
 
 // Prerender every known post at build time (one per slug, per locale from the parent
 // layout). An unknown slug falls through to notFound() → the localised 404.
@@ -97,13 +98,11 @@ export default async function PostPage({
               <MessageSquare className="size-4" />
               <span className="tabular-nums">{comments.length}</span>
             </span>
-            <button
-              type="button"
-              className="text-muted-foreground bg-muted hover:text-foreground flex cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-1.5 transition-colors"
-            >
-              <Share2 className="size-4" />
-              <span>{t("share")}</span>
-            </button>
+            <ShareButton
+              url={`${siteUrl()}/${locale}/post/${post.slug}`}
+              title={post.title}
+              label={t("share")}
+            />
           </footer>
         </article>
 

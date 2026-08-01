@@ -15,7 +15,7 @@ import { Link } from "@/i18n/navigation";
 import { getCommentsFor } from "@/lib/comments";
 import { relativeTimeEn } from "@/lib/datetime";
 import { getProjectBySlug, mockProjects } from "@/lib/projects";
-import { localeAlternates } from "@/lib/site";
+import { localeAlternates, siteUrl } from "@/lib/site";
 
 // Prerender every known project at build time (one per slug, per locale from the parent
 // layout). An unknown slug falls through to notFound() → the localised 404.
@@ -103,7 +103,11 @@ export default async function ProjectPage({
                 <MessageSquare className="size-4" />
                 <span className="tabular-nums">{comments.length}</span>
               </span>
-              <ShareButton label={t("share")} />
+              <ShareButton
+              url={`${siteUrl()}/${locale}/projects/${project.slug}`}
+              title={project.title}
+              label={t("share")}
+            />
               <time dateTime={project.createdAtISO}>
                 {t("posted", {
                   time: relativeTimeEn(project.createdAtISO, now),

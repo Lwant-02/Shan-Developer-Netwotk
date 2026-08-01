@@ -1,6 +1,6 @@
 import { Calendar, MapPin } from "lucide-react";
 import Image from "next/image";
-import { useNow, useTranslations } from "next-intl";
+import { useLocale, useNow, useTranslations } from "next-intl";
 
 import { CommentButton } from "@/components/content/comment-button";
 import { ShareButton } from "@/components/content/share-button";
@@ -8,6 +8,7 @@ import { StarButton } from "@/components/projects/star-button";
 import { Link } from "@/i18n/navigation";
 import { formatDateEn, relativeTimeEn } from "@/lib/datetime";
 import type { EventItem } from "@/lib/events";
+import { siteUrl } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { EventMenu } from "./event-menu";
 
@@ -29,6 +30,7 @@ export function EventCard({
 }) {
   const now = useNow();
   const t = useTranslations("Events");
+  const locale = useLocale();
   const href = `/events/${event.slug}`;
 
   return (
@@ -115,6 +117,8 @@ export function EventCard({
           className="group-hover/event:bg-background"
         />
         <ShareButton
+          url={`${siteUrl()}/${locale}${href}`}
+          title={event.title}
           label={t("share")}
           className="group-hover/event:bg-background relative z-10"
         />

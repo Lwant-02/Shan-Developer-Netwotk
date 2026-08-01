@@ -11,7 +11,6 @@
   "Nav": {
     "home": "Feed",
     "projects": "Projects",
-    "community": "Community",
     "events": "Events",
     "developers": "Developers",
     "comingSoon": "soon",
@@ -35,6 +34,16 @@
     "confirmDeleteBody": "This would remove your profile and everything you have posted. It cannot be undone.",
     "notWired": "Nothing is wired up yet — this is a preview, so no account can be deleted. Account deletion needs sign-in, a rate-limited endpoint, and a decision about what happens to your posts, projects, and events.",
     "cancel": "Cancel"
+  },
+  "Share": {
+    "title": "Share",
+    "description": "Send this to someone on the app they already use.",
+    "network_facebook": "Share on Facebook",
+    "network_telegram": "Share on Telegram",
+    "network_viber": "Share on Viber",
+    "network_line": "Share on LINE",
+    "network_x": "Share on X",
+    "network_linkedin": "Share on LinkedIn"
   },
   "Report": {
     "title": "Report this content",

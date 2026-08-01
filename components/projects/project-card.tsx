@@ -1,10 +1,11 @@
 import Image from "next/image";
-import { useNow, useTranslations } from "next-intl";
+import { useLocale, useNow, useTranslations } from "next-intl";
 
 import { CommentButton } from "@/components/content/comment-button";
 import { ShareButton } from "@/components/content/share-button";
 import { Link } from "@/i18n/navigation";
 import { relativeTimeEn } from "@/lib/datetime";
+import { siteUrl } from "@/lib/site";
 import type { Project } from "@/lib/projects";
 import { cn } from "@/lib/utils";
 import { ProjectMenu } from "./project-menu";
@@ -23,6 +24,7 @@ export function ProjectCard({
 }) {
   const now = useNow();
   const t = useTranslations("Projects");
+  const locale = useLocale();
   const href = `/projects/${project.slug}`;
 
   return (
@@ -88,6 +90,8 @@ export function ProjectCard({
           className="group-hover/project:bg-background"
         />
         <ShareButton
+          url={`${siteUrl()}/${locale}${href}`}
+          title={project.title}
           label={t("share")}
           className="group-hover/project:bg-background relative z-10"
         />

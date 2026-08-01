@@ -116,8 +116,7 @@ export function CommandPalette({ openSignal }: { openSignal: number }) {
   const pathname = usePathname();
   const locale = useLocale();
 
-  // Only destinations that exist. Community is still omitted until its page lands —
-  // a palette of dead ends is worse than a short one.
+  // Only destinations that exist — a palette of dead ends is worse than a short one.
   const actions: Action[] = [
     {
       id: "home",

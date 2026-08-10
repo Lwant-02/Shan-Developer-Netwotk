@@ -188,15 +188,26 @@ CoS 2 is what catches a mistake here.
   moderation deferred (005) it is the whole spam defense.
 - **No avatar upload.** Avatars stay initials; `profiles.avatar_path` stays null. Storage
   is its own PBI.
-- **Integration risk to settle before agreeing: Prisma 7 + `@prisma/adapter-pg`.** That is
-  this repo's exact setup, and there is an unresolved Better Auth discussion (#6529)
-  reporting a runtime `P1010` "user was denied access" against it while `db push` works.
-  The thread is marked answered but the answer was never written down, and a second
-  reporter followed up unanswered. **Prove the adapter path works on a scratch branch
-  before this PBI is agreed** — if it does not, the fallback is Better Auth's own
-  connection rather than the Prisma adapter, which is a different PBI shape.
-- **Check whether `multiSchema` still needs a `previewFeatures` flag on Prisma 7.** The
-  current docs show it configured with no flag, but that is not the same as confirmed GA.
+- **Resolved 2026-08-10 — the Prisma 7 + `@prisma/adapter-pg` risk is cleared.** The
+  concern was Better Auth discussion #6529, reporting a runtime `P1010` "user was denied
+  access" against this repo's exact setup while `db push` worked. A throwaway spike
+  (`better-auth@1.6.26`, Prisma 7.9.1) settled it and was then deleted:
+  - Against a local Postgres 15, `betterAuth({ database: prismaAdapter(db) })` over a
+    `PrismaClient` constructed with `PrismaPg` **signed a user up, signed them in, and
+    persisted the session**. No `P1010`.
+  - Against the **real pooled Supabase `DATABASE_URL`** (read-only — no writes, no DDL),
+    the connection authorized (`select 1`) and Better Auth's adapter failed with *"Model
+    user does not exist in the database"* — the missing table, **not** an access denial.
+    That is the discriminator: `P1010` fires on connect, before any table lookup.
+  - The upstream reporter said the cause was "the database provider", and their database
+    was not Supabase. It does not reproduce here.
+- **`multiSchema` is GA on Prisma 7 — no `previewFeatures` flag.** Verified in the same
+  spike: a datasource with `schemas = ["public", "auth"]` and `@@schema` on each model
+  pushed cleanly, creating both namespaces. The spike also asserted the two properties
+  this PBI cares about: the four auth tables land in `auth`, `profiles` stays in `public`,
+  and `information_schema` shows **no column matching `%email%` anywhere in `public`**.
+  Worth reproducing as a real test (CoS 8), since it is the check that would catch a
+  future migration quietly putting an email in the published schema.
 - **`auth_user_id` is `@db.Uuid`; Better Auth generates string ids** that are not UUIDs by
   default. Either configure Better Auth's id generation to emit UUIDs or widen the column
   — decide at implementation, and prefer the former so the existing type holds.

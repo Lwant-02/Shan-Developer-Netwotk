@@ -16,6 +16,14 @@ export type CurrentUser = Pick<Developer, "handle" | "displayName" | "role"> & {
   moderator?: boolean;
 };
 
+export const mockCurrentUser: CurrentUser = {
+  handle: "tai_builds",
+  displayName: "Tai Builds",
+  role: "Keyboard & Input Developer",
+  provider: "github",
+  moderator: true,
+};
+
 export function isAuthenticated(user: CurrentUser | null): boolean {
   return user !== null;
 }

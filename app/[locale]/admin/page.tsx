@@ -1,13 +1,10 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { AdminOverview } from "@/components/admin/admin-overview";
 import { ReportQueue } from "@/components/admin/report-queue";
 import { AppShell } from "@/components/shell/app-shell";
 import { listReports } from "@/lib/reports";
-import { getCurrentUser } from "@/lib/auth/get-current-user";
-import { isAdmin } from "@/lib/current-user";
 
 export async function generateMetadata({
   params,
@@ -30,8 +27,6 @@ export default async function AdminPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-
-  if (!isAdmin(await getCurrentUser())) notFound();
 
   const t = await getTranslations("Admin");
   const now = new Date();

@@ -1,14 +1,29 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { createContext, useContext, useEffect, useState } from "react";
-import { toast } from "sonner";
+import { createContext, useContext, useMemo, useState } from "react";
 
-import { isAdmin, isOwner, type CurrentUser } from "@/lib/current-user";
+import {
+  isAdmin,
+  isOwner,
+  mockCurrentUser,
+  type AuthProvider,
+  type CurrentUser,
+} from "@/lib/current-user";
+
+type AuthActions = {
+  signIn: (provider: AuthProvider) => void;
+  signOut: () => void;
+};
 
 const CurrentUserContext = createContext<CurrentUser | null>(null);
 
+const AuthActionsContext = createContext<AuthActions>({
+  signIn: () => {},
+  signOut: () => {},
+});
+
 export const useCurrentUser = () => useContext(CurrentUserContext);
+export const useAuthActions = () => useContext(AuthActionsContext);
 export const useIsAuthenticated = () => useCurrentUser() !== null;
 export const useIsAdmin = () => isAdmin(useCurrentUser());
 export const useIsOwner = (handle: string) => isOwner(useCurrentUser(), handle);
@@ -21,45 +36,24 @@ export function AnonymousOnly({ children }: { children: React.ReactNode }) {
   return useIsAuthenticated() ? null : <>{children}</>;
 }
 
-const hasAuthCookie = () =>
-  document.cookie.split(";").some((c) => c.trimStart().startsWith("sb-"));
-
-function announceReturn(t: (key: string) => string) {
-  const url = new URL(window.location.href);
-  const signedIn = url.searchParams.has("signed_in");
-  const failed = url.searchParams.has("auth_error");
-  if (!signedIn && !failed) return;
-
-  if (signedIn) toast.success(t("signedInToast"));
-  else toast.error(t("signInFailedToast"));
-
-  url.searchParams.delete("signed_in");
-  url.searchParams.delete("auth_error");
-  window.history.replaceState(null, "", url.toString());
-}
-
 export function CurrentUserProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [user, setUser] = useState<CurrentUser | null>(null);
-  const t = useTranslations("Auth");
+  const [user, setUser] = useState<CurrentUser | null>(mockCurrentUser);
 
-  useEffect(() => {
-    announceReturn(t);
+  const actions = useMemo<AuthActions>(
+    () => ({
+      signIn: (provider) => setUser({ ...mockCurrentUser, provider }),
+      signOut: () => setUser(null),
+    }),
+    [],
+  );
 
-    if (!hasAuthCookie()) return;
-
-    const controller = new AbortController();
-
-    fetch("/api/me", { signal: controller.signal })
-      .then((response) => (response.ok ? response.json() : null))
-      .then((data: CurrentUser | null) => setUser(data))
-      .catch(() => {});
-
-    return () => controller.abort();
-  }, [t]);
-
-  return <CurrentUserContext value={user}>{children}</CurrentUserContext>;
+  return (
+    <AuthActionsContext value={actions}>
+      <CurrentUserContext value={user}>{children}</CurrentUserContext>
+    </AuthActionsContext>
+  );
 }

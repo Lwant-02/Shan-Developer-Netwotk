@@ -54,15 +54,26 @@ Read-only-for-anonymous is a deliberate and correct fit for the thesis: the cont
 must be public and indexable, or nothing pulls new people in. Value locked behind a
 login can't recruit.
 
-### Authentication 🟢 (reversed 2026-08-01 — now Supabase Auth)
+### Authentication 🔴 (provider reopened 2026-08-10)
 
-**Supabase Auth**, with **Google and GitHub OAuth**.
+**Google and GitHub OAuth** — that part is 🟢 and unchanged.
 
 Google alongside GitHub is a better call than my earlier GitHub-only suggestion —
 GitHub-only would have quietly excluded students and less-established developers,
 which is a chunk of the intended audience.
 
-> **Supersedes: Better Auth.** The owner moved the whole backend to Supabase (see
+**Which provider implements it is open.** Supabase Auth was built (PBI-028) and then
+removed on 2026-08-10 at the owner's call; the identity layer is frontend-only mock state
+until a replacement is agreed. The database stays on Supabase Postgres — only auth was
+dropped. `profiles.auth_user_id` is a bare uuid with no foreign key into `auth.users`, so
+it can key off whatever provider lands next without a migration.
+
+The two constraints any candidate has to meet: **the OAuth email never becomes public and
+never gets a column in `profiles`**, and **the session is never read on a public page** —
+every public route renders `AppShell`, so one `cookies()` read de-statics the whole
+anonymous-read surface at once.
+
+> **Superseded: Supabase Auth.** The owner moved the whole backend to Supabase (see
 > *Architecture*), and Better Auth's advantage there evaporates: Supabase's storage
 > policies key off its own JWT, so keeping a second identity system would mean bridging
 > tokens for no gain. Decided at the cheapest possible moment — the sign-in dialog
@@ -294,8 +305,9 @@ shadcn `base-nova` on **Base UI** (not Radix). Gotchas: [`AGENTS.md`](./AGENTS.m
 
 ### Decided 🟢
 
-- **Database, auth, and storage: Supabase** (Postgres), region **Singapore** — closest to
-  the audience, and it should match the Vercel function region.
+- **Database and storage: Supabase** (Postgres), region **Singapore** — closest to
+  the audience, and it should match the Vercel function region. **Auth is no longer part of
+  this** — see *Authentication*, where the provider is reopened.
 - **Data layer: Prisma** (v7, `prisma-client` generator, `@prisma/adapter-pg`). Prisma
   connects with a privileged role and therefore **bypasses RLS**, so authorization lives in
   the server handlers beside the rate limits. That is a deliberate trade: this app is
@@ -307,12 +319,13 @@ shadcn `base-nova` on **Base UI** (not Radix). Gotchas: [`AGENTS.md`](./AGENTS.m
   `prisma migrate` creates is world-readable. See `prisma/sql/enable-rls.sql`.
   **Realtime or any browser-side query (chat) would flip this** — those bypass the server
   entirely, so they need real policies, not deny-all.
-- **The session is never read on a public page** (PBI-028). Every public page renders the
+- **The session is never read on a public page.** Every public page renders the
   shell, and reading cookies there would opt home, posts, projects, events, and profiles
   out of static generation together — the anonymous readers who are the recruiting
-  mechanism would lose their prerendered, edge-cacheable HTML. So the served HTML is always
-  the signed-out shell, and a small client island fetches `/api/me` afterwards, only
-  when an auth cookie exists. **No Supabase client ships to the browser at all.**
+  mechanism would lose their prerendered, edge-cacheable HTML. The rule outlived the
+  Supabase Auth that prompted it (PBI-028) and binds whatever provider lands next: identity
+  is resolved in a small client island, never in the server-rendered shell. **No auth
+  client ships to the browser either.**
   Partial Prerendering would let the nav read the session on the server and keep pages
   static, but Next 16 removed the per-route flag: it now arrives only with
   `cacheComponents: true`, which makes data fetching dynamic-by-default app-wide. That is
@@ -441,7 +454,8 @@ Still open:
 | Locale-prefixed URLs? Default locale? | **Yes, prefixed. Shan (`shn`) is the default.** |
 | Theme | **Dark only** (PBI-013, reversed 2026-07-20). Greyscale `.dark` pinned on, no toggle. Supersedes PBI-011 (light + dark), which superseded PBI-003 (light-only). |
 | Zawgyi detection/conversion | **No.** Store Unicode, period. |
-| Database, auth, storage | **Supabase** (Postgres), Singapore region — reversed from Neon + Better Auth on 2026-08-01. Data layer is **Prisma**; RLS on with no policies as a deny-by-default backstop. |
+| Database, storage | **Supabase** (Postgres), Singapore region — reversed from Neon on 2026-08-01. Data layer is **Prisma**; RLS on with no policies as a deny-by-default backstop. |
+| Auth provider | 🔴 **Open.** Supabase Auth was built (PBI-028) and removed on 2026-08-10; identity is frontend-only mock state until a replacement is agreed. Google + GitHub OAuth is still settled. |
 | Hosting | **Vercel.** |
 | Per-content language tagging | **Yes** — content language is independent of UI locale. |
 | Who moderates, and how fast | **Deferred**, not answered. See Governance. |

@@ -2,14 +2,10 @@
 
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import {
-  useState,
-  useSyncExternalStore,
-  useTransition,
-  type ReactElement,
-} from "react";
+import { useState, useSyncExternalStore, type ReactElement } from "react";
+import { toast } from "sonner";
 
-import { signIn } from "@/lib/auth/actions";
+import { useAuthActions } from "@/components/auth/current-user";
 import type { AuthProvider } from "@/lib/current-user";
 import { buttonVariants } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -51,7 +47,7 @@ export function SignInDialog({
   onOpenChange?: (open: boolean) => void;
 }) {
   const [ticked, setTicked] = useState(false);
-  const [pending, startTransition] = useTransition();
+  const { signIn } = useAuthActions();
   const t = useTranslations("Auth");
 
   const remembered = useSyncExternalStore(
@@ -62,11 +58,12 @@ export function SignInDialog({
 
   const agreed = ticked || remembered;
 
-  const start = (provider: AuthProvider) =>
-    startTransition(async () => {
-      localStorage.setItem(CONSENT_KEY, new Date().toISOString());
-      await signIn(provider, window.location.pathname + window.location.search);
-    });
+  const start = (provider: AuthProvider) => {
+    localStorage.setItem(CONSENT_KEY, new Date().toISOString());
+    onOpenChange?.(false);
+    signIn(provider);
+    toast.success(t("signedInToast"));
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -84,7 +81,7 @@ export function SignInDialog({
         <div className="flex flex-col gap-3">
           <button
             type="button"
-            disabled={!agreed || pending}
+            disabled={!agreed}
             onClick={() => start("google")}
             className={providerButton}
           >
@@ -103,7 +100,7 @@ export function SignInDialog({
               Google mark stays unaltered, as Google's guidelines require. */}
           <button
             type="button"
-            disabled={!agreed || pending}
+            disabled={!agreed}
             onClick={() => start("github")}
             className={providerButton}
           >

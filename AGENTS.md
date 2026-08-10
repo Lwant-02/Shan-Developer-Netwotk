@@ -33,9 +33,12 @@ an agent is allowed to do.
   behind auth — public reach is the recruiting mechanism. Any signed-in user can post
   or interact; there is **no separate verification tier** ("verified" = OAuth
   email-verified), so don't invent a `verificationState`.
-- **Auth is Supabase Auth**, with Google and GitHub OAuth. Not NextAuth/Auth.js, and no
-  longer Better Auth — don't import patterns from either. Use `@supabase/ssr`; the
-  deprecated `auth-helpers` package is what most training data shows.
+- **There is currently no auth provider, and picking one is an open decision.** Supabase
+  Auth was built (PBI-028) and then removed; the identity layer is frontend-only mock
+  state until a replacement is agreed. **Don't wire one in without asking** — see the
+  frontend-only rules under "Constraints from shipped features". Whatever lands keeps
+  **Google and GitHub OAuth**, since that is what `design.md` settles and what the
+  sign-in UI offers.
 - **Every write endpoint needs a rate limit.** Since sign-in is the only gate, rate
   limiting and moderation are the entire spam defense. Don't ship a write path
   without one.
@@ -260,56 +263,64 @@ Rules that fall out of already-built work. What is built, mocked, or still open 
   persists nothing); the notifications list is mock, and "mark all as read" clears the
   unread dots in local state only (persists nothing). Post `⋯` actions are the same: when
   auth lands, edit/delete become owner-only and report needs moderation (PBI-005).
-- **Auth is Supabase Auth, and the session is never read on a public page (PBI-028).**
-  This is the rule most likely to be broken by accident, so read it before touching the
-  shell:
-  - **`getCurrentUser()` (`lib/auth/get-current-user.ts`) reads cookies**, which opts a route
-    out of static generation. Every public page renders `AppShell`, so calling it there
-    would de-static home, posts, projects, events, and profiles **together**. Use it only
-    on routes already dynamic and `noindex` — `/settings`, `/admin`, `/api/me`. Next 16
-    removed per-route PPR; the only escape hatch is `cacheComponents: true`, an app-wide
-    migration.
-  - **The nav gets the user from `CurrentUserProvider`**, which fetches `/api/me` — and
-    only when an auth cookie exists, so anonymous readers make no request. **No Supabase
-    client ships to the browser**; keep it that way.
-  - **Client answers decide what to draw, never what is allowed.** `useCurrentUser`,
-    `useIsAdmin`, `useIsOwner`, `AuthedOnly`, `AnonymousOnly` are presentation only —
-    a user can forge any of them. Gate on the server: `/admin` re-reads
-    `profiles.moderator` and calls `notFound()`. `AuthedOnly` also saves no bundle;
-    wrapped children still ship their chunks.
-  - **`lib/current-user.ts` must stay free of database and Supabase imports** — client
-    components import `PROVIDER` and `CurrentUser` from it, and a stray import would pull
-    Prisma into the browser. `lib/auth/get-current-user.ts` carries `import "server-only"` so
-    that mistake fails the build.
-  - **`proxy.ts` must keep excluding `/auth`** from the locale matcher, or next-intl
-    rewrites the OAuth callback to `/shn/auth/callback` and every sign-in breaks.
-  - **Handle, display name, and avatar are seeded from the OAuth profile** on first
-    sign-in (owner's call). The consequence to keep in mind: the provider's real name is
-    the public default, so **pseudonymity is something a member opts into** via
-    `/settings` rather than where they start. Don't quietly re-derive it the other way.
-  - **The email is the hard line.** It has no column in `profiles`, is never a fallback
-    for a handle — addresses are too often `firstname.lastname` — and never reaches a
-    public surface. Tests pin this.
-  - **Remote avatars need their host in `next.config.ts`.** `images.remotePatterns` lists
-    GitHub and Google by exact hostname; `next/image` 400s on anything else. Keep it to
-    exact hosts, not wildcards — that list is what stops the optimizer being used as an
-    open image proxy.
-  - **Consent is recorded twice, on purpose.** `profiles.terms_accepted_at` is the durable
-    record of who agreed and when; `localStorage` is what actually lets a returning member
-    skip the checkbox, because nobody is identified until *after* they authenticate.
-  - **`getClaims()`, never `getSession()`,** in server code — `getSession()` is not
-    guaranteed to revalidate the token, so it must not back any decision.
-  - **OAuth redirects use the request's own host,** not `siteUrl()`, which falls back to
-    `VERCEL_PROJECT_PRODUCTION_URL` and would land a preview sign-in on production.
-  - **A provider avatar URL is dropped unless it starts with `https://`** — it goes
-    straight into an `<img>` src.
-  - **`next` params on sign-in and the callback must be same-origin** (`/…`, never `//…`),
-    or a crafted link bounces someone off the site holding a fresh session.
-  - **A failed `ensureProfile` signs the user back out.** A session with no profile row is
-    a half-state every surface downstream assumes away.
-- **The `/admin` surface is a design ahead of its policy (PBI-025).** It is now gated on
-  `profiles.moderator` against a real session (PBI-028) and renders the localised 404 for
-  everyone else. Rows carry **Dismiss / Delete content / Ban author**, but acting
+- **There is no authentication. The whole identity layer is frontend-only.** PBI-028's
+  Supabase Auth was removed once the owner decided to change provider; the UI it unblocked
+  was kept, running on a mock. Read this before touching the shell:
+  - **`mockCurrentUser` in `lib/current-user.ts` is the only source of a "session".**
+    `CurrentUserProvider` seeds React state with it, so **every visitor renders as signed
+    in**. Nothing reads a cookie, a header, or the database, which is why every route
+    still prerenders — check the build output (`●` → `ƒ`) if you touch this.
+  - **Nothing here is a security boundary, because there is no server side to it.**
+    `useCurrentUser`, `useIsAdmin`, `useIsOwner`, `AuthedOnly`, `AnonymousOnly`, and
+    `useAuthActions` are presentation only. `/admin` is **ungated and publicly reachable**
+    — acceptable only while its queue is mock data that persists nothing. **Re-gate it on
+    the server the moment either fact changes.**
+  - **Sign in and sign out mutate local state and nothing else.** `useAuthActions`
+    swaps `mockCurrentUser` in and out of the provider so the signed-in and signed-out
+    designs are both reachable. It survives a click, not a refresh.
+  - **`lib/current-user.ts` must stay free of database imports** — client components
+    import `PROVIDER`, `CurrentUser`, and `mockCurrentUser` from it, and a stray import
+    would pull Prisma into the browser.
+  - **When real auth lands, the seam is `CurrentUserProvider` plus `mockCurrentUser`.**
+    Everything above it already reads the hooks. The rules that outlived Supabase and bind
+    the next provider too:
+    - **Never read the session on a public page.** A `cookies()` read opts the route out
+      of static generation, and every public page renders `AppShell` — so one careless
+      call de-statics home, posts, projects, events, and profiles **together**. Next 16
+      removed per-route PPR; the only escape hatch is `cacheComponents: true`, an app-wide
+      migration. Fetch identity client-side, or keep the read on routes already dynamic
+      and `noindex`.
+    - **Client answers decide what to draw, never what is allowed.** Every gate needs a
+      server-side counterpart. `AuthedOnly` also saves no bundle; wrapped children still
+      ship their chunks.
+    - **The email is the hard line.** It has no column in `profiles`, is never a fallback
+      for a handle — addresses are too often `firstname.lastname` — and never reaches a
+      public surface. Tests pin this.
+    - **Handle, display name, and avatar are seeded from the OAuth profile** on first
+      sign-in (owner's call). The consequence: the provider's real name is the public
+      default, so **pseudonymity is something a member opts into** via `/settings` rather
+      than where they start. Don't quietly re-derive it the other way.
+    - **A provider avatar URL is dropped unless it starts with `https://`** — it goes
+      straight into an `<img>` src — and **remote avatars need their host in
+      `next.config.ts`**. `images.remotePatterns` lists GitHub and Google by exact
+      hostname; `next/image` 400s on anything else. Keep it to exact hosts, not wildcards
+      — that list is what stops the optimizer being used as an open image proxy.
+    - **Consent is recorded twice, on purpose.** `profiles.terms_accepted_at` is the
+      durable record of who agreed and when; `localStorage` is what actually lets a
+      returning member skip the checkbox, because nobody is identified until *after* they
+      authenticate. Only the `localStorage` half exists today.
+    - **`next`/redirect params must be same-origin** (`/…`, never `//…`), or a crafted
+      link bounces someone off the site holding a fresh session. **OAuth redirects use the
+      request's own host,** not `siteUrl()`, which falls back to
+      `VERCEL_PROJECT_PRODUCTION_URL` and would land a preview sign-in on production.
+    - **`proxy.ts` must exclude whatever path the provider mounts its callback on**, or
+      next-intl rewrites it to `/shn/…` and every sign-in breaks. The matcher already
+      excludes `api`.
+    - Commit `90c1c87` holds the deleted Supabase implementation, including the
+      handle-collision and OAuth-claim-derivation logic, if any of it is worth adapting.
+- **The `/admin` surface is a design ahead of its policy (PBI-025).** With auth removed it
+  is **publicly reachable** and must be re-gated before it does anything real. Rows carry
+  **Dismiss / Delete content / Ban author**, but acting
   **persists nothing** — the row clears in local state and the confirm dialog says so.
   **Do not wire these to a real endpoint before PBI-005 settles the moderation policy**
   they would enforce; a takedown control that works before the rules exist is how
@@ -319,9 +330,10 @@ Rules that fall out of already-built work. What is built, mocked, or still open 
 - **`/settings` edits exactly the public-profile fields and nothing more (PBI-024).** The
   form mirrors `Developer` (display name, handle, role, bio, coarse location, links), so
   it can't become a second, richer identity store. It has **no email field** — never add
-  one. Save is still disabled even now that auth exists: saving is a write over identity
-  data and needs a rate limit first. Anonymous visitors get the sign-in gate; the route is
-  `noindex` and stays out of `app/sitemap.ts`, which is an explicit allowlist.
+  one. Save stays disabled: saving is a write over identity data and needs auth and a rate
+  limit first. The page prefills from `mockCurrentUser`, so the form is always the branch
+  that renders; the sign-in gate beside it is the branch a real session will restore. The
+  route is `noindex` and stays out of `app/sitemap.ts`, which is an explicit allowlist.
 - **The notifications surface (`app/[locale]/notifications/`, `components/notifications/`)
   is frontend-only (PBI-023).** The list comes from mock `lib/notifications.ts`; a real
   per-user feed needs the write paths that generate the events

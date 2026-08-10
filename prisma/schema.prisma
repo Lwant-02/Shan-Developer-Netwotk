@@ -5,6 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  schemas  = ["app_auth", "public"]
 }
 
 enum ContentLang {
@@ -12,6 +13,7 @@ enum ContentLang {
   en
 
   @@map("content_lang")
+  @@schema("public")
 }
 
 enum SocialPlatform {
@@ -24,6 +26,7 @@ enum SocialPlatform {
   website
 
   @@map("social_platform")
+  @@schema("public")
 }
 
 enum ReportReason {
@@ -39,6 +42,7 @@ enum ReportReason {
   other
 
   @@map("report_reason")
+  @@schema("public")
 }
 
 enum ReportState {
@@ -47,6 +51,7 @@ enum ReportState {
   dismissed
 
   @@map("report_state")
+  @@schema("public")
 }
 
 enum NotificationKind {
@@ -57,22 +62,21 @@ enum NotificationKind {
   eventReminder
 
   @@map("notification_kind")
+  @@schema("public")
 }
 
 model Profile {
-  id              String    @id @default(uuid(7)) @db.Uuid
-  authUserId      String    @unique @map("auth_user_id") @db.Uuid
+  id              String    @id @db.Uuid
   handle          String    @unique
-  displayName     String?   @map("display_name")
   role            String    @default("")
   bio             String    @default("")
   location        String?
-  avatarUrl       String?   @map("avatar_url")
   termsAcceptedAt DateTime? @map("terms_accepted_at")
   listed          Boolean   @default(true)
   moderator       Boolean   @default(false)
   joinedAt        DateTime  @default(now()) @map("joined_at")
 
+  user          User           @relation(fields: [id], references: [id], onDelete: Cascade)
   links         SocialLink[]
   posts         Post[]
   projects      Project[]
@@ -89,6 +93,7 @@ model Profile {
 
   @@index([listed])
   @@map("profiles")
+  @@schema("public")
 }
 
 model SocialLink {
@@ -100,6 +105,7 @@ model SocialLink {
 
   @@unique([profileId, platform])
   @@map("social_links")
+  @@schema("public")
 }
 
 model Post {
@@ -122,6 +128,7 @@ model Post {
   @@index([createdAt])
   @@index([authorId])
   @@map("posts")
+  @@schema("public")
 }
 
 model Project {
@@ -149,6 +156,7 @@ model Project {
   @@index([createdAt])
   @@index([authorId])
   @@map("projects")
+  @@schema("public")
 }
 
 model Event {
@@ -177,6 +185,7 @@ model Event {
   @@index([startsAt])
   @@index([hostId])
   @@map("events")
+  @@schema("public")
 }
 
 model Comment {
@@ -207,6 +216,7 @@ model Comment {
   @@index([parentId])
   @@index([createdAt])
   @@map("comments")
+  @@schema("public")
 }
 
 model Like {
@@ -220,6 +230,7 @@ model Like {
   @@unique([profileId, postId])
   @@index([postId])
   @@map("likes")
+  @@schema("public")
 }
 
 model Star {
@@ -237,6 +248,7 @@ model Star {
   @@index([projectId])
   @@index([eventId])
   @@map("stars")
+  @@schema("public")
 }
 
 model Follow {
@@ -250,6 +262,7 @@ model Follow {
   @@unique([followerId, followingId])
   @@index([followingId])
   @@map("follows")
+  @@schema("public")
 }
 
 model Notification {
@@ -280,6 +293,7 @@ model Notification {
   @@index([eventId])
   @@index([commentId])
   @@map("notifications")
+  @@schema("public")
 }
 
 model Report {
@@ -308,4 +322,75 @@ model Report {
   @@index([projectId])
   @@index([eventId])
   @@map("reports")
+  @@schema("public")
+}
+
+model User {
+  id            String   @id @db.Uuid
+  name          String
+  email         String   @unique
+  emailVerified Boolean  @default(false) @map("email_verified")
+  image         String?
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  sessions Session[]
+  accounts Account[]
+  profile  Profile?
+
+  @@map("user")
+  @@schema("app_auth")
+}
+
+model Session {
+  id        String   @id @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("session")
+  @@schema("app_auth")
+}
+
+model Account {
+  id                    String    @id @db.Uuid
+  userId                String    @map("user_id") @db.Uuid
+  accountId             String    @map("account_id")
+  providerId            String    @map("provider_id")
+  accessToken           String?   @map("access_token")
+  refreshToken          String?   @map("refresh_token")
+  accessTokenExpiresAt  DateTime? @map("access_token_expires_at")
+  refreshTokenExpiresAt DateTime? @map("refresh_token_expires_at")
+  scope                 String?
+  idToken               String?   @map("id_token")
+  password              String?
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+  @@map("account")
+  @@schema("app_auth")
+}
+
+model Verification {
+  id         String   @id @db.Uuid
+  identifier String
+  value      String
+  expiresAt  DateTime @map("expires_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@index([identifier])
+  @@map("verification")
+  @@schema("app_auth")
 }

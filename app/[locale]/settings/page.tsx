@@ -9,7 +9,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { getDeveloperByHandle } from "@/lib/developers";
 import { cn } from "@/lib/utils";
-import { mockCurrentUser } from "@/lib/current-user";
+import { getCurrentUser } from "@/lib/auth/get-current-user";
 
 export async function generateMetadata({
   params,
@@ -36,7 +36,7 @@ export default async function SettingsPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("Settings");
-  const user = mockCurrentUser;
+  const user = await getCurrentUser();
   // Prefilled from the public profile, so the form starts from exactly what other
   // members currently see.
   const developer = user ? getDeveloperByHandle(user.handle) : undefined;

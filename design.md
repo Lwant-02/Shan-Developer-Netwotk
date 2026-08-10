@@ -54,24 +54,29 @@ Read-only-for-anonymous is a deliberate and correct fit for the thesis: the cont
 must be public and indexable, or nothing pulls new people in. Value locked behind a
 login can't recruit.
 
-### Authentication 🔴 (provider reopened 2026-08-10)
+### Authentication 🟢 (settled 2026-08-10 — Better Auth)
 
-**Google and GitHub OAuth** — that part is 🟢 and unchanged.
+**Better Auth**, with **Google and GitHub OAuth**.
 
 Google alongside GitHub is a better call than my earlier GitHub-only suggestion —
 GitHub-only would have quietly excluded students and less-established developers,
 which is a chunk of the intended audience.
 
-**Which provider implements it is open.** Supabase Auth was built (PBI-028) and then
-removed on 2026-08-10 at the owner's call; the identity layer is frontend-only mock state
-until a replacement is agreed. The database stays on Supabase Postgres — only auth was
-dropped. `profiles.auth_user_id` is a bare uuid with no foreign key into `auth.users`, so
-it can key off whatever provider lands next without a migration.
+Supabase Auth was built (PBI-028) and removed on 2026-08-10 at the owner's call; **Better
+Auth** replaced it in PBI-029. The database stays on Supabase Postgres — only auth moved.
 
-The two constraints any candidate has to meet: **the OAuth email never becomes public and
-never gets a column in `profiles`**, and **the session is never read on a public page** —
-every public route renders `AppShell`, so one `cookies()` read de-statics the whole
-anonymous-read surface at once.
+Better Auth is a library, not a hosted service: it owns four tables in the existing
+database, reached through the same Prisma client. That is the reason to prefer it here —
+the database, its region, and the data layer are untouched, and a future swap means
+dropping four tables rather than migrating a vendor.
+
+Two constraints shaped the implementation. **The OAuth email never becomes public**: it
+has no column anywhere in `public`, living only in `app_auth.user`, a schema PostgREST
+does not publish, and the `customSession` payload strips it so it never reaches the
+browser either. And **the session is never read on a public page** — every public route
+renders `AppShell`, so one header read would de-static the whole anonymous-read surface at
+once. Identity is resolved in a lazily imported client island that loads only when a
+session cookie exists.
 
 > **Superseded: Supabase Auth.** The owner moved the whole backend to Supabase (see
 > *Architecture*), and Better Auth's advantage there evaporates: Supabase's storage
@@ -455,7 +460,7 @@ Still open:
 | Theme | **Dark only** (PBI-013, reversed 2026-07-20). Greyscale `.dark` pinned on, no toggle. Supersedes PBI-011 (light + dark), which superseded PBI-003 (light-only). |
 | Zawgyi detection/conversion | **No.** Store Unicode, period. |
 | Database, storage | **Supabase** (Postgres), Singapore region — reversed from Neon on 2026-08-01. Data layer is **Prisma**; RLS on with no policies as a deny-by-default backstop. |
-| Auth provider | 🔴 **Open.** Supabase Auth was built (PBI-028) and removed on 2026-08-10; identity is frontend-only mock state until a replacement is agreed. Google + GitHub OAuth is still settled. |
+| Auth provider | **Better Auth** with Google + GitHub OAuth (PBI-029), over the same Supabase Postgres via Prisma. Its four tables live in an `app_auth` schema PostgREST does not publish, so the OAuth email is never in `public`. Reversed from Supabase Auth (PBI-028, built and removed) on 2026-08-10. |
 | Hosting | **Vercel.** |
 | Per-content language tagging | **Yes** — content language is independent of UI locale. |
 | Who moderates, and how fast | **Deferred**, not answered. See Governance. |

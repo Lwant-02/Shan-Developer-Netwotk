@@ -2,6 +2,15 @@ import { createElement, type ReactNode } from "react";
 import { afterEach, vi } from "vitest";
 import { cleanup } from "@testing-library/react";
 
+// The sign-in dialog and account menu import the `"use server"` action module, whose
+// import chain reaches Better Auth and the Prisma client. Next strips that from the
+// client bundle; jsdom would execute it and demand a database. These are UI tests and
+// the server action is the boundary they stop at.
+vi.mock("@/lib/auth/actions", () => ({
+  signIn: vi.fn(),
+  signOut: vi.fn(),
+}));
+
 // next-intl's locale-aware navigation (createNavigation) imports `next/navigation`,
 // whose bare subpath export vite can't resolve under jsdom — the same class of
 // build-time-only concern as next/font below. Tests don't exercise real routing, so

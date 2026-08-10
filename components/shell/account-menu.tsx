@@ -3,9 +3,9 @@
 import { LogOut, Settings, User } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { toast } from "sonner";
+import { useTransition } from "react";
 
-import { useAuthActions } from "@/components/auth/current-user";
+import { signOut } from "@/lib/auth/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -46,7 +46,7 @@ function Avatar({
 }
 
 export function AccountMenu({ user }: { user: CurrentUser }) {
-  const { signOut } = useAuthActions();
+  const [pending, startTransition] = useTransition();
   const t = useTranslations("Account");
   const tNav = useTranslations("Nav");
 
@@ -102,10 +102,15 @@ export function AccountMenu({ user }: { user: CurrentUser }) {
 
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={() => {
-            signOut();
-            toast.success(t("signedOutToast"));
-          }}
+          onClick={() =>
+            startTransition(async () => {
+              await signOut();
+              window.location.assign(
+                `${window.location.pathname}?signed_out=1`,
+              );
+            })
+          }
+          disabled={pending}
           className="cursor-pointer py-1.5"
         >
           <LogOut />

@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| **Status** | Proposed |
+| **Status** | Done |
 | **Created** | 2026-08-10 |
 | **Depends on** | [027](../027/prd.md) — the `profiles` table this writes to |
 | **Blocks** | Every write path. Rate limiting, real posts/projects/events, notifications, moderation ([005](../005/prd.md)), avatar upload — none can start without a session. |

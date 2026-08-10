@@ -1,9 +1,10 @@
 import { useTranslations } from "next-intl";
 
-import { AnonymousOnly } from "@/components/auth/current-user";
+import { AnonymousOnly, ResolvingOnly } from "@/components/auth/current-user";
 import { SignInDialog } from "@/components/auth/sign-in-dialog";
 import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { mockPosts } from "@/lib/feed";
 import { cn } from "@/lib/utils";
 
@@ -14,6 +15,18 @@ export function RightRail() {
 
   return (
     <div className="flex flex-col gap-4">
+      <ResolvingOnly>
+        <Card className="flex flex-col gap-4 p-5">
+          <div className="flex flex-col gap-2">
+            <Skeleton className="h-6 w-2/3 rounded-lg" />
+            <Skeleton className="h-4 w-full rounded-lg" />
+            <Skeleton className="h-4 w-full rounded-lg" />
+            <Skeleton className="h-4 w-3/4 rounded-lg" />
+          </div>
+          <Skeleton className="h-9 w-full rounded-lg" />
+        </Card>
+      </ResolvingOnly>
+
       <AnonymousOnly>
         <Card className="flex flex-col gap-4 p-5">
           <div className="flex flex-col gap-2">

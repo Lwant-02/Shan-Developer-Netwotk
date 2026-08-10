@@ -67,9 +67,13 @@ All routes live under `app/[locale]/`. Locales are **`shn` (default) and `en`**,
 - **Never call `useTranslations`/`getTranslations` in a file that gets no `params`** —
   `loading.tsx`, `not-found.tsx`, `error.tsx`. Without `setRequestLocale()` next-intl
   reads headers to find the locale, and **every route under that segment turns dynamic**.
-  `app/[locale]/loading.tsx` cost all 14 prerendered routes before this was caught; its
-  label is a static English string for exactly that reason. Check the build output
-  (`●` → `ƒ`) after adding one of these files.
+  `app/[locale]/loading.tsx` cost all 14 prerendered routes before this was caught. That
+  file no longer exists — **there is deliberately no route-level loading UI**. Pages are
+  prerendered, so route transitions are not what a visitor waits on; the only thing that
+  resolves after paint is the auth status, and that is handled where it actually shows
+  (see the skeleton rule under Better Auth). If you reintroduce a `loading.tsx`, it takes
+  no `params`, so **any text in it must be a static string** — and check the build output
+  (`●` → `ƒ`) afterwards.
 - New pages go under `app/[locale]/`. Read strings with `useTranslations`, and call
   `setRequestLocale(locale)` so the route stays static.
 - **UI locale is not content language.** Posts/projects/events carry their own
@@ -280,8 +284,22 @@ Rules that fall out of already-built work. What is built, mocked, or still open 
     `lib/auth/config.ts` replaces the session payload with `CurrentUser`, so `handle`,
     `role` and `moderator` arrive in one call **and the email never leaves the server**.
     Widening that return value is how an email reaches the client — don't.
+  - **Auth has three states, not two, and the third is why the skeletons exist.**
+    `useAuthStatus()` returns `anonymous` / `resolving` / `authenticated`, and
+    `AnonymousOnly` / `ResolvingOnly` / `AuthedOnly` are mutually exclusive. **Don't
+    collapse `AnonymousOnly` back to "no user"** — `null` means both "nobody is signed in"
+    and "we don't know yet", and conflating them is what makes the sign-in card appear and
+    then vanish for a member. `resolving` is entered only when the hint cookie says a
+    session is coming, so **anonymous readers never see a skeleton** — they get the correct
+    signed-out shell from static HTML and it never changes. The status is read with
+    `useSyncExternalStore`, not set in an effect, so the skeleton is on the first client
+    render rather than a frame later.
+  - **The auth-dependent slots reserve their space** — the top nav's create/bell/avatar,
+    the right rail's sign-in card, and the left nav's admin row. That is the whole point:
+    without it those controls pop in after the session resolves and shift the layout.
   - **Client answers decide what to draw, never what is allowed.** `useCurrentUser`,
-    `useIsAdmin`, `useIsOwner`, `AuthedOnly`, `AnonymousOnly` are presentation only —
+    `useIsAdmin`, `useIsOwner`, `AuthedOnly`, `AnonymousOnly`, `ResolvingOnly` are
+    presentation only —
     a user can forge any of them. Gate on the server: `/admin` re-reads
     `profiles.moderator` and calls `notFound()`. `AuthedOnly` also saves no bundle;
     wrapped children still ship their chunks.

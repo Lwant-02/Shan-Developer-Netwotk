@@ -7,6 +7,7 @@ import {
   useContext,
   useEffect,
   useState,
+  useSyncExternalStore,
   type ComponentType,
 } from "react";
 import { toast } from "sonner";
@@ -20,19 +21,27 @@ import {
 
 type IslandProps = { onResolved: (user: CurrentUser | null) => void };
 
+type AuthStatus = "anonymous" | "resolving" | "authenticated";
+
 const CurrentUserContext = createContext<CurrentUser | null>(null);
+const AuthStatusContext = createContext<AuthStatus>("anonymous");
 
 export const useCurrentUser = () => useContext(CurrentUserContext);
-export const useIsAuthenticated = () => useCurrentUser() !== null;
+export const useAuthStatus = () => useContext(AuthStatusContext);
+export const useIsAuthenticated = () => useAuthStatus() === "authenticated";
 export const useIsAdmin = () => isAdmin(useCurrentUser());
 export const useIsOwner = (handle: string) => isOwner(useCurrentUser(), handle);
 
 export function AuthedOnly({ children }: { children: React.ReactNode }) {
-  return useIsAuthenticated() ? <>{children}</> : null;
+  return useAuthStatus() === "authenticated" ? <>{children}</> : null;
 }
 
 export function AnonymousOnly({ children }: { children: React.ReactNode }) {
-  return useIsAuthenticated() ? null : <>{children}</>;
+  return useAuthStatus() === "anonymous" ? <>{children}</> : null;
+}
+
+export function ResolvingOnly({ children }: { children: React.ReactNode }) {
+  return useAuthStatus() === "resolving" ? <>{children}</> : null;
 }
 
 const hasSessionHint = () =>
@@ -67,14 +76,27 @@ export function CurrentUserProvider({
   children: React.ReactNode;
 }) {
   const [user, setUser] = useState<CurrentUser | null>(null);
+  const [resolved, setResolved] = useState(false);
   const [Island, setIsland] = useState<ComponentType<IslandProps> | null>(null);
   const t = useTranslations("Auth");
   const tAccount = useTranslations("Account");
 
-  const onResolved = useCallback(
-    (resolved: CurrentUser | null) => setUser(resolved),
-    [],
+  const expectsSession = useSyncExternalStore(
+    () => () => {},
+    hasSessionHint,
+    () => false,
   );
+
+  const status: AuthStatus = user
+    ? "authenticated"
+    : expectsSession && !resolved
+      ? "resolving"
+      : "anonymous";
+
+  const onResolved = useCallback((next: CurrentUser | null) => {
+    setUser(next);
+    setResolved(true);
+  }, []);
 
   useEffect(() => {
     announceReturn({
@@ -82,8 +104,10 @@ export function CurrentUserProvider({
       signedOut: tAccount("signedOutToast"),
       failed: t("signInFailedToast"),
     });
+  }, [t, tAccount]);
 
-    if (!hasSessionHint()) return;
+  useEffect(() => {
+    if (!expectsSession) return;
 
     let active = true;
 
@@ -94,12 +118,14 @@ export function CurrentUserProvider({
     return () => {
       active = false;
     };
-  }, [t, tAccount]);
+  }, [expectsSession]);
 
   return (
-    <CurrentUserContext value={user}>
-      {Island ? <Island onResolved={onResolved} /> : null}
-      {children}
-    </CurrentUserContext>
+    <AuthStatusContext value={status}>
+      <CurrentUserContext value={user}>
+        {Island ? <Island onResolved={onResolved} /> : null}
+        {children}
+      </CurrentUserContext>
+    </AuthStatusContext>
   );
 }

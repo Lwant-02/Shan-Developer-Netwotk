@@ -2,8 +2,9 @@ import { Bell } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
-import { AuthedOnly } from "@/components/auth/current-user";
+import { AuthedOnly, ResolvingOnly } from "@/components/auth/current-user";
 import { SearchTrigger } from "@/components/search/search-trigger";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "@/i18n/navigation";
 import { siteConfig } from "@/lib/site";
 import { CreateMenu } from "./create-menu";
@@ -43,6 +44,16 @@ export function TopNav() {
         <SearchTrigger />
 
         <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
+          <ResolvingOnly>
+            <div className="flex items-center gap-2 px-3 py-2">
+              <Skeleton className="size-5 rounded-lg" />
+              <Skeleton className="hidden h-4 w-12 rounded-lg sm:block" />
+            </div>
+            <Skeleton className="size-9 rounded-lg" />
+            <div className="flex size-9 items-center justify-center">
+              <Skeleton className="size-7 rounded-full" />
+            </div>
+          </ResolvingOnly>
           <AuthedOnly>
             <CreateMenu />
             <Link

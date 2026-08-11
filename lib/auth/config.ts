@@ -19,6 +19,10 @@ export const auth = betterAuth({
   database: prismaAdapter(db, { provider: "postgresql" }),
   secret: required("BETTER_AUTH_SECRET"),
   advanced: { database: { generateId: () => crypto.randomUUID() } },
+  session: {
+    expiresIn: 60 * 60 * 24 * 14,
+    disableSessionRefresh: true,
+  },
   account: {
     accountLinking: { enabled: true, updateUserInfoOnLink: false },
   },

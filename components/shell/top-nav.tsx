@@ -45,10 +45,7 @@ export function TopNav() {
 
         <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
           <ResolvingOnly>
-            <div className="flex items-center gap-2 px-3 py-2">
-              <Skeleton className="size-5 rounded-lg" />
-              <Skeleton className="hidden h-4 w-12 rounded-lg sm:block" />
-            </div>
+            <Skeleton className="h-9 w-11 rounded-lg sm:w-24" />
             <Skeleton className="size-9 rounded-lg" />
             <div className="flex size-9 items-center justify-center">
               <Skeleton className="size-7 rounded-full" />

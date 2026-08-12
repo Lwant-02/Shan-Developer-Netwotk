@@ -138,3 +138,12 @@
     background-color: var(--muted-foreground);
   }
 }
+
+html [data-sonner-toaster] {
+  font-family: var(--font-sans);
+}
+
+html [data-sonner-toast][data-styled="true"] [data-title],
+html [data-sonner-toast][data-styled="true"] [data-button] {
+  font-weight: 400;
+}

@@ -1,4 +1,3 @@
-import { CurrentUserProvider } from "@/components/auth/current-user";
 import { Toaster } from "@/components/ui/sonner";
 import { FeedbackLauncher } from "@/components/feedback/feedback-launcher";
 import { LeftNav } from "./left-nav";
@@ -13,7 +12,7 @@ import { TopNav } from "./top-nav";
 // lives in the TopNav drawer.
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
-    <CurrentUserProvider>
+    <>
       <TopNav />
       {/* Full-bleed shell: the sidebar is flush to the viewport edge and divided by a
           rule, rather than a centred container with gutters on both sides. */}
@@ -37,6 +36,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <FeedbackLauncher />
       <Toaster position="bottom-right" />
-    </CurrentUserProvider>
+    </>
   );
 }

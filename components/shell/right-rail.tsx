@@ -1,10 +1,9 @@
 import { useTranslations } from "next-intl";
 
-import { AnonymousOnly, ResolvingOnly } from "@/components/auth/current-user";
+import { AnonymousOnly } from "@/components/auth/current-user";
 import { SignInDialog } from "@/components/auth/sign-in-dialog";
 import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { mockPosts } from "@/lib/feed";
 import { cn } from "@/lib/utils";
 
@@ -15,40 +14,6 @@ export function RightRail() {
 
   return (
     <div className="flex flex-col gap-4">
-      <ResolvingOnly>
-        <Card className="flex flex-col gap-4 p-5">
-          <div className="flex flex-col gap-2">
-            <Skeleton className="h-6 w-2/3 rounded-lg" />
-            <Skeleton className="h-4 w-full rounded-lg" />
-            <Skeleton className="h-4 w-full rounded-lg" />
-            <Skeleton className="h-4 w-3/4 rounded-lg" />
-          </div>
-          <Skeleton className="h-9 w-full rounded-lg" />
-        </Card>
-      </ResolvingOnly>
-
-      <AnonymousOnly>
-        <Card className="flex flex-col gap-4 p-5">
-          <div className="flex flex-col gap-2">
-            <h2 className="text-foreground text-base">{tHome("aboutTitle")}</h2>
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              {tHome("aboutBody")}
-            </p>
-          </div>
-          <SignInDialog>
-            <button
-              type="button"
-              className={cn(
-                buttonVariants({ size: "lg" }),
-                "w-full cursor-pointer font-normal",
-              )}
-            >
-              {tHome("signInToPost")}
-            </button>
-          </SignInDialog>
-        </Card>
-      </AnonymousOnly>
-
       <Card className="flex flex-col gap-1 p-5">
         <h2 className="text-muted-foreground mb-2 text-xs tracking-wide uppercase">
           {tHome("recentTitle")}
@@ -72,6 +37,28 @@ export function RightRail() {
           ))}
         </ul>
       </Card>
+
+      <AnonymousOnly>
+        <Card className="flex flex-col gap-4 p-5">
+          <div className="flex flex-col gap-2">
+            <h2 className="text-foreground text-base">{tHome("aboutTitle")}</h2>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              {tHome("aboutBody")}
+            </p>
+          </div>
+          <SignInDialog>
+            <button
+              type="button"
+              className={cn(
+                buttonVariants({ size: "lg" }),
+                "w-full cursor-pointer font-normal",
+              )}
+            >
+              {tHome("signInToPost")}
+            </button>
+          </SignInDialog>
+        </Card>
+      </AnonymousOnly>
     </div>
   );
 }

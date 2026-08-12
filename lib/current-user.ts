@@ -20,10 +20,6 @@ export type CurrentUser = Pick<Developer, "handle" | "displayName" | "role"> & {
   moderator?: boolean;
 };
 
-export function isAuthenticated(user: CurrentUser | null): boolean {
-  return user !== null;
-}
-
 export function isAdmin(user: CurrentUser | null): boolean {
   return user?.moderator === true;
 }
